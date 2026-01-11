@@ -53,14 +53,19 @@ namespace ModExtensions
     }//class
 
     // marker for whether we've initialized our LiveryGUI sliders into a given root-GUI-thingy yet
-    class LiveryColorSliderMarker : MonoBehaviour {} //todo.rem
     class LiveryAdvancedPaneMarker : MonoBehaviour {}
+
 
     //+================================================================================================+
     //||                                                                                              ||
     //+================================================================================================+
     public class Patches
     {
+        static GameObject paneGO = null;
+        static CIHelperSetting helper_R = null;
+        static CIHelperSetting helper_G = null;
+        static CIHelperSetting helper_B = null;
+
         // RedrawForLivery() gets invoked when navigating to the livery-select page, and when choosing a
         // different livery or livery-slot. We'll create (and repopulate values for) our livery sliders here.
         //
@@ -73,20 +78,12 @@ namespace ModExtensions
             public static void Postfix(CIViewBaseLoadout __instance, string socketTarget, string hardpointTarget, bool closeOnRepeat) {
                 Debug.Log($"todo RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
 
-                // if (!CIViewBaseLoadout.liveryMode)
-                //     return;
-                // if (CIViewBaseLoadout.selectedUnitID < 0)
-                //     return;
-
-                var root = __instance.liveryRootObject.transform;
-                var existing = root.GetComponentInChildren<LiveryColorSliderMarker>();
-                if (existing == null)
+                if (paneGO == null)
                 {
-#if true
                     // create a new pane
                     var uiRoot = __instance.transform;
 
-                    var paneGO = new GameObject("LiveryAdvancedPane");
+                    paneGO = new GameObject("LiveryAdvancedPane");
                     paneGO.transform.SetParent(uiRoot, false);
                     paneGO.AddComponent<LiveryAdvancedPaneMarker>();
                     
@@ -105,112 +102,97 @@ namespace ModExtensions
                     paneGO.transform.localPosition = new Vector3(800f, 0f, 0f); //todo, do right side of screen
 
                     // add sliders to pane (todo: more; todo: actually put the sliders into a ScrollView.Content inside this pane)
+                    // by cloning the 'options menu' prefab sliders
                     var helperPrefab = CIViewPauseOptions.ins.settingPrefab;
+
                     var helperGO_R = GameObject.Instantiate(helperPrefab.gameObject, paneGO.transform, false);
-
                     helperGO_R.name = "PrimaryColorR";
-                    var helper_R = helperGO_R.GetComponent<CIHelperSetting>();
-
-                    helper_R.toggleHolder.SetActive(false); // todo.hmm
-                    helper_R.levelHolder.SetActive(false);  // todo.hmm
-                    helper_R.sliderHolder.SetActive(true);  // todo.hmm
-
+                    helper_R = helperGO_R.GetComponent<CIHelperSetting>();
                     helper_R.sharedLabelName.text = "Primary Color (R)";
                     
                     var helperGO_G = GameObject.Instantiate(helperPrefab.gameObject, paneGO.transform, false);
-
                     helperGO_G.name = "PrimaryColorG";
-                    var helper_G = helperGO_G.GetComponent<CIHelperSetting>();
-
-                    helper_G.toggleHolder.SetActive(false); // todo.hmm
-                    helper_G.levelHolder.SetActive(false);  // todo.hmm
-                    helper_G.sliderHolder.SetActive(true);  // todo.hmm
-
+                    helper_G = helperGO_G.GetComponent<CIHelperSetting>();
                     helper_G.sharedLabelName.text = "Primary Color (G)";
-
-                    paneGO.SetActive(true); // todo: paneGO.SetActive(!paneGO.activeSelf);
-
-                    helperGO_R.transform.localPosition = new Vector3(16f, -16f, 0f);
-                    helperGO_G.transform.localPosition = new Vector3(16f, -64f, 0f);
                     
                     var helperGO_B = GameObject.Instantiate(helperPrefab.gameObject, paneGO.transform, false);
-
                     helperGO_B.name = "PrimaryColorB";
-                    var helper_B = helperGO_B.GetComponent<CIHelperSetting>();
-
-                    helper_B.toggleHolder.SetActive(false); // todo.hmm
-                    helper_B.levelHolder.SetActive(false);  // todo.hmm
-                    helper_B.sliderHolder.SetActive(true);  // todo.hmm
-
+                    helper_B = helperGO_B.GetComponent<CIHelperSetting>();
                     helper_B.sharedLabelName.text = "Primary Color (B)";
 
-                    helperGO_R.transform.localPosition = new Vector3(16f, -16f, 0f);
-                    helperGO_G.transform.localPosition = new Vector3(16f, -64f, 0f);
-                    helperGO_B.transform.localPosition = new Vector3(16f, -112f, 0f);
+                    GameObject[] game_objects = { helperGO_R, helperGO_G, helperGO_B };
+                    CIHelperSetting[] helpers = { helper_R, helper_G, helper_B };
+                    float next_y = -16f;
+                    foreach (var helperGO in game_objects) {
+                        helperGO.transform.localPosition = new Vector3(16f, next_y, 0f);
+                        next_y -= 48f;
+                    }
+                    foreach (var helper in helpers) {
+                        helper.toggleHolder.SetActive(false); // todo.hmm
+                        helper.levelHolder.SetActive(false);  // todo.hmm
+                        helper.sliderHolder.SetActive(true);  // todo.hmm
 
-                    helper_R.sliderBar.valueMin = 0f;
-                    helper_R.sliderBar.valueLimit = 1f;
-                    helper_R.sliderBar.labelFormat = "F2";
-                    helper_R.sliderBar.labelSuffix = " R";
+                        helper.sliderBar.valueMin = 0f;
+                        helper.sliderBar.valueLimit = 1f;
+                        helper.sliderBar.labelFormat = "F2";
+                        helper.sliderBar.labelSuffix = " R";
+                        
+                        helper.sliderBar.callbackOnAdjustment = new UICallback(value =>
+                        {
+                            var livery = GetSelectedLivery();
+                            if (livery == null)
+                                return;
+
+                            Color c = livery.colorPrimary;
+                            c.r = helper_R.sliderBar.valueRaw;
+                            c.g = helper_G.sliderBar.valueRaw;
+                            c.b = helper_B.sliderBar.valueRaw;
+                            livery.colorPrimary = c;
+
+                            RefreshSelectedUnitVisuals(__instance);
+                        }, 0f);
+                    }
 
                     paneGO.SetActive(true); // todo: paneGO.SetActive(!paneGO.activeSelf);
-#elif false
-                    var helperPrefab = CIViewPauseOptions.ins.settingPrefab;
-                    var helperGO = GameObject.Instantiate(helperPrefab.gameObject, root, false);
-                    helperGO.name = "LiveryColorSlider";
-
-                    helperGO.AddComponent<LiveryColorSliderMarker>();
-
-                    var helper = helperGO.GetComponent<CIHelperSetting>();
-
-                    // Hide unused parts
-                    helper.toggleHolder.SetActive(false); // todo.hmm
-                    helper.levelHolder.SetActive(false);  // todo.hmm
-                    helper.sliderHolder.SetActive(true);  // todo.hmm
-
-                    // Configure label
-                    helper.sharedLabelName.text = "Primary Color (R)";
-
-                    // Configure slider
-                    var bar = helper.sliderBar;
-                    bar.valueMin = 0f;
-                    bar.valueLimit = 1f;
-                    bar.labelFormat = "F2";
-                    bar.labelSuffix = " R";
-
-                    helperGO.transform.SetAsFirstSibling(); //todo: there was a suggested alternative to directly set the localPosition with a +Vector3
-#else
-                    // TEMP: create a dummy GameObject first
-                    var go = new GameObject("LiveryColorSliderStub");
-                    go.transform.SetParent(root, false);
-                    go.AddComponent<LiveryColorSliderMarker>();
-
-                    Debug.Log($"todo creating slider");
-
-                    var prefabSettingsSlideBar = CIViewPauseOptions.ins.settingPrefab.sliderBar;
-
-                    var clone = GameObject.Instantiate(prefabSettingsSlideBar.gameObject, go.transform);
-                    var bar = clone.GetComponent<CIBar>();
-                    bar.valueMin = 0f;
-                    bar.valueLimit = 1f;
-                    bar.labelFormat = "F2";
-                    bar.labelSuffix = " R";
-
-                    bar.callbackOnAdjustment = new UICallback(value =>
-                    {
-                        int unitID = CIViewBaseLoadout.selectedUnitID;
-                        if (unitID < 0) return; //todo.revisit
-
-                        //todo:
-                        //ApplyPrimaryColorROverride(unitID, value);
-                        //RefreshUnitVisuals(unitID);
-
-                        Color current = Color.red; //todo GetEffectivePrimaryColor(unitID);
-                        bar.valueRaw = 0.7f;
-                    }, 0f);
-#endif
                 }
-                //todo UpdateSliderValues(__instance);
+                
+                SyncSlidersFromLivery(helper_R.sliderBar, helper_G.sliderBar, helper_B.sliderBar, GetSelectedLivery());
+            }//Postfix()
+
+            private static DataContainerEquipmentLivery GetSelectedLivery()
+            {
+                string key = CIViewBaseLoadout.selectedUnitLivery;
+                if (string.IsNullOrEmpty(key))
+                    return null;
+
+                return DataMultiLinker<DataContainerEquipmentLivery>.GetEntry(key, false);
+            }
+
+            static void SyncSlidersFromLivery(
+                CIBar r, CIBar g, CIBar b,
+                DataContainerEquipmentLivery livery)
+            {
+                if (livery == null) return;
+
+                Color c = livery.colorPrimary;
+
+                r.valueRaw = c.r;
+                g.valueRaw = c.g;
+                b.valueRaw = c.b;
+            }
+            
+            static void RefreshSelectedUnitVisuals(CIViewBaseLoadout ins)
+            {
+                int unitID = CIViewBaseLoadout.selectedUnitID;
+                if (unitID < 0)
+                    return;
+
+                PersistentEntity unit = IDUtility.GetPersistentEntity(unitID);
+                if (unit == null)
+                    return;
+
+                // This forces a full visual rebuild
+                ins.RebuildVisuals();
             }
         }//class RedrawLiveryGUI
     }//class Patches
