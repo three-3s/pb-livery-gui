@@ -31,6 +31,27 @@ using PhantomBrigade.AI.Components;
 //     - https://wiki.braceyourselfgames.com/en/PhantomBrigade/Modding/ModSystem
 //
 
+// POSSIBLE IMPROVEMENTS:
+//  - GUI layout/presentation. Anchor to screen better? Readability concerns? White-on-white is
+//    hard to read. Would be nice to have some grouping for the bars. (There is spare space for
+//    more gaps.) And 'alpha' is distinct from the others so could be... diff color? width?
+
+// TODO:
+//  - Need to avoid modifying the built-in liveries. Would like a copy-to-new button. Maybe save
+//    all the liveries to a master .yml file in the AppData (or a folder with multiple). And load
+//    those at startup.
+//  - Would like a toggle-button for visibility of all the sliders.
+//  - Layout could be better (especially the gap between slider-label and the slider).
+//  - Ideally the blue-fill of the sliders would partially transparent?
+//  - Test other display-resolutions to make sure nothing's off-screen etc.
+
+// BUGS:
+//  - The on-adjusted-slider callback causes any selected socket/subsystem to be deselected, and
+//    the mech-level livery becomes selected again.
+//  - The sliders remain on-screen for the non-livery equipment editing. (But go away when leaving
+//    the unit-editing tab.)
+//  - Hover-text for the sliders says 'Lorem ipsum'.
+
 namespace ModExtensions
 {
     //==================================================================================================
@@ -61,11 +82,15 @@ namespace ModExtensions
         public string label;
         public float x_pos;
         public float y_pos;
-        public SliderConfig(string name_in, string label_in, float x_in, float y_in) {
+        public float min;
+        public float max;
+        public SliderConfig(string name_in, string label_in, float x_in, float y_in, float min_in = 0f, float max_in = 1f) {
             name = name_in;
             label = label_in;
             x_pos = x_in;
             y_pos = y_in;
+            min = min_in;
+            max = max_in;
         }
     }
 
@@ -95,36 +120,34 @@ namespace ModExtensions
                 {
                     slider_helpers = new Dictionary<string, CIHelperSetting>();
                     slider_configs = new Dictionary<string, SliderConfig>() {
-                        { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",      4f,   -4f) },
-                        { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",      4f,  -44f) },
-                        { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",      4f,  -84f) },
-                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",      4f, -124f) },
-                        { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R",    4f, -164f) },
-                        { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G",    4f, -204f) },
-                        { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B",    4f, -244f) },
-                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A",    4f, -284f) },
-                        { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",     4f, -324f) },
-                        { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",     4f, -364f) },
-                        { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",     4f, -404f) },
-                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",     4f, -444f) },
-
-                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",    544f,   -4f) },
-                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",    544f,  -44f) },
-                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",    544f,  -84f) },
-                        { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",    544f, -124f) },
-                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X",  544f, -164f) },
-                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y",  544f, -204f) },
-                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z",  544f, -244f) },
-                        { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W",  544f, -284f) },
-                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",   544f, -324f) },
-                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",   544f, -364f) },
-                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",   544f, -404f) },
-                        { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",   544f, -444f) },
-                        
-                        { "EffectX",    new SliderConfig("EffectX",    "Effect X",     544f, -484f) },
-                        { "EffectY",    new SliderConfig("EffectY",    "Effect Y",     544f, -524f) },
-                        { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",     544f, -564f) },
-                        { "EffectW",    new SliderConfig("EffectW",    "Effect W",     544f, -604f) },
+                        { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",    -140f,   -4f,   0f, 2f) },
+                        { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",    -140f,  -44f,   0f, 2f) },
+                        { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",    -140f,  -84f,   0f, 2f) },
+                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",    -140f, -124f,  -2f, 2f) },
+                        { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R",  -140f, -164f,   0f, 2f) },
+                        { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G",  -140f, -204f,   0f, 2f) },
+                        { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B",  -140f, -244f,   0f, 2f) },
+                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A",  -140f, -284f,  -2f, 2f) },
+                        { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",   -140f, -324f,   0f, 2f) },
+                        { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",   -140f, -364f,   0f, 2f) },
+                        { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",   -140f, -404f,   0f, 2f) },
+                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",   -140f, -444f,  -2f, 2f) },
+                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",     444f,   -4f,  -2f, 2f) },
+                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",     444f,  -44f,  -2f, 2f) },
+                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",     444f,  -84f,  -2f, 2f) },
+                        { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",     444f, -124f,  -2f, 2f) },
+                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X",   444f, -164f,  -2f, 2f) },
+                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y",   444f, -204f,  -2f, 2f) },
+                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z",   444f, -244f,  -2f, 2f) },
+                        { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W",   444f, -284f,  -2f, 2f) },
+                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",    444f, -324f,  -2f, 2f) },
+                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",    444f, -364f,  -2f, 2f) },
+                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",    444f, -404f,  -2f, 2f) },
+                        { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",    444f, -444f,  -2f, 2f) },
+                        { "EffectX",    new SliderConfig("EffectX",    "Effect X",      444f, -484f,  -2f, 2f) },
+                        { "EffectY",    new SliderConfig("EffectY",    "Effect Y",      444f, -524f,  -2f, 2f) },
+                        { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",      444f, -564f,  -2f, 2f) },
+                        { "EffectW",    new SliderConfig("EffectW",    "Effect W",      444f, -604f,  -2f, 2f) },
                     };
 
                     // create a new pane
@@ -137,7 +160,7 @@ namespace ModExtensions
                     // pane background?
                     #if false
                         #if false
-                            var bgPrefab = someExistingPanelBackground; //todo?
+                            var bgPrefab = someExistingPanelBackground; // todo? no?
                             var bg = GameObject.Instantiate(bgPrefab, paneGO.transform, false);
                         #else
                             var sprite = paneGO.AddComponent<UISprite>();
@@ -149,11 +172,10 @@ namespace ModExtensions
                         #endif
                     #endif
 
-                    paneGO.transform.localPosition = new Vector3(800f, 0f, 0f); //todo(?), do right side of screen
+                    paneGO.transform.localPosition = new Vector3(800f, 0f, 0f); // instead, anchor to edge of screen?
 
                     // add sliders to pane
                     // (by cloning the 'options menu' prefab sliders)
-                    // (todo(?): put the sliders into a ScrollView.Content inside this pane)
                     var helperPrefab = CIViewPauseOptions.ins.settingPrefab;
 
                     foreach (var item in slider_configs) {
@@ -166,14 +188,12 @@ namespace ModExtensions
                         helper.sharedLabelName.text = cfg.label;
                         helperGO.transform.localPosition = new Vector3(cfg.x_pos, cfg.y_pos, 0f);
 
-                        #if true // todo.confirm
-                            helper.toggleHolder.SetActive(false);
-                            helper.levelHolder.SetActive(false);
-                            helper.sliderHolder.SetActive(true);
-                        #endif
+                        helper.toggleHolder.SetActive(false);
+                        helper.levelHolder.SetActive(false);
+                        helper.sliderHolder.SetActive(true);
 
-                        helper.sliderBar.valueMin = 0f;
-                        helper.sliderBar.valueLimit = 1f;
+                        helper.sliderBar.valueMin    = cfg.min;
+                        helper.sliderBar.valueLimit  = cfg.max;
                         helper.sliderBar.labelFormat = "F3";
                         helper.sliderBar.labelSuffix = "";
 
@@ -238,7 +258,6 @@ namespace ModExtensions
                 var livery = GetSelectedLivery();
                 if (livery == null)
                     return;
-
                 livery.colorPrimary.r      = slider_helpers["PrimaryR"].sliderBar.valueRaw;
                 livery.colorPrimary.g      = slider_helpers["PrimaryG"].sliderBar.valueRaw;
                 livery.colorPrimary.b      = slider_helpers["PrimaryB"].sliderBar.valueRaw;
