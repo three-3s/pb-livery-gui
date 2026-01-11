@@ -70,7 +70,7 @@ namespace ModExtensions
             //  BEFORE that DifficultyUtility.GetFlag() runs (and depending on what I say, either call the normal
             //  GetFlag() or use the result I give instead)"
             public static void Postfix(CIViewBaseLoadout __instance, string socketTarget, string hardpointTarget, bool closeOnRepeat) {
-                Debug.Log($"3todo RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
+                Debug.Log($"todo RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
 
                 // if (!CIViewBaseLoadout.liveryMode)
                 //     return;
@@ -86,9 +86,31 @@ namespace ModExtensions
                     go.transform.SetParent(root, false);
                     go.AddComponent<LiveryColorSliderMarker>();
 
-                    Debug.Log($"3todo Slider stub created");
+                    Debug.Log($"todo creating slider");
+
+                    var prefabSettingsSlideBar = CIViewPauseOptions.ins.settingPrefab.sliderBar;
+
+                    var clone = GameObject.Instantiate(prefabSettingsSlideBar.gameObject, go.transform);
+                    var bar = clone.GetComponent<CIBar>();
+                    bar.valueMin = 0f;
+                    bar.valueLimit = 1f;
+                    bar.labelFormat = "F2";
+                    bar.labelSuffix = " R";
+
+                    bar.callbackOnAdjustment = new UICallback(value =>
+                    {
+                        int unitID = CIViewBaseLoadout.selectedUnitID;
+                        if (unitID < 0) return; //todo.revisit
+
+                        //todo:
+                        //ApplyPrimaryColorROverride(unitID, value);
+                        //RefreshUnitVisuals(unitID);
+
+                        Color current = Color.red; //todo GetEffectivePrimaryColor(unitID);
+                        bar.valueRaw = 0.7f;
+                    }, 0f);
                 }
-                //3todo UpdateSliderValues(__instance);
+                //todo UpdateSliderValues(__instance);
             }
         }//class RedrawLiveryGUI
     }//class Patches
