@@ -149,7 +149,7 @@ namespace ModExtensions
                             c.b = helper_B.sliderBar.valueRaw;
                             livery.colorPrimary = c;
 
-                            RefreshSelectedUnitVisuals(__instance);
+                            RefreshSphereAndMechPreviews();
                         }, 0f);
                     }
 
@@ -181,7 +181,7 @@ namespace ModExtensions
                 b.valueRaw = c.b;
             }
             
-            static void RefreshSelectedUnitVisuals(CIViewBaseLoadout ins)
+            static void RefreshSphereAndMechPreviews()
             {
                 int unitID = CIViewBaseLoadout.selectedUnitID;
                 if (unitID < 0)
@@ -191,8 +191,21 @@ namespace ModExtensions
                 if (unit == null)
                     return;
 
-                // This forces a full visual rebuild
-                ins.RebuildVisuals();
+                // trigger update the sprite of the sphere showing the 3 color-sections of the livery
+                CIViewBaseLoadout.ins.Redraw(null, null, false);
+
+                // trigger update of the 3D model (stolen from OnLiveryHoverStart())
+                if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitSocket))
+                {
+                    CIViewBaseCustomizationRoot.ins.UpdateUnitLivery();
+                    return;
+                }
+                if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitHardpoint))
+                {
+                    CIViewBaseCustomizationRoot.ins.UpdatePartLivery(CIViewBaseLoadout.selectedUnitSocket);
+                    return;
+                }
+                CIViewBaseCustomizationRoot.ins.UpdateSubsystemLivery(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint);
             }
         }//class RedrawLiveryGUI
     }//class Patches
