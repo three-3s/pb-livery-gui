@@ -57,6 +57,18 @@ namespace ModExtensions
     //+================================================================================================+
     public class Patches
     {
-        //todo
+        // RedrawForLivery() gets invoked when navigating to the livery-select page, and when choosing a
+        // different livery or livery-slot. We'll create (and repopulate values for) our livery sliders here.
+        //
+        // "Dear Harmony, please call into this RedrawLiveryGUI class whenever CIViewBaseLoadout.RedrawForLivery() runs"
+        [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("RedrawForLivery")]
+        public class RedrawLiveryGUI {
+            // "Dear Harmony, due to this function being named Postfix(), please call this RollForSalvage() function
+            //  BEFORE that DifficultyUtility.GetFlag() runs (and depending on what I say, either call the normal
+            //  GetFlag() or use the result I give instead)"
+            public static void Postfix(string socketTarget, string hardpointTarget, bool closeOnRepeat) {
+                Debug.Log($"3todo RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
+            }
+        }//class RedrawLiveryGUI
     }//class Patches
 }//namespace
