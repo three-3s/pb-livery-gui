@@ -52,6 +52,9 @@ namespace ModExtensions
         }
     }//class
 
+    // marker for whether we've initialized our LiveryGUI sliders into a given root-GUI-thingy yet
+    class LiveryColorSliderMarker : MonoBehaviour {}
+
     //+================================================================================================+
     //||                                                                                              ||
     //+================================================================================================+
@@ -66,8 +69,26 @@ namespace ModExtensions
             // "Dear Harmony, due to this function being named Postfix(), please call this RollForSalvage() function
             //  BEFORE that DifficultyUtility.GetFlag() runs (and depending on what I say, either call the normal
             //  GetFlag() or use the result I give instead)"
-            public static void Postfix(string socketTarget, string hardpointTarget, bool closeOnRepeat) {
+            public static void Postfix(CIViewBaseLoadout __instance, string socketTarget, string hardpointTarget, bool closeOnRepeat) {
                 Debug.Log($"3todo RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
+
+                // if (!CIViewBaseLoadout.liveryMode)
+                //     return;
+                // if (CIViewBaseLoadout.selectedUnitID < 0)
+                //     return;
+
+                var root = __instance.liveryRootObject.transform;
+                var existing = root.GetComponentInChildren<LiveryColorSliderMarker>();
+                if (existing == null)
+                {
+                    // TEMP: create a dummy GameObject first
+                    var go = new GameObject("LiveryColorSliderStub");
+                    go.transform.SetParent(root, false);
+                    go.AddComponent<LiveryColorSliderMarker>();
+
+                    Debug.Log($"3todo Slider stub created");
+                }
+                //3todo UpdateSliderValues(__instance);
             }
         }//class RedrawLiveryGUI
     }//class Patches
