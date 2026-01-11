@@ -1,0 +1,24 @@
+CIViewBaseLoadout
+- covers livery-picker-mode and equipment-mode
+- has a public CIScrollView liveryScrollView; and other parts of the livery stuff
+- public static bool liveryMode = false;
+- private List<DataContainerEquipmentLivery> liveriesSortedWithFavorites = new List<DataContainerEquipmentLivery>();
+- public static int selectedUnitID = -99;
+- public static string selectedUnitSocket = null;
+- public static string selectedUnitHardpoint = null;
+- public static string selectedUnitLivery = null;
+
+public static CIViewBaseCustomizationRoot ins;
+public GameObject loadoutRootObject;
+public GameObject liveryRootObject;
+public CIHelperLoadoutLiverySlot liveryHelperRoot;
+
+public CIButton liveryButtonPageLeft;
+public CIButton liveryButtonPageRight;
+
+public CIScrollView liveryScrollView;
+
+protected override void Start()
+- hooks up the on-click callbacks
+
+there is the use of a livery sprite ("helper"?), which is probably the sort of 3-segment sphere visualization of the livery

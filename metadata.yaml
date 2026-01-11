@@ -1,0 +1,21 @@
+priority: 0
+colorHue: 0.111
+id: LiveryGUI
+ver: 0.1
+url: 
+includesConfigOverrides: false
+includesConfigEdits: false
+includesConfigTrees: false
+includesLibraries: true
+includesTextures: false
+includesLocalizationEdits: false
+includesLocalizations: false
+includesAssetBundles: false
+gameVersion2Compatible: true
+gameVersionMin: 1.0
+gameVersionMax: 
+name: Livery GUI
+desc: >-
+  This mod provides an in-game GUI for adjusting mech livery parameters. TODO FULLER FEATURES DESC.
+
+  (Source code: todo)

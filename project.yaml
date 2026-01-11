@@ -1,0 +1,21 @@
+workshop:
+  publishedID: 
+  visibility: Private
+  textFromMetadataVersion: true
+  textFromMetadataMain: true
+  title: 
+  description: 
+  internalData: 
+  changes: 'v0.1: Initial work.'
+  tags:
+  - Balance
+  texPreviewUpload: true
+configEdits: 
+textEdits: 
+assetBundles: 
+libraryDLLs:
+  files:
+  - enabled: true
+    relative: true
+    path: source/obj/Debug/LiveryGUI.dll
+extraFiles: 
