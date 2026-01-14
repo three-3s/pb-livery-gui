@@ -40,17 +40,12 @@ using PhantomBrigade.AI.Components;
 //  - Need to avoid modifying the built-in liveries. Would like a copy-to-new button. Maybe save
 //    all the liveries to a master .yml file in the AppData (or a folder with multiple). And load
 //    those at startup.
-//  - Would like a toggle-button for visibility of all the sliders.
-//  - Layout could be better (especially the gap between slider-label and the slider).
-//  - Ideally the blue-fill of the sliders would partially transparent?
-//  - Test other display-resolutions to make sure nothing's off-screen etc.
 
 // BUGS:
 //  - The on-adjusted-slider callback causes any selected socket/subsystem to be deselected, and
 //    the mech-level livery becomes selected again.
 //  - The sliders remain on-screen for the non-livery equipment editing. (But go away when leaving
 //    the unit-editing tab.)
-//  - Hover-text for the sliders says 'Lorem ipsum'.
 
 namespace ModExtensions
 {
@@ -130,6 +125,7 @@ namespace ModExtensions
                     paneGO = new GameObject("LiveryAdvancedPane");
                     paneGO.transform.SetParent(uiRoot, false);
                     paneGO.AddComponent<LiveryAdvancedPaneMarker>();
+                    paneGO.transform.localPosition = new Vector3(613f, -4f, 0f); // instead, anchor to edge of screen? particularly the right-side column?
 
                     ////////////////////////////////////////////////////////////////////////////////
                     // slider-bars for customizing the current livery
@@ -195,23 +191,6 @@ namespace ModExtensions
                         { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",    x[1], y[14], A, loNC, hiNC) },
                         { "EffectW",    new SliderConfig("EffectW",    "Effect W",    x[1], y[15], B, loNC, hiNC) },
                     };
-                    
-                    // pane background?
-#if false
-#if false
-                            var bgPrefab = someExistingPanelBackground; // todo? no?
-                            var bg = GameObject.Instantiate(bgPrefab, paneGO.transform, false);
-#else
-                            var sprite = paneGO.AddComponent<UISprite>();
-                            sprite.color = new Color(0f, 0f, 0f, 0.6f);
-                            sprite.depth = 50;
-                            sprite.width = 320;
-                            sprite.height = 400;
-                            sprite.pivot = UIWidget.Pivot.TopLeft;
-#endif
-#endif
-
-                    paneGO.transform.localPosition = new Vector3(613f, -4f, 0f); // instead, anchor to edge of screen? particularly the right-side column?
 
                     // add sliders to pane
                     // (by cloning the 'options menu' prefab sliders)
@@ -237,6 +216,10 @@ namespace ModExtensions
                         helper.sliderBar.labelSuffix = "";
                         helper.sliderBar.spriteFill.color = cfg.fill_color;
 
+                        helper.sharedSpriteBackground.gameObject.SetActive(false);
+                        helper.sharedSpriteGradient.gameObject.SetActive(false);
+                        helper.scrollElement.buttonBody.tooltipUsed = false;
+
                         helper.sliderBar.callbackOnAdjustment = new UICallback(value =>
                         {
                             UpdateLiveryFromSliders();
@@ -245,7 +228,7 @@ namespace ModExtensions
 
                         helper.toggleHolder.SetActive(false);
                         helper.levelHolder.SetActive(false);
-                        helper.sliderHolder.SetActive(true);
+                        helper.sliderHolder.SetActive(true); // (affects visibility of the sliderBar itself)
 
                         slider_helpers.Add(key, helper);
                     }
