@@ -82,13 +82,15 @@ namespace ModExtensions
         public string label;
         public float x_pos;
         public float y_pos;
+        public Color fill_color;
         public float min;
         public float max;
-        public SliderConfig(string name_in, string label_in, float x_in, float y_in, float min_in = 0f, float max_in = 1f) {
+        public SliderConfig(string name_in, string label_in, float x_in, float y_in, Color fill_color_in, float min_in = 0f, float max_in = 1f) {
             name = name_in;
             label = label_in;
             x_pos = x_in;
             y_pos = y_in;
+            fill_color = fill_color_in;
             min = min_in;
             max = max_in;
         }
@@ -118,40 +120,71 @@ namespace ModExtensions
 
                 if (paneGO == null)
                 {
+                    const float vGap = 40f;
+                    float[] x = {
+                        0f,
+                        715f,
+                    };
+                    float[] y = {
+                        -vGap *  0.0f,
+                        -vGap *  1.0f,
+                        -vGap *  2.0f,
+                        -vGap *  3.0f,
+                        -vGap *  5.0f, // +1.0 gap
+                        -vGap *  6.0f,
+                        -vGap *  7.0f,
+                        -vGap *  8.0f,
+                        -vGap * 10.0f, // +1.0 gap
+                        -vGap * 11.0f,
+                        -vGap * 12.0f,
+                        -vGap * 13.0f,
+                        -vGap * 15.0f, // +1.0 gap
+                        -vGap * 16.0f,
+                        -vGap * 17.0f,
+                        -vGap * 18.0f,
+                    };
+                    const float loC  =  0f; // min color-slider val (color-component < 0 causes the whole color to be black)
+                    const float hiC  =  2f; // max color-slider val
+                    const float loNC = -2f; // min non-color-slider
+                    const float hiNC =  2f; // max non-color-slider
+                    Color R = new Color(0.5f, 0f, 0f, 0.5f);
+                    Color G = new Color(0f, 0.5f, 0f, 0.5f);
+                    Color B = new Color(0f, 0f, 0.7f, 0.5f);
+                    Color A = new Color(1f, 1f, 1f, 0.37f);
                     slider_helpers = new Dictionary<string, CIHelperSetting>();
                     slider_configs = new Dictionary<string, SliderConfig>() {
-                        { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",    -140f,   -4f,   0f, 2f) },
-                        { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",    -140f,  -44f,   0f, 2f) },
-                        { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",    -140f,  -84f,   0f, 2f) },
-                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",    -140f, -124f,  -2f, 2f) },
-                        { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R",  -140f, -164f,   0f, 2f) },
-                        { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G",  -140f, -204f,   0f, 2f) },
-                        { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B",  -140f, -244f,   0f, 2f) },
-                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A",  -140f, -284f,  -2f, 2f) },
-                        { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",   -140f, -324f,   0f, 2f) },
-                        { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",   -140f, -364f,   0f, 2f) },
-                        { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",   -140f, -404f,   0f, 2f) },
-                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",   -140f, -444f,  -2f, 2f) },
-                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",     444f,   -4f,  -2f, 2f) },
-                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",     444f,  -44f,  -2f, 2f) },
-                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",     444f,  -84f,  -2f, 2f) },
-                        { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",     444f, -124f,  -2f, 2f) },
-                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X",   444f, -164f,  -2f, 2f) },
-                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y",   444f, -204f,  -2f, 2f) },
-                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z",   444f, -244f,  -2f, 2f) },
-                        { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W",   444f, -284f,  -2f, 2f) },
-                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",    444f, -324f,  -2f, 2f) },
-                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",    444f, -364f,  -2f, 2f) },
-                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",    444f, -404f,  -2f, 2f) },
-                        { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",    444f, -444f,  -2f, 2f) },
-                        { "EffectX",    new SliderConfig("EffectX",    "Effect X",      444f, -484f,  -2f, 2f) },
-                        { "EffectY",    new SliderConfig("EffectY",    "Effect Y",      444f, -524f,  -2f, 2f) },
-                        { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",      444f, -564f,  -2f, 2f) },
-                        { "EffectW",    new SliderConfig("EffectW",    "Effect W",      444f, -604f,  -2f, 2f) },
+                        { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   x[0], y[0],  R, loC,  hiC) },
+                        { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   x[0], y[1],  G, loC,  hiC) },
+                        { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   x[0], y[2],  B, loC,  hiC) },
+                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",   x[0], y[3],  A, loNC, hiNC) },
+                        { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R", x[0], y[4],  R, loC,  hiC) },
+                        { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G", x[0], y[5],  G, loC,  hiC) },
+                        { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B", x[0], y[6],  B, loC,  hiC) },
+                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A", x[0], y[7],  A, loNC, hiNC) },
+                        { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",  x[0], y[8],  R, loC,  hiC) },
+                        { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",  x[0], y[9],  G, loC,  hiC) },
+                        { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",  x[0], y[10], B, loC,  hiC) },
+                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  x[0], y[11], A, loNC, hiNC) },
+                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",   x[1], y[0],  A, loNC, hiNC) },
+                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",   x[1], y[1],  A, loNC, hiNC) },
+                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",   x[1], y[2],  A, loNC, hiNC) },
+                        { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",   x[1], y[3],  B, loNC, hiNC) },
+                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X", x[1], y[4],  A, loNC, hiNC) },
+                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y", x[1], y[5],  A, loNC, hiNC) },
+                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z", x[1], y[6],  A, loNC, hiNC) },
+                        { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W", x[1], y[7],  B, loNC, hiNC) },
+                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",  x[1], y[8],  A, loNC, hiNC) },
+                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",  x[1], y[9],  A, loNC, hiNC) },
+                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",  x[1], y[10], A, loNC, hiNC) },
+                        { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",  x[1], y[11], B, loNC, hiNC) },
+                        { "EffectX",    new SliderConfig("EffectX",    "Effect X",    x[1], y[12], A, loNC, hiNC) },
+                        { "EffectY",    new SliderConfig("EffectY",    "Effect Y",    x[1], y[13], A, loNC, hiNC) },
+                        { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",    x[1], y[14], A, loNC, hiNC) },
+                        { "EffectW",    new SliderConfig("EffectW",    "Effect W",    x[1], y[15], B, loNC, hiNC) },
                     };
 
                     // create a new pane
-                    var uiRoot = __instance.transform;
+                    var uiRoot = __instance.liveryRootObject.transform;
 
                     paneGO = new GameObject("LiveryAdvancedPane");
                     paneGO.transform.SetParent(uiRoot, false);
@@ -172,7 +205,7 @@ namespace ModExtensions
                         #endif
                     #endif
 
-                    paneGO.transform.localPosition = new Vector3(800f, 0f, 0f); // instead, anchor to edge of screen?
+                    paneGO.transform.localPosition = new Vector3(613f, -4f, 0f); // instead, anchor to edge of screen? particularly the right-side column?
 
                     // add sliders to pane
                     // (by cloning the 'options menu' prefab sliders)
@@ -188,20 +221,25 @@ namespace ModExtensions
                         helper.sharedLabelName.text = cfg.label;
                         helperGO.transform.localPosition = new Vector3(cfg.x_pos, cfg.y_pos, 0f);
 
-                        helper.toggleHolder.SetActive(false);
-                        helper.levelHolder.SetActive(false);
-                        helper.sliderHolder.SetActive(true);
+                        Vector3 sliderLocalPos = helper.sliderHolder.transform.localPosition;
+                        sliderLocalPos.x -= 262f;
+                        helper.sliderHolder.transform.localPosition = sliderLocalPos;
 
                         helper.sliderBar.valueMin    = cfg.min;
                         helper.sliderBar.valueLimit  = cfg.max;
                         helper.sliderBar.labelFormat = "F3";
                         helper.sliderBar.labelSuffix = "";
+                        helper.sliderBar.spriteFill.color = cfg.fill_color;
 
                         helper.sliderBar.callbackOnAdjustment = new UICallback(value =>
                         {
                             UpdateLiveryFromSliders();
                             RefreshSphereAndMechPreviews();
                         }, 0f);
+
+                        helper.toggleHolder.SetActive(false);
+                        helper.levelHolder.SetActive(false);
+                        helper.sliderHolder.SetActive(true);
 
                         slider_helpers.Add(key, helper);
                     }
