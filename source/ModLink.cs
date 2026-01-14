@@ -41,12 +41,6 @@ using PhantomBrigade.AI.Components;
 //    all the liveries to a master .yml file in the AppData (or a folder with multiple). And load
 //    those at startup.
 
-// BUGS:
-//  - The on-adjusted-slider callback causes any selected socket/subsystem to be deselected, and
-//    the mech-level livery becomes selected again.
-//  - The sliders remain on-screen for the non-livery equipment editing. (But go away when leaving
-//    the unit-editing tab.)
-
 namespace ModExtensions
 {
     //==================================================================================================
@@ -350,7 +344,7 @@ namespace ModExtensions
                     return;
 
                 // trigger update the sprite of the sphere showing the 3 color-sections of the livery
-                CIViewBaseLoadout.ins.Redraw(null, null, false);
+                CIViewBaseLoadout.ins.Redraw(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint, false);
 
                 // trigger update of the 3D model (stolen from OnLiveryHoverStart())
                 if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitSocket))
