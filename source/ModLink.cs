@@ -160,9 +160,9 @@ namespace ModExtensions
                     const float hiC  =  2f; // max color-slider val
                     const float loNC = -2f; // min non-color-slider
                     const float hiNC =  2f; // max non-color-slider
-                    Color R = new Color(0.5f, 0f, 0f, 0.5f);
-                    Color G = new Color(0f, 0.5f, 0f, 0.5f);
-                    Color B = new Color(0f, 0f, 0.7f, 0.5f);
+                    Color R = new Color(0.6f, 0.1f, 0.1f, 0.5f);
+                    Color G = new Color(0.1f, 0.6f, 0.1f, 0.5f);
+                    Color B = new Color(0.1f, 0.1f, 0.8f, 0.5f);
                     Color A = new Color(1f, 1f, 1f, 0.37f);
                     slider_helpers = new Dictionary<string, CIHelperSetting>();
                     slider_configs = new Dictionary<string, SliderConfig>() {
