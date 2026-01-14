@@ -59,6 +59,7 @@ namespace ModExtensions
     //  leftover 'hello world' stuff at this point.)
     public class ModLinkCustom : ModLink
     {
+#if false
         public static ModLinkCustom ins;
 
         public override void OnLoadStart()
@@ -72,6 +73,7 @@ namespace ModExtensions
             base.OnLoad(harmonyInstance);
             Debug.Log($"OnLoad | Mod: {modID} | Index: {modIndexPreload} | Path: {modPath}");
         }
+#endif
     }//class
 
     // marker for whether we've initialized our LiveryGUI sliders into a given root-GUI-thingy yet
@@ -105,6 +107,7 @@ namespace ModExtensions
         static GameObject paneGO = null;
         static Dictionary<string, CIHelperSetting> slider_helpers = null;
         static Dictionary<string, SliderConfig> slider_configs = null;
+        static CIButton toggleLiveryGUIButton;
 
         // RedrawForLivery() gets invoked when navigating to the livery-select page, and when choosing a
         // different livery or livery-slot. We'll create (and repopulate values for) our livery sliders here.
@@ -116,10 +119,20 @@ namespace ModExtensions
             //  BEFORE that DifficultyUtility.GetFlag() runs (and depending on what I say, either call the normal
             //  GetFlag() or use the result I give instead)"
             public static void Postfix(CIViewBaseLoadout __instance, string socketTarget, string hardpointTarget, bool closeOnRepeat) {
-                Debug.Log($"todo RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
+                //Debug.Log($"RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
 
                 if (paneGO == null)
                 {
+                    ////////////////////////////////////////////////////////////////////////////////
+                    // create a new pane
+                    var uiRoot = __instance.liveryRootObject.transform;
+
+                    paneGO = new GameObject("LiveryAdvancedPane");
+                    paneGO.transform.SetParent(uiRoot, false);
+                    paneGO.AddComponent<LiveryAdvancedPaneMarker>();
+
+                    ////////////////////////////////////////////////////////////////////////////////
+                    // slider-bars for customizing the current livery
                     const float vGap = 40f;
                     float[] x = {
                         0f,
@@ -182,28 +195,21 @@ namespace ModExtensions
                         { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",    x[1], y[14], A, loNC, hiNC) },
                         { "EffectW",    new SliderConfig("EffectW",    "Effect W",    x[1], y[15], B, loNC, hiNC) },
                     };
-
-                    // create a new pane
-                    var uiRoot = __instance.liveryRootObject.transform;
-
-                    paneGO = new GameObject("LiveryAdvancedPane");
-                    paneGO.transform.SetParent(uiRoot, false);
-                    paneGO.AddComponent<LiveryAdvancedPaneMarker>();
                     
                     // pane background?
-                    #if false
-                        #if false
+#if false
+#if false
                             var bgPrefab = someExistingPanelBackground; // todo? no?
                             var bg = GameObject.Instantiate(bgPrefab, paneGO.transform, false);
-                        #else
+#else
                             var sprite = paneGO.AddComponent<UISprite>();
                             sprite.color = new Color(0f, 0f, 0f, 0.6f);
                             sprite.depth = 50;
                             sprite.width = 320;
                             sprite.height = 400;
                             sprite.pivot = UIWidget.Pivot.TopLeft;
-                        #endif
-                    #endif
+#endif
+#endif
 
                     paneGO.transform.localPosition = new Vector3(613f, -4f, 0f); // instead, anchor to edge of screen? particularly the right-side column?
 
@@ -222,7 +228,7 @@ namespace ModExtensions
                         helperGO.transform.localPosition = new Vector3(cfg.x_pos, cfg.y_pos, 0f);
 
                         Vector3 sliderLocalPos = helper.sliderHolder.transform.localPosition;
-                        sliderLocalPos.x -= 262f;
+                        sliderLocalPos.x -= 262f; // move the slider-bar left so it's under the label-text
                         helper.sliderHolder.transform.localPosition = sliderLocalPos;
 
                         helper.sliderBar.valueMin    = cfg.min;
@@ -244,7 +250,31 @@ namespace ModExtensions
                         slider_helpers.Add(key, helper);
                     }
 
-                    paneGO.SetActive(true); // todo: paneGO.SetActive(!paneGO.activeSelf);
+                    paneGO.SetActive(true);
+
+                    ////////////////////////////////////////////////////////////////////////////////
+                    // toggle-button for Livery GUI visibility
+                    GameObject toggleLiveryGUIButtonGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerButtonLivery.gameObject, uiRoot, false);
+                    toggleLiveryGUIButtonGO.name = "LiveryAdvancedToggle";
+                    toggleLiveryGUIButtonGO.transform.localPosition = new Vector3(645f, +70f, 0f);
+                    toggleLiveryGUIButtonGO.transform.localScale = Vector3.one;
+                    toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
+
+                    var toggle_icon = toggleLiveryGUIButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                    var toggle_frame = toggleLiveryGUIButtonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
+                    var toggle_fill_idle = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+                    var toggle_fill_hover = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
+                    if (toggle_icon       != null) toggle_icon.color       = new Color(0.8f, 0.8f, 0.8f, 0.8f);
+                    if (toggle_frame      != null) toggle_frame.color      = new Color(0.8f, 0.8f, 0.8f, 0.8f);
+                    if (toggle_fill_idle  != null) toggle_fill_idle.color  = new Color(0.2f, 0.2f, 0.2f, 0.4f);
+                    if (toggle_fill_hover != null) toggle_fill_hover.color = new Color(0.5f, 0.5f, 0.5f, 0.7f);
+
+                    toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
+                    {
+                        paneGO.SetActive(!paneGO.activeSelf);
+                    });
+
+                    toggleLiveryGUIButtonGO.SetActive(true);
                 }
                 
                 SyncSlidersFromLivery(GetSelectedLivery());
