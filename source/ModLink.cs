@@ -32,7 +32,6 @@ using Debug = UnityEngine.Debug;
 //    more gaps.) And 'alpha' is distinct from the others so could be... diff color? width?
 
 // TODO:
-//  - naming-style consistency
 //  - Need to avoid modifying the built-in liveries. Would like a copy-to-new button. Maybe save
 //    all the liveries to a master .yml file in the AppData (or a folder with multiple). And load
 //    those at startup.
@@ -67,15 +66,15 @@ namespace ModExtensions
     public class SliderConfig {
         public string name;
         public string label;
-        public Color fill_color;
+        public Color fillColor;
         public float min;
         public float max;
-        public SliderConfig(string name_in, string label_in, Color fill_color_in, float min_in = 0f, float max_in = 1f) {
-            name = name_in;
-            label = label_in;
-            fill_color = fill_color_in;
-            min = min_in;
-            max = max_in;
+        public SliderConfig(string nameIn, string labelIn, Color fillColorIn, float minIn = 0f, float maxIn = 1f) {
+            name = nameIn;
+            label = labelIn;
+            fillColor = fillColorIn;
+            min = minIn;
+            max = maxIn;
         }
     }
 
@@ -86,8 +85,8 @@ namespace ModExtensions
     public class Patches
     {
         static GameObject paneGO = null;
-        static Dictionary<string, CIHelperSetting> slider_helpers = null;
-        static Dictionary<string, SliderConfig> slider_configs = null;
+        static Dictionary<string, CIHelperSetting> sliderHelpers = null;
+        static Dictionary<string, SliderConfig> sliderConfigs = null;
         static CIButton toggleLiveryGUIButton;
         static CIButton cloneLiveryButton;
         static CIButton saveLiveryButton;
@@ -129,8 +128,8 @@ namespace ModExtensions
                     Color G = new Color(0.1f, 0.6f, 0.1f, 0.5f);
                     Color B = new Color(0.1f, 0.1f, 0.8f, 0.5f);
                     Color A = new Color(1f, 1f, 1f, 0.37f);
-                    slider_helpers = new Dictionary<string, CIHelperSetting>();
-                    slider_configs = new Dictionary<string, SliderConfig>() {
+                    sliderHelpers = new Dictionary<string, CIHelperSetting>();
+                    sliderConfigs = new Dictionary<string, SliderConfig>() {
                         { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   R, loC,  hiC) },
                         { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   G, loC,  hiC) },
                         { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   B, loC,  hiC) },
@@ -165,7 +164,7 @@ namespace ModExtensions
                     // (by cloning the 'options menu' prefab sliders)
                     var helperPrefab = CIViewPauseOptions.ins.settingPrefab;
 
-                    foreach (var item in slider_configs) {
+                    foreach (var item in sliderConfigs) {
                         string key = item.Key;
                         SliderConfig cfg = item.Value;
 
@@ -182,7 +181,7 @@ namespace ModExtensions
                         helper.sliderBar.valueLimit  = cfg.max;
                         helper.sliderBar.labelFormat = "F3";
                         helper.sliderBar.labelSuffix = "";
-                        helper.sliderBar.spriteFill.color = cfg.fill_color;
+                        helper.sliderBar.spriteFill.color = cfg.fillColor;
 
                         helper.sharedSpriteBackground.gameObject.SetActive(false);
                         helper.sharedSpriteGradient.gameObject.SetActive(false);
@@ -198,7 +197,7 @@ namespace ModExtensions
                         helper.levelHolder.SetActive(false);
                         helper.sliderHolder.SetActive(true); // (affects visibility of the sliderBar itself)
 
-                        slider_helpers.Add(key, helper);
+                        sliderHelpers.Add(key, helper);
                     }
 
                     ////////////////////////////////////////////////////////////////////////////////
@@ -208,14 +207,14 @@ namespace ModExtensions
                     toggleLiveryGUIButtonGO.transform.localPosition = new Vector3(645f, +70f, 0f);
                     toggleLiveryGUIButtonGO.transform.localScale = Vector3.one;
 
-                    var toggle_icon = toggleLiveryGUIButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                    var toggle_frame = toggleLiveryGUIButtonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
-                    var toggle_fill_idle = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
-                    var toggle_fill_hover = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
-                    if (toggle_icon       != null) toggle_icon.color       = new Color(0.9f, 0.9f, 0.9f, 0.8f);
-                    if (toggle_frame      != null) toggle_frame.color      = new Color(0.7f, 0.7f, 0.7f, 0.8f);
-                    if (toggle_fill_idle  != null) toggle_fill_idle.color  = new Color(0.0f, 0.0f, 0.0f, 0.7f);
-                    if (toggle_fill_hover != null) toggle_fill_hover.color = new Color(0.7f, 0.7f, 0.7f, 0.4f);
+                    var toggleIcon = toggleLiveryGUIButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                    var toggleFrame = toggleLiveryGUIButtonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
+                    var toggleFillIdle = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+                    var toggleFillHover = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
+                    if (toggleIcon       != null) toggleIcon.color       = new Color(0.9f, 0.9f, 0.9f, 0.8f);
+                    if (toggleFrame      != null) toggleFrame.color      = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+                    if (toggleFillIdle  != null) toggleFillIdle.color  = new Color(0.0f, 0.0f, 0.0f, 0.7f);
+                    if (toggleFillHover != null) toggleFillHover.color = new Color(0.7f, 0.7f, 0.7f, 0.4f);
 
                     toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
                     toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
@@ -227,19 +226,19 @@ namespace ModExtensions
 
                     ////////////////////////////////////////////////////////////////////////////////
                     // Livery GUI buttons: 'clone livery', 'save livery to disk'
-                    Vector3 pos_step = new Vector3(80f, 0f, 0f);
+                    Vector3 posStep = new Vector3(80f, 0f, 0f);
 
                     GameObject cloneLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
                     cloneLiveryButtonGO.name = "cloneLiveryButtonGO";
-                    cloneLiveryButtonGO.transform.localPosition += pos_step;
-                    var clone_icon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                    if (clone_icon       != null) clone_icon.color       = new Color(0.5f, 0.8f, 0.6f, 0.8f);
+                    cloneLiveryButtonGO.transform.localPosition += posStep;
+                    var cloneIcon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                    if (cloneIcon       != null) cloneIcon.color       = new Color(0.5f, 0.8f, 0.6f, 0.8f);
 
                     GameObject saveLiveryButtonGO = GameObject.Instantiate(cloneLiveryButtonGO, paneGO.transform, false);
                     saveLiveryButtonGO.name = "saveLiveryButtonGO";
-                    saveLiveryButtonGO.transform.localPosition += pos_step;
-                    var save_icon = saveLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                    if (save_icon       != null) save_icon.color       = new Color(0.5f, 0.6f, 0.8f, 0.8f);
+                    saveLiveryButtonGO.transform.localPosition += posStep;
+                    var saveIcon = saveLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                    if (saveIcon       != null) saveIcon.color       = new Color(0.5f, 0.6f, 0.8f, 0.8f);
 
                     cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
                     cloneLiveryButton.callbackOnClick = new UICallback(() =>
@@ -258,7 +257,7 @@ namespace ModExtensions
                     ////////////////////////////////////////////////////////////////////////////////
                     // Livery GUI initial visibility
                     paneGO.SetActive(true);
-                }//if(do_once)
+                }//if(doOnce)
                 
                 UpdateWidgetPositioning(__instance);
                 SyncSlidersFromLivery(GetSelectedLivery());
@@ -301,34 +300,34 @@ namespace ModExtensions
                     -yStep * 17.0f,
                     -yStep * 18.0f,
                 };
-                slider_helpers["PrimaryR"].gameObject.transform.localPosition   = new Vector3(x[0], y[0]);
-                slider_helpers["PrimaryG"].gameObject.transform.localPosition   = new Vector3(x[0], y[1]);
-                slider_helpers["PrimaryB"].gameObject.transform.localPosition   = new Vector3(x[0], y[2]);
-                slider_helpers["PrimaryA"].gameObject.transform.localPosition   = new Vector3(x[0], y[3]);
-                slider_helpers["SecondaryR"].gameObject.transform.localPosition = new Vector3(x[0], y[4]);
-                slider_helpers["SecondaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[5]);
-                slider_helpers["SecondaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[6]);
-                slider_helpers["SecondaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[7]);
-                slider_helpers["TertiaryR"].gameObject.transform.localPosition  = new Vector3(x[0], y[8]);
-                slider_helpers["TertiaryG"].gameObject.transform.localPosition  = new Vector3(x[0], y[9]);
-                slider_helpers["TertiaryB"].gameObject.transform.localPosition  = new Vector3(x[0], y[10]);
-                slider_helpers["TertiaryA"].gameObject.transform.localPosition  = new Vector3(x[0], y[11]);
-                slider_helpers["PrimaryX"].gameObject.transform.localPosition   = new Vector3(x[1], y[0]);
-                slider_helpers["PrimaryY"].gameObject.transform.localPosition   = new Vector3(x[1], y[1]);
-                slider_helpers["PrimaryZ"].gameObject.transform.localPosition   = new Vector3(x[1], y[2]);
-                slider_helpers["PrimaryW"].gameObject.transform.localPosition   = new Vector3(x[1], y[3]);
-                slider_helpers["SecondaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[4]);
-                slider_helpers["SecondaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[5]);
-                slider_helpers["SecondaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[6]);
-                slider_helpers["SecondaryW"].gameObject.transform.localPosition = new Vector3(x[1], y[7]);
-                slider_helpers["TertiaryX"].gameObject.transform.localPosition  = new Vector3(x[1], y[8]);
-                slider_helpers["TertiaryY"].gameObject.transform.localPosition  = new Vector3(x[1], y[9]);
-                slider_helpers["TertiaryZ"].gameObject.transform.localPosition  = new Vector3(x[1], y[10]);
-                slider_helpers["TertiaryW"].gameObject.transform.localPosition  = new Vector3(x[1], y[11]);
-                slider_helpers["EffectX"].gameObject.transform.localPosition    = new Vector3(x[1], y[12]);
-                slider_helpers["EffectY"].gameObject.transform.localPosition    = new Vector3(x[1], y[13]);
-                slider_helpers["EffectZ"].gameObject.transform.localPosition    = new Vector3(x[1], y[14]);
-                slider_helpers["EffectW"].gameObject.transform.localPosition    = new Vector3(x[1], y[15]);
+                sliderHelpers["PrimaryR"].gameObject.transform.localPosition   = new Vector3(x[0], y[0]);
+                sliderHelpers["PrimaryG"].gameObject.transform.localPosition   = new Vector3(x[0], y[1]);
+                sliderHelpers["PrimaryB"].gameObject.transform.localPosition   = new Vector3(x[0], y[2]);
+                sliderHelpers["PrimaryA"].gameObject.transform.localPosition   = new Vector3(x[0], y[3]);
+                sliderHelpers["SecondaryR"].gameObject.transform.localPosition = new Vector3(x[0], y[4]);
+                sliderHelpers["SecondaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[5]);
+                sliderHelpers["SecondaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[6]);
+                sliderHelpers["SecondaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[7]);
+                sliderHelpers["TertiaryR"].gameObject.transform.localPosition  = new Vector3(x[0], y[8]);
+                sliderHelpers["TertiaryG"].gameObject.transform.localPosition  = new Vector3(x[0], y[9]);
+                sliderHelpers["TertiaryB"].gameObject.transform.localPosition  = new Vector3(x[0], y[10]);
+                sliderHelpers["TertiaryA"].gameObject.transform.localPosition  = new Vector3(x[0], y[11]);
+                sliderHelpers["PrimaryX"].gameObject.transform.localPosition   = new Vector3(x[1], y[0]);
+                sliderHelpers["PrimaryY"].gameObject.transform.localPosition   = new Vector3(x[1], y[1]);
+                sliderHelpers["PrimaryZ"].gameObject.transform.localPosition   = new Vector3(x[1], y[2]);
+                sliderHelpers["PrimaryW"].gameObject.transform.localPosition   = new Vector3(x[1], y[3]);
+                sliderHelpers["SecondaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[4]);
+                sliderHelpers["SecondaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[5]);
+                sliderHelpers["SecondaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[6]);
+                sliderHelpers["SecondaryW"].gameObject.transform.localPosition = new Vector3(x[1], y[7]);
+                sliderHelpers["TertiaryX"].gameObject.transform.localPosition  = new Vector3(x[1], y[8]);
+                sliderHelpers["TertiaryY"].gameObject.transform.localPosition  = new Vector3(x[1], y[9]);
+                sliderHelpers["TertiaryZ"].gameObject.transform.localPosition  = new Vector3(x[1], y[10]);
+                sliderHelpers["TertiaryW"].gameObject.transform.localPosition  = new Vector3(x[1], y[11]);
+                sliderHelpers["EffectX"].gameObject.transform.localPosition    = new Vector3(x[1], y[12]);
+                sliderHelpers["EffectY"].gameObject.transform.localPosition    = new Vector3(x[1], y[13]);
+                sliderHelpers["EffectZ"].gameObject.transform.localPosition    = new Vector3(x[1], y[14]);
+                sliderHelpers["EffectW"].gameObject.transform.localPosition    = new Vector3(x[1], y[15]);
             }
             
             public static string DuplicateSelectedLivery()
@@ -392,68 +391,68 @@ namespace ModExtensions
             static void SyncSlidersFromLivery(DataContainerEquipmentLivery livery)
             {
                 if (livery == null) return;
-                slider_helpers["PrimaryR"].sliderBar.valueRaw   = livery.colorPrimary.r;
-                slider_helpers["PrimaryG"].sliderBar.valueRaw   = livery.colorPrimary.g;
-                slider_helpers["PrimaryB"].sliderBar.valueRaw   = livery.colorPrimary.b;
-                slider_helpers["PrimaryA"].sliderBar.valueRaw   = livery.colorPrimary.a;
-                slider_helpers["SecondaryR"].sliderBar.valueRaw = livery.colorSecondary.r;
-                slider_helpers["SecondaryG"].sliderBar.valueRaw = livery.colorSecondary.g;
-                slider_helpers["SecondaryB"].sliderBar.valueRaw = livery.colorSecondary.b;
-                slider_helpers["SecondaryA"].sliderBar.valueRaw = livery.colorSecondary.a;
-                slider_helpers["TertiaryR"].sliderBar.valueRaw  = livery.colorTertiary.r;
-                slider_helpers["TertiaryG"].sliderBar.valueRaw  = livery.colorTertiary.g;
-                slider_helpers["TertiaryB"].sliderBar.valueRaw  = livery.colorTertiary.b;
-                slider_helpers["TertiaryA"].sliderBar.valueRaw  = livery.colorTertiary.a;
-                slider_helpers["PrimaryX"].sliderBar.valueRaw   = livery.materialPrimary.x;
-                slider_helpers["PrimaryY"].sliderBar.valueRaw   = livery.materialPrimary.y;
-                slider_helpers["PrimaryZ"].sliderBar.valueRaw   = livery.materialPrimary.z;
-                slider_helpers["PrimaryW"].sliderBar.valueRaw   = livery.materialPrimary.w;
-                slider_helpers["SecondaryX"].sliderBar.valueRaw = livery.materialSecondary.x;
-                slider_helpers["SecondaryY"].sliderBar.valueRaw = livery.materialSecondary.y;
-                slider_helpers["SecondaryZ"].sliderBar.valueRaw = livery.materialSecondary.z;
-                slider_helpers["SecondaryW"].sliderBar.valueRaw = livery.materialSecondary.w;
-                slider_helpers["TertiaryX"].sliderBar.valueRaw  = livery.materialTertiary.x;
-                slider_helpers["TertiaryY"].sliderBar.valueRaw  = livery.materialTertiary.y;
-                slider_helpers["TertiaryZ"].sliderBar.valueRaw  = livery.materialTertiary.z;
-                slider_helpers["TertiaryW"].sliderBar.valueRaw  = livery.materialTertiary.w;
-                slider_helpers["EffectX"].sliderBar.valueRaw    = livery.effect.x;
-                slider_helpers["EffectY"].sliderBar.valueRaw    = livery.effect.y;
-                slider_helpers["EffectZ"].sliderBar.valueRaw    = livery.effect.z;
-                slider_helpers["EffectW"].sliderBar.valueRaw    = livery.effect.w;
+                sliderHelpers["PrimaryR"].sliderBar.valueRaw   = livery.colorPrimary.r;
+                sliderHelpers["PrimaryG"].sliderBar.valueRaw   = livery.colorPrimary.g;
+                sliderHelpers["PrimaryB"].sliderBar.valueRaw   = livery.colorPrimary.b;
+                sliderHelpers["PrimaryA"].sliderBar.valueRaw   = livery.colorPrimary.a;
+                sliderHelpers["SecondaryR"].sliderBar.valueRaw = livery.colorSecondary.r;
+                sliderHelpers["SecondaryG"].sliderBar.valueRaw = livery.colorSecondary.g;
+                sliderHelpers["SecondaryB"].sliderBar.valueRaw = livery.colorSecondary.b;
+                sliderHelpers["SecondaryA"].sliderBar.valueRaw = livery.colorSecondary.a;
+                sliderHelpers["TertiaryR"].sliderBar.valueRaw  = livery.colorTertiary.r;
+                sliderHelpers["TertiaryG"].sliderBar.valueRaw  = livery.colorTertiary.g;
+                sliderHelpers["TertiaryB"].sliderBar.valueRaw  = livery.colorTertiary.b;
+                sliderHelpers["TertiaryA"].sliderBar.valueRaw  = livery.colorTertiary.a;
+                sliderHelpers["PrimaryX"].sliderBar.valueRaw   = livery.materialPrimary.x;
+                sliderHelpers["PrimaryY"].sliderBar.valueRaw   = livery.materialPrimary.y;
+                sliderHelpers["PrimaryZ"].sliderBar.valueRaw   = livery.materialPrimary.z;
+                sliderHelpers["PrimaryW"].sliderBar.valueRaw   = livery.materialPrimary.w;
+                sliderHelpers["SecondaryX"].sliderBar.valueRaw = livery.materialSecondary.x;
+                sliderHelpers["SecondaryY"].sliderBar.valueRaw = livery.materialSecondary.y;
+                sliderHelpers["SecondaryZ"].sliderBar.valueRaw = livery.materialSecondary.z;
+                sliderHelpers["SecondaryW"].sliderBar.valueRaw = livery.materialSecondary.w;
+                sliderHelpers["TertiaryX"].sliderBar.valueRaw  = livery.materialTertiary.x;
+                sliderHelpers["TertiaryY"].sliderBar.valueRaw  = livery.materialTertiary.y;
+                sliderHelpers["TertiaryZ"].sliderBar.valueRaw  = livery.materialTertiary.z;
+                sliderHelpers["TertiaryW"].sliderBar.valueRaw  = livery.materialTertiary.w;
+                sliderHelpers["EffectX"].sliderBar.valueRaw    = livery.effect.x;
+                sliderHelpers["EffectY"].sliderBar.valueRaw    = livery.effect.y;
+                sliderHelpers["EffectZ"].sliderBar.valueRaw    = livery.effect.z;
+                sliderHelpers["EffectW"].sliderBar.valueRaw    = livery.effect.w;
             }
 
             static void UpdateLiveryFromSliders() {
                 var livery = GetSelectedLivery();
                 if (livery == null)
                     return;
-                livery.colorPrimary.r      = slider_helpers["PrimaryR"].sliderBar.valueRaw;
-                livery.colorPrimary.g      = slider_helpers["PrimaryG"].sliderBar.valueRaw;
-                livery.colorPrimary.b      = slider_helpers["PrimaryB"].sliderBar.valueRaw;
-                livery.colorPrimary.a      = slider_helpers["PrimaryA"].sliderBar.valueRaw;
-                livery.colorSecondary.r    = slider_helpers["SecondaryR"].sliderBar.valueRaw;
-                livery.colorSecondary.g    = slider_helpers["SecondaryG"].sliderBar.valueRaw;
-                livery.colorSecondary.b    = slider_helpers["SecondaryB"].sliderBar.valueRaw;
-                livery.colorSecondary.a    = slider_helpers["SecondaryA"].sliderBar.valueRaw;
-                livery.colorTertiary.r     = slider_helpers["TertiaryR"].sliderBar.valueRaw;
-                livery.colorTertiary.g     = slider_helpers["TertiaryG"].sliderBar.valueRaw;
-                livery.colorTertiary.b     = slider_helpers["TertiaryB"].sliderBar.valueRaw;
-                livery.colorTertiary.a     = slider_helpers["TertiaryA"].sliderBar.valueRaw;
-                livery.materialPrimary.x   = slider_helpers["PrimaryX"].sliderBar.valueRaw;
-                livery.materialPrimary.y   = slider_helpers["PrimaryY"].sliderBar.valueRaw;
-                livery.materialPrimary.z   = slider_helpers["PrimaryZ"].sliderBar.valueRaw;
-                livery.materialPrimary.w   = slider_helpers["PrimaryW"].sliderBar.valueRaw;
-                livery.materialSecondary.x = slider_helpers["SecondaryX"].sliderBar.valueRaw;
-                livery.materialSecondary.y = slider_helpers["SecondaryY"].sliderBar.valueRaw;
-                livery.materialSecondary.z = slider_helpers["SecondaryZ"].sliderBar.valueRaw;
-                livery.materialSecondary.w = slider_helpers["SecondaryW"].sliderBar.valueRaw;
-                livery.materialTertiary.x  = slider_helpers["TertiaryX"].sliderBar.valueRaw;
-                livery.materialTertiary.y  = slider_helpers["TertiaryY"].sliderBar.valueRaw;
-                livery.materialTertiary.z  = slider_helpers["TertiaryZ"].sliderBar.valueRaw;
-                livery.materialTertiary.w  = slider_helpers["TertiaryW"].sliderBar.valueRaw;
-                livery.effect.x            = slider_helpers["EffectX"].sliderBar.valueRaw;
-                livery.effect.y            = slider_helpers["EffectY"].sliderBar.valueRaw;
-                livery.effect.z            = slider_helpers["EffectZ"].sliderBar.valueRaw;
-                livery.effect.w            = slider_helpers["EffectW"].sliderBar.valueRaw;
+                livery.colorPrimary.r      = sliderHelpers["PrimaryR"].sliderBar.valueRaw;
+                livery.colorPrimary.g      = sliderHelpers["PrimaryG"].sliderBar.valueRaw;
+                livery.colorPrimary.b      = sliderHelpers["PrimaryB"].sliderBar.valueRaw;
+                livery.colorPrimary.a      = sliderHelpers["PrimaryA"].sliderBar.valueRaw;
+                livery.colorSecondary.r    = sliderHelpers["SecondaryR"].sliderBar.valueRaw;
+                livery.colorSecondary.g    = sliderHelpers["SecondaryG"].sliderBar.valueRaw;
+                livery.colorSecondary.b    = sliderHelpers["SecondaryB"].sliderBar.valueRaw;
+                livery.colorSecondary.a    = sliderHelpers["SecondaryA"].sliderBar.valueRaw;
+                livery.colorTertiary.r     = sliderHelpers["TertiaryR"].sliderBar.valueRaw;
+                livery.colorTertiary.g     = sliderHelpers["TertiaryG"].sliderBar.valueRaw;
+                livery.colorTertiary.b     = sliderHelpers["TertiaryB"].sliderBar.valueRaw;
+                livery.colorTertiary.a     = sliderHelpers["TertiaryA"].sliderBar.valueRaw;
+                livery.materialPrimary.x   = sliderHelpers["PrimaryX"].sliderBar.valueRaw;
+                livery.materialPrimary.y   = sliderHelpers["PrimaryY"].sliderBar.valueRaw;
+                livery.materialPrimary.z   = sliderHelpers["PrimaryZ"].sliderBar.valueRaw;
+                livery.materialPrimary.w   = sliderHelpers["PrimaryW"].sliderBar.valueRaw;
+                livery.materialSecondary.x = sliderHelpers["SecondaryX"].sliderBar.valueRaw;
+                livery.materialSecondary.y = sliderHelpers["SecondaryY"].sliderBar.valueRaw;
+                livery.materialSecondary.z = sliderHelpers["SecondaryZ"].sliderBar.valueRaw;
+                livery.materialSecondary.w = sliderHelpers["SecondaryW"].sliderBar.valueRaw;
+                livery.materialTertiary.x  = sliderHelpers["TertiaryX"].sliderBar.valueRaw;
+                livery.materialTertiary.y  = sliderHelpers["TertiaryY"].sliderBar.valueRaw;
+                livery.materialTertiary.z  = sliderHelpers["TertiaryZ"].sliderBar.valueRaw;
+                livery.materialTertiary.w  = sliderHelpers["TertiaryW"].sliderBar.valueRaw;
+                livery.effect.x            = sliderHelpers["EffectX"].sliderBar.valueRaw;
+                livery.effect.y            = sliderHelpers["EffectY"].sliderBar.valueRaw;
+                livery.effect.z            = sliderHelpers["EffectZ"].sliderBar.valueRaw;
+                livery.effect.w            = sliderHelpers["EffectW"].sliderBar.valueRaw;
             }
             
             static void RefreshSphereAndMechPreviews()
