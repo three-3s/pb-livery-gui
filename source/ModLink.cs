@@ -4,6 +4,7 @@ using PhantomBrigade;
 using PhantomBrigade.Data;
 using PhantomBrigade.Mods;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -35,6 +36,14 @@ using Debug = UnityEngine.Debug;
 //  - Need to avoid modifying the built-in liveries. Would like a copy-to-new button. Maybe save
 //    all the liveries to a master .yml file in the AppData (or a folder with multiple). And load
 //    those at startup.
+//  - What are string contentSource and Vector4 contentParameters? There's also string source,
+//    which I'd assumed was metadata, but am less sure about now. E.g., decal-overlays stuff?
+//    Or maybe there's some tagging for usability by randomly generated hostiles?
+//    There's also hidden, textName, and priority (which I've ignored other than co-opting
+//    textName at least for now, to tie it to file-name)
+//  - Decide whether overriding of existing built-in liveries should be permitted via this same
+//    'save-on-request and load-on-init' mechanism.
+//  - Add a text-box for showing-name-of & naming the livery.
 
 namespace ModExtensions
 {
@@ -251,7 +260,7 @@ namespace ModExtensions
                     saveLiveryButton = saveLiveryButtonGO.GetComponent<CIButton>();
                     saveLiveryButton.callbackOnClick = new UICallback(() =>
                     {
-                        //todo.impl
+                        SaveLiveryToFile(GetSelectedLivery());
                     });
 
                     ////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +350,7 @@ namespace ModExtensions
                 string currentKey = CIViewBaseLoadout.selectedUnitLivery;
                 if (string.IsNullOrEmpty(currentKey))
                 {
-                    newKey = null; // todo: new clone of default livery scheme
+                    newKey = null; // todo.7 new clone of default livery scheme
                 }
                 else
                 {
@@ -367,6 +376,37 @@ namespace ModExtensions
                 }
 
                 return newKey;
+            }
+
+            public static string GetLiveryGUISaveDir()
+            {
+                //   !!! BYG states:
+                //   !!!   "Do not modify, create or edit files outside of AppData/Local/PhantomBrigade/Mods"
+                //
+                // Note: That is the local-mods directory, so maybe be careful about dumping user-data into the mod's own directory; e.g., maybe create a userSavedData under MyMod dir?
+                // Any dir created directly in Mods, PB might try to load as a mod. (Presumably it quickly gives up after it fails to find a metadata.yaml, but still.)
+                // But I don't want to have the Unity-app-PB-SDK "Export to user (deploy locally)" delete my saved data.
+                // So maybe modders could use a structure like AppData/Local/PhantomBrigade/Mods/UserSavedData/MyModAbc123? Hm.
+                //
+                // DO NOT USE: Application.persistentDataPath                          // DO NOT USE. under AppData/LocalLow   (eg /Brace Yourself Games/Phantom Brigade/Mods)
+                // DO NOT USE: DataPathHelper.GetModsFolder(ModFolderType.Application) // DO NOT USE. under steamapps/common/Phantom Brigade/Mods
+                // DO NOT USE: DataPathHelper.GetModsFolder(ModFolderType.Workshop)    // DO NOT USE. under steamapps/workshop/content/553540
+
+                //Debug.Log($"DataPathHelper.GetModsFolder(ModFolderType.User): {DataPathHelper.GetModsFolder(ModFolderType.User)}"); // under AppData/Local/PhantomBrigade/Mods
+
+                string localModsDir = DataPathHelper.GetModsFolder(ModFolderType.User); // .../AppData/Local/PhantomBrigade/Mods/
+                return Path.Combine(localModsDir, "UserSavedData", "LiveryGUI");
+            }
+
+            public static void SaveLiveryToFile(DataContainerEquipmentLivery liveryDat)
+            {
+                string liveryGUISaveDir = GetLiveryGUISaveDir();
+                Directory.CreateDirectory(liveryGUISaveDir);
+
+                string liveryFileName = liveryDat.textName + ".yaml"; //todo.robustify
+                UtilitiesYAML.SaveDataToFile(liveryGUISaveDir, liveryFileName, liveryDat, false);
+
+                //todo.result, maybe in that little successfully-saved popup that shows up after saving game
             }
 
             public static void SelectLivery(string liveryKey) {
