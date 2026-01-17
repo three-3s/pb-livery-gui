@@ -1,0 +1,57 @@
+hidden: false
+priority: 0
+textName: 'an_example_livery_file'
+source: Army
+rating: 1
+pattern: 
+# color. Any r/g/b component less than 0 seems to break the color and cause it to look like 0,0,0=black.
+# Color values greater than 1 are OK, up until maybe there gets to be too much overall brightness saturation in the scene and maybe something like HDR blows out and starts turning black.
+# The 'w' value did something. Brighter/more glow/bloom? But again, too much overall brightness saturation seems to blow out the colors, to black.
+colorPrimary:
+  r: 0.5
+  g: 0.5
+  b: 0.5
+  a: 1
+colorSecondary:
+  r: 0.3
+  g: 0.3
+  b: 0.3
+  a: 1
+colorTertiary:
+  r: 0.1
+  g: 0.1
+  b: 0.1
+  a: 1
+
+# material properties:
+# https://wiki.braceyourselfgames.com/en/PhantomBrigade/Modding/LiveryCustomization
+#  - darkest crevices have smoothness of 0 (no specular reflections, totally matte) and brightest, most polished edges have smoothness approaching 1 (mirror-like)
+#  - a good baseline for these values is around 0/0.4/0.8 (for a semi-smooth clean look)
+#  - using values of 0/0.2/0.5 can result in a very matte livery that looks like coating of a stealth aircraft (maximum smoothness drops to 0.5 instead of 1.0 and average smoothness drops to 0.2 instead of 0.5)
+#  - w value to 1 ... all shiny and metallic
+#  - To put it simply, the w value of a material defines whether light striking the material behaves like it's paint/plastic, or like it's metal. In the former case, the material will absorb most of the incoming light, which will bounce around inside the surface layers of the material and reflect back unchanged. In the latter, the light reflects straight off.
+# My summary: The x,y,z control the roughly 0...1 mattness...shininess of different segments of the given primary/secondary/tertiary parts.
+# The 'w' value did something. In some cases it was sort of like a paint-flaking-off-the-edges effect, but unsure if that's the true purpose.
+materialPrimary:
+  x: 0.5
+  y: 0.7
+  z: 1.0
+  w: 0
+materialSecondary:
+  x: 0.5
+  y: 0.7
+  z: 1.0
+  w: 0
+materialTertiary:
+  x: 0.5
+  y: 0.7
+  z: 1.0
+  w: 0
+
+# My summary: x/y/z maps to primary/secondary/tertiary. 0...2 increases a sort of rainbow-iridescence effect, while 0...-2 increases a sort of subtler "rainbow pearlescence" effect.
+# I don't remember seeing 'w' do anything.
+effect:
+  x: 0
+  y: 0
+  z: 0
+  w: 0
