@@ -4,13 +4,8 @@ using PhantomBrigade;
 using PhantomBrigade.Data;
 using PhantomBrigade.Mods;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.IO;
-using System;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using PhantomBrigade.AI.Components;
 
 // INTRODUCTION / USAGE NOTES:
 //  - The project's reference to 'System' must point to the Phantom Brigade one, not Microsoft.
@@ -71,16 +66,12 @@ namespace ModExtensions
     public class SliderConfig {
         public string name;
         public string label;
-        public float x_pos;
-        public float y_pos;
         public Color fill_color;
         public float min;
         public float max;
-        public SliderConfig(string name_in, string label_in, float x_in, float y_in, Color fill_color_in, float min_in = 0f, float max_in = 1f) {
+        public SliderConfig(string name_in, string label_in, Color fill_color_in, float min_in = 0f, float max_in = 1f) {
             name = name_in;
             label = label_in;
-            x_pos = x_in;
-            y_pos = y_in;
             fill_color = fill_color_in;
             min = min_in;
             max = max_in;
@@ -115,37 +106,18 @@ namespace ModExtensions
                     ////////////////////////////////////////////////////////////////////////////////
                     // create a new pane
                     var uiRoot = __instance.liveryRootObject.transform;
+                    float uiScale = uiRoot.lossyScale.x;
+                    UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
+                    int activeHeight = root.activeHeight;
+                    float pixelSizeAdj = root.pixelSizeAdjustment;
 
                     paneGO = new GameObject("LiveryAdvancedPane");
                     paneGO.transform.SetParent(uiRoot, false);
                     paneGO.AddComponent<LiveryAdvancedPaneMarker>();
-                    paneGO.transform.localPosition = new Vector3(613f, -4f, 0f); // instead, anchor to edge of screen? particularly the right-side column?
+                    paneGO.transform.localPosition = new Vector3(0f, -4f, 0f); // instead, anchor to edge of screen? particularly the right-side column?
 
                     ////////////////////////////////////////////////////////////////////////////////
                     // slider-bars for customizing the current livery
-                    const float vGap = 40f;
-                    float[] x = {
-                        0f,
-                        715f,
-                    };
-                    float[] y = {
-                        -vGap *  0.0f,
-                        -vGap *  1.0f,
-                        -vGap *  2.0f,
-                        -vGap *  3.0f,
-                        -vGap *  5.0f, // +1.0 gap
-                        -vGap *  6.0f,
-                        -vGap *  7.0f,
-                        -vGap *  8.0f,
-                        -vGap * 10.0f, // +1.0 gap
-                        -vGap * 11.0f,
-                        -vGap * 12.0f,
-                        -vGap * 13.0f,
-                        -vGap * 15.0f, // +1.0 gap
-                        -vGap * 16.0f,
-                        -vGap * 17.0f,
-                        -vGap * 18.0f,
-                    };
                     const float loC  =  0f; // min color-slider val (color-component < 0 causes the whole color to be black)
                     const float hiC  =  2f; // max color-slider val
                     const float loNC = -2f; // min non-color-slider
@@ -156,34 +128,34 @@ namespace ModExtensions
                     Color A = new Color(1f, 1f, 1f, 0.37f);
                     slider_helpers = new Dictionary<string, CIHelperSetting>();
                     slider_configs = new Dictionary<string, SliderConfig>() {
-                        { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   x[0], y[0],  R, loC,  hiC) },
-                        { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   x[0], y[1],  G, loC,  hiC) },
-                        { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   x[0], y[2],  B, loC,  hiC) },
-                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",   x[0], y[3],  A, loNC, hiNC) },
-                        { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R", x[0], y[4],  R, loC,  hiC) },
-                        { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G", x[0], y[5],  G, loC,  hiC) },
-                        { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B", x[0], y[6],  B, loC,  hiC) },
-                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A", x[0], y[7],  A, loNC, hiNC) },
-                        { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",  x[0], y[8],  R, loC,  hiC) },
-                        { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",  x[0], y[9],  G, loC,  hiC) },
-                        { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",  x[0], y[10], B, loC,  hiC) },
-                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  x[0], y[11], A, loNC, hiNC) },
-                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",   x[1], y[0],  A, loNC, hiNC) },
-                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",   x[1], y[1],  A, loNC, hiNC) },
-                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",   x[1], y[2],  A, loNC, hiNC) },
-                        { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",   x[1], y[3],  B, loNC, hiNC) },
-                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X", x[1], y[4],  A, loNC, hiNC) },
-                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y", x[1], y[5],  A, loNC, hiNC) },
-                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z", x[1], y[6],  A, loNC, hiNC) },
-                        { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W", x[1], y[7],  B, loNC, hiNC) },
-                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",  x[1], y[8],  A, loNC, hiNC) },
-                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",  x[1], y[9],  A, loNC, hiNC) },
-                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",  x[1], y[10], A, loNC, hiNC) },
-                        { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",  x[1], y[11], B, loNC, hiNC) },
-                        { "EffectX",    new SliderConfig("EffectX",    "Effect X",    x[1], y[12], A, loNC, hiNC) },
-                        { "EffectY",    new SliderConfig("EffectY",    "Effect Y",    x[1], y[13], A, loNC, hiNC) },
-                        { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",    x[1], y[14], A, loNC, hiNC) },
-                        { "EffectW",    new SliderConfig("EffectW",    "Effect W",    x[1], y[15], B, loNC, hiNC) },
+                        { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   R, loC,  hiC) },
+                        { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   G, loC,  hiC) },
+                        { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   B, loC,  hiC) },
+                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",   A, loNC, hiNC) },
+                        { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R", R, loC,  hiC) },
+                        { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G", G, loC,  hiC) },
+                        { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B", B, loC,  hiC) },
+                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A", A, loNC, hiNC) },
+                        { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",  R, loC,  hiC) },
+                        { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",  G, loC,  hiC) },
+                        { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",  B, loC,  hiC) },
+                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  A, loNC, hiNC) },
+                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",   A, loNC, hiNC) },
+                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",   A, loNC, hiNC) },
+                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",   A, loNC, hiNC) },
+                        { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",   B, loNC, hiNC) },
+                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X", A, loNC, hiNC) },
+                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y", A, loNC, hiNC) },
+                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z", A, loNC, hiNC) },
+                        { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W", B, loNC, hiNC) },
+                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",  A, loNC, hiNC) },
+                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",  A, loNC, hiNC) },
+                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",  A, loNC, hiNC) },
+                        { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",  B, loNC, hiNC) },
+                        { "EffectX",    new SliderConfig("EffectX",    "Effect X",    A, loNC, hiNC) },
+                        { "EffectY",    new SliderConfig("EffectY",    "Effect Y",    A, loNC, hiNC) },
+                        { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",    A, loNC, hiNC) },
+                        { "EffectW",    new SliderConfig("EffectW",    "Effect W",    B, loNC, hiNC) },
                     };
 
                     // add sliders to pane
@@ -198,7 +170,6 @@ namespace ModExtensions
                         helperGO.name = cfg.name;
                         CIHelperSetting helper = helperGO.GetComponent<CIHelperSetting>();
                         helper.sharedLabelName.text = cfg.label;
-                        helperGO.transform.localPosition = new Vector3(cfg.x_pos, cfg.y_pos, 0f);
 
                         Vector3 sliderLocalPos = helper.sliderHolder.transform.localPosition;
                         sliderLocalPos.x -= 262f; // move the slider-bar left so it's under the label-text
@@ -252,10 +223,78 @@ namespace ModExtensions
                     });
 
                     toggleLiveryGUIButtonGO.SetActive(true);
-                }
+                }//if(do_once)
                 
+                UpdateWidgetPositioning(__instance);
                 SyncSlidersFromLivery(GetSelectedLivery());
             }//Postfix()
+
+            private static void UpdateWidgetPositioning(CIViewBaseLoadout __instance) {
+                var uiRoot = __instance.liveryRootObject.transform;
+                float uiScale = uiRoot.lossyScale.x;
+                UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
+                int activeHeight = root.activeHeight;
+                float pixelSizeAdj = root.pixelSizeAdjustment;
+
+                // calculate positions
+                const float yStep = 40f;
+                float[] x = {
+                    613f,
+                    (Screen.width * pixelSizeAdj - 334f)
+                    // wWen adjusting this "pixel offset from edge", eg if I measure 271px that I want to move something,
+                    // manually multiply that number by whatever pixelSizeAdj. So if I want to move 271px left, I take
+                    // -271 and multiply by my current pixelSizeAdj (which is related to UI-scale factor from Display
+                    // options menu). So the actual number to add here is -271 realPx * 0.75 codePx/realPx = -203 codePx.
+                };
+                //Debug.Log($"gui-scale-stuff Screen.width={Screen.width}, uiScale={uiScale}, x= {x[0]}, {x[1]}, activeHeight={activeHeight}, pixelSizeAdj={pixelSizeAdj}");
+                // Example: gui-scale-stuff Screen.width=2560, uiScale=0.001851852, x= 613, 1586, activeHeight=1080, pixelSizeAdj=0.75
+                float[] y = {
+                    -yStep *  0.0f,
+                    -yStep *  1.0f,
+                    -yStep *  2.0f,
+                    -yStep *  3.0f,
+                    -yStep *  5.0f, // +1.0 gap
+                    -yStep *  6.0f,
+                    -yStep *  7.0f,
+                    -yStep *  8.0f,
+                    -yStep * 10.0f, // +1.0 gap
+                    -yStep * 11.0f,
+                    -yStep * 12.0f,
+                    -yStep * 13.0f,
+                    -yStep * 15.0f, // +1.0 gap
+                    -yStep * 16.0f,
+                    -yStep * 17.0f,
+                    -yStep * 18.0f,
+                };
+                slider_helpers["PrimaryR"].gameObject.transform.localPosition   = new Vector3(x[0], y[0]);
+                slider_helpers["PrimaryG"].gameObject.transform.localPosition   = new Vector3(x[0], y[1]);
+                slider_helpers["PrimaryB"].gameObject.transform.localPosition   = new Vector3(x[0], y[2]);
+                slider_helpers["PrimaryA"].gameObject.transform.localPosition   = new Vector3(x[0], y[3]);
+                slider_helpers["SecondaryR"].gameObject.transform.localPosition = new Vector3(x[0], y[4]);
+                slider_helpers["SecondaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[5]);
+                slider_helpers["SecondaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[6]);
+                slider_helpers["SecondaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[7]);
+                slider_helpers["TertiaryR"].gameObject.transform.localPosition  = new Vector3(x[0], y[8]);
+                slider_helpers["TertiaryG"].gameObject.transform.localPosition  = new Vector3(x[0], y[9]);
+                slider_helpers["TertiaryB"].gameObject.transform.localPosition  = new Vector3(x[0], y[10]);
+                slider_helpers["TertiaryA"].gameObject.transform.localPosition  = new Vector3(x[0], y[11]);
+                slider_helpers["PrimaryX"].gameObject.transform.localPosition   = new Vector3(x[1], y[0]);
+                slider_helpers["PrimaryY"].gameObject.transform.localPosition   = new Vector3(x[1], y[1]);
+                slider_helpers["PrimaryZ"].gameObject.transform.localPosition   = new Vector3(x[1], y[2]);
+                slider_helpers["PrimaryW"].gameObject.transform.localPosition   = new Vector3(x[1], y[3]);
+                slider_helpers["SecondaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[4]);
+                slider_helpers["SecondaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[5]);
+                slider_helpers["SecondaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[6]);
+                slider_helpers["SecondaryW"].gameObject.transform.localPosition = new Vector3(x[1], y[7]);
+                slider_helpers["TertiaryX"].gameObject.transform.localPosition  = new Vector3(x[1], y[8]);
+                slider_helpers["TertiaryY"].gameObject.transform.localPosition  = new Vector3(x[1], y[9]);
+                slider_helpers["TertiaryZ"].gameObject.transform.localPosition  = new Vector3(x[1], y[10]);
+                slider_helpers["TertiaryW"].gameObject.transform.localPosition  = new Vector3(x[1], y[11]);
+                slider_helpers["EffectX"].gameObject.transform.localPosition    = new Vector3(x[1], y[12]);
+                slider_helpers["EffectY"].gameObject.transform.localPosition    = new Vector3(x[1], y[13]);
+                slider_helpers["EffectZ"].gameObject.transform.localPosition    = new Vector3(x[1], y[14]);
+                slider_helpers["EffectW"].gameObject.transform.localPosition    = new Vector3(x[1], y[15]);
+            }
 
             private static DataContainerEquipmentLivery GetSelectedLivery()
             {
