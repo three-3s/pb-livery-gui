@@ -32,6 +32,7 @@ using Debug = UnityEngine.Debug;
 //    more gaps.) And 'alpha' is distinct from the others so could be... diff color? width?
 
 // TODO:
+//  - naming-style consistency
 //  - Need to avoid modifying the built-in liveries. Would like a copy-to-new button. Maybe save
 //    all the liveries to a master .yml file in the AppData (or a folder with multiple). And load
 //    those at startup.
@@ -88,6 +89,8 @@ namespace ModExtensions
         static Dictionary<string, CIHelperSetting> slider_helpers = null;
         static Dictionary<string, SliderConfig> slider_configs = null;
         static CIButton toggleLiveryGUIButton;
+        static CIButton cloneLiveryButton;
+        static CIButton saveLiveryButton;
 
         // RedrawForLivery() gets invoked when navigating to the livery-select page, and when choosing a
         // different livery or livery-slot. We'll create (and repopulate values for) our livery sliders here.
@@ -198,31 +201,63 @@ namespace ModExtensions
                         slider_helpers.Add(key, helper);
                     }
 
-                    paneGO.SetActive(true);
-
                     ////////////////////////////////////////////////////////////////////////////////
                     // toggle-button for Livery GUI visibility
                     GameObject toggleLiveryGUIButtonGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerButtonLivery.gameObject, uiRoot, false);
                     toggleLiveryGUIButtonGO.name = "LiveryAdvancedToggle";
                     toggleLiveryGUIButtonGO.transform.localPosition = new Vector3(645f, +70f, 0f);
                     toggleLiveryGUIButtonGO.transform.localScale = Vector3.one;
-                    toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
 
                     var toggle_icon = toggleLiveryGUIButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
                     var toggle_frame = toggleLiveryGUIButtonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
                     var toggle_fill_idle = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
                     var toggle_fill_hover = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
-                    if (toggle_icon       != null) toggle_icon.color       = new Color(0.8f, 0.8f, 0.8f, 0.8f);
-                    if (toggle_frame      != null) toggle_frame.color      = new Color(0.8f, 0.8f, 0.8f, 0.8f);
-                    if (toggle_fill_idle  != null) toggle_fill_idle.color  = new Color(0.2f, 0.2f, 0.2f, 0.4f);
-                    if (toggle_fill_hover != null) toggle_fill_hover.color = new Color(0.5f, 0.5f, 0.5f, 0.7f);
+                    if (toggle_icon       != null) toggle_icon.color       = new Color(0.9f, 0.9f, 0.9f, 0.8f);
+                    if (toggle_frame      != null) toggle_frame.color      = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+                    if (toggle_fill_idle  != null) toggle_fill_idle.color  = new Color(0.0f, 0.0f, 0.0f, 0.7f);
+                    if (toggle_fill_hover != null) toggle_fill_hover.color = new Color(0.7f, 0.7f, 0.7f, 0.4f);
 
+                    toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
                     toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
                     {
                         paneGO.SetActive(!paneGO.activeSelf);
                     });
 
                     toggleLiveryGUIButtonGO.SetActive(true);
+
+                    ////////////////////////////////////////////////////////////////////////////////
+                    // Livery GUI buttons: 'clone livery', 'save livery to disk'
+                    Vector3 pos_step = new Vector3(80f, 0f, 0f);
+
+                    GameObject cloneLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+                    cloneLiveryButtonGO.name = "cloneLiveryButtonGO";
+                    cloneLiveryButtonGO.transform.localPosition += pos_step;
+                    var clone_icon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                    if (clone_icon       != null) clone_icon.color       = new Color(0.5f, 0.8f, 0.6f, 0.8f);
+
+                    GameObject saveLiveryButtonGO = GameObject.Instantiate(cloneLiveryButtonGO, paneGO.transform, false);
+                    saveLiveryButtonGO.name = "saveLiveryButtonGO";
+                    saveLiveryButtonGO.transform.localPosition += pos_step;
+                    var save_icon = saveLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                    if (save_icon       != null) save_icon.color       = new Color(0.5f, 0.6f, 0.8f, 0.8f);
+
+                    cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
+                    cloneLiveryButton.callbackOnClick = new UICallback(() =>
+                    {
+                        string newLiveryKey = DuplicateSelectedLivery();
+                        SelectLivery(newLiveryKey);
+                        RefreshSphereAndMechPreviews();
+                    });
+
+                    saveLiveryButton = saveLiveryButtonGO.GetComponent<CIButton>();
+                    saveLiveryButton.callbackOnClick = new UICallback(() =>
+                    {
+                        //todo.impl
+                    });
+
+                    ////////////////////////////////////////////////////////////////////////////////
+                    // Livery GUI initial visibility
+                    paneGO.SetActive(true);
                 }//if(do_once)
                 
                 UpdateWidgetPositioning(__instance);
@@ -294,6 +329,55 @@ namespace ModExtensions
                 slider_helpers["EffectY"].gameObject.transform.localPosition    = new Vector3(x[1], y[13]);
                 slider_helpers["EffectZ"].gameObject.transform.localPosition    = new Vector3(x[1], y[14]);
                 slider_helpers["EffectW"].gameObject.transform.localPosition    = new Vector3(x[1], y[15]);
+            }
+            
+            public static string DuplicateSelectedLivery()
+            {
+                Debug.Log($"!!! trying to clone livery...");
+
+                if (CIViewBaseLoadout.ins == null) return null;
+
+                string newKey = null;
+
+                string currentKey = CIViewBaseLoadout.selectedUnitLivery;
+                if (string.IsNullOrEmpty(currentKey))
+                {
+                    newKey = null; // todo: new clone of default livery scheme
+                }
+                else
+                {
+                    Debug.Log($"!!! trying to clone livery... start of nominal case");
+
+                    var liveriesDict = DataMultiLinkerEquipmentLivery.data;
+                    if (!liveriesDict.TryGetValue(currentKey, out var original))
+                        return null;
+
+                    // Deep copy (Unity-safe) // (...adequate)
+                    var newCopy = JsonUtility.FromJson<DataContainerEquipmentLivery>(
+                        JsonUtility.ToJson(original)
+                    );
+
+                    newKey = $"livery_gui_new_livery"; //todo
+
+                    newCopy.key = newKey;
+                    newCopy.textName = $"{original.textName} (LiveryGUI clone)"; //todo
+                    newCopy.source = $"LiveryGUI clone"; //todo
+
+                    liveriesDict[newKey] = newCopy;
+                    DataMultiLinkerEquipmentLivery.OnAfterDeserialization(); // (triggers rebuilding its .dataSorted)
+                }
+
+                return newKey;
+            }
+
+            public static void SelectLivery(string liveryKey) {
+                if (!string.IsNullOrEmpty(liveryKey)) {
+                    Debug.Log($"!!! trying to clone livery... trying to set selected key={liveryKey} and command loadoutView.Redraw()...");
+                    CIViewBaseLoadout.selectedUnitLivery = liveryKey;
+                    object[] args = { liveryKey };
+                    AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryAttachAttempt").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player clicks on a livery in the list)
+                    CIViewBaseLoadout.ins.Redraw(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint, false);
+                }
             }
 
             private static DataContainerEquipmentLivery GetSelectedLivery()
@@ -385,18 +469,14 @@ namespace ModExtensions
                 // trigger update the sprite of the sphere showing the 3 color-sections of the livery
                 CIViewBaseLoadout.ins.Redraw(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint, false);
 
-                // trigger update of the 3D model (stolen from OnLiveryHoverStart())
-                if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitSocket))
-                {
-                    CIViewBaseCustomizationRoot.ins.UpdateUnitLivery();
-                    return;
-                }
-                if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitHardpoint))
-                {
-                    CIViewBaseCustomizationRoot.ins.UpdatePartLivery(CIViewBaseLoadout.selectedUnitSocket);
-                    return;
-                }
-                CIViewBaseCustomizationRoot.ins.UpdateSubsystemLivery(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint);
+                // trigger refresh of the whole mech, all parts. (only seems to redo ALL parts if the top-level of the mech is selected, so we do that temporarily)
+                var origSocket = CIViewBaseLoadout.selectedUnitSocket;
+                var origHardpoint = CIViewBaseLoadout.selectedUnitHardpoint;
+                CIViewBaseLoadout.selectedUnitSocket = null;
+                CIViewBaseLoadout.selectedUnitHardpoint = null;
+                AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryHoverEnd").Invoke(CIViewBaseLoadout.ins, null);
+                CIViewBaseLoadout.selectedUnitSocket = origSocket;
+                CIViewBaseLoadout.selectedUnitHardpoint = origHardpoint;
             }
         }//class RedrawLiveryGUI
     }//class Patches
