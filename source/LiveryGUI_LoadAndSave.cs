@@ -83,16 +83,8 @@ namespace LiveryGUIMod
                 return;
             }
 
-            string userSaveDataDir = GetUserSaveDataDir();
             string liveryGUISaveDir = GetLiveryGUISaveDir();
             Directory.CreateDirectory(liveryGUISaveDir);
-
-            string saveDirMetadataFilePath = Path.Combine(userSaveDataDir, "metadata.yaml");
-            if (!File.Exists(saveDirMetadataFilePath))
-            {
-                File.WriteAllText(saveDirMetadataFilePath, saveDirMetadataContent);
-                Debug.Log($"[LiveryGUI] INFO: Wrote new {saveDirMetadataFilePath} (to suppress future warnings about that directory not itself being a mod)");
-            }
 
             string liveryFileName = key + ".yaml";
 
@@ -109,52 +101,17 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static string GetUserSaveDataDir()
+        static string GetModSaveDataDir()
         {
-            //   !!! BYG states:
-            //   !!!   "Do not modify, create or edit files outside of AppData/Local/PhantomBrigade/Mods"
-            //
-            // Note: That is the local-mods directory, so maybe be careful about dumping user-data into the mod's own directory; e.g., maybe create a userSavedData under MyMod dir?
-            // Any dir created directly in Mods, PB might try to load as a mod. (Presumably it quickly gives up after it fails to find a metadata.yaml, but still.)
-            // But I don't want to have the Unity-app-PB-SDK "Export to user (deploy locally)" delete my saved data.
-            // So maybe modders could use a structure like AppData/Local/PhantomBrigade/Mods/UserSavedData/MyModAbc123? Hm.
-            //
-            // DO NOT USE: Application.persistentDataPath                          // DO NOT USE. under AppData/LocalLow   (eg /Brace Yourself Games/Phantom Brigade/Mods)
-            // DO NOT USE: DataPathHelper.GetModsFolder(ModFolderType.Application) // DO NOT USE. under steamapps/common/Phantom Brigade/Mods
-            // DO NOT USE: DataPathHelper.GetModsFolder(ModFolderType.Workshop)    // DO NOT USE. under steamapps/workshop/content/553540
-
-            //Debug.Log($"DataPathHelper.GetModsFolder(ModFolderType.User): {DataPathHelper.GetModsFolder(ModFolderType.User)}"); // under AppData/Local/PhantomBrigade/Mods
-
-            string localModsDir = DataPathHelper.GetModsFolder(ModFolderType.User); // .../AppData/Local/PhantomBrigade/Mods/
-            return Path.Combine(localModsDir, "UserSavedData");
+            // BYG states: "do not modify user drive outside of the area already managed by PB [AppData/Local/PhantomBrigade/]"
+            string appDataLocalPBDir = DataPathHelper.GetUserFolder(); // .../AppData/Local/PhantomBrigade/
+            return Path.Combine(appDataLocalPBDir, "ModSavedData");
         }
 
         //==============================================================================
         static string GetLiveryGUISaveDir()
         {
-            return Path.Combine(GetUserSaveDataDir(), "LiveryGUI");
+            return Path.Combine(GetModSaveDataDir(), "LiveryGUI");
         }
-
-        //==============================================================================
-        static readonly string saveDirMetadataContent = @"priority: 0
-colorHue: 0.324
-id: UserSaveData_Directory
-ver: 0.0
-url: 
-includesConfigOverrides: false
-includesConfigEdits: false
-includesConfigTrees: false
-includesLibraries: false
-includesTextures: false
-includesLocalizationEdits: false
-includesLocalizations: false
-includesAssetBundles: false
-gameVersion2Compatible: true
-gameVersionMin: 1.0
-gameVersionMax: 
-name: UserSaveData Directory
-desc: >-
-  This 'mod' changes nothing. It's just a stub to suppress a warning message about mods saving data to a 'local mods' directory that the game assumes is itself a mod. (Feel free to deactivate this mod. That won't defeat its purpose.)
-";
     }
 }
