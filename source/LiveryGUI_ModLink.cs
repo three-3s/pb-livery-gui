@@ -6,6 +6,7 @@ using PhantomBrigade.Mods;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -35,8 +36,12 @@ using Debug = UnityEngine.Debug;
 
 // TODO.MVP:
 //  - Minimum button readability: add tooltips (or convert to text-buttons).
-//  - Display the selected livery's name -- working except initially when page first opened is "-".
 //  - save-button... tie in with text-input field. maybe it just resets the field back to the thing's name. o/w need to clone-and-rename as part of save. (shrug)
+//  - confirm i'm not introducing any new 'crashes' in the player.log
+
+// BUGS:
+//  - The livery-name text-box is initially "-". Doing just about anything makes it work, but
+//    I haven't figured out how to get it to refresh or unstuck before whatever it is fixes it.
 
 // TODO.post-release:
 //  - What are string contentSource and Vector4 contentParameters? There's also string source,
@@ -64,6 +69,8 @@ using Debug = UnityEngine.Debug;
 //    not the actual string.)
 //  - Fix how 'select the already-existing key-livery when cloning but key already exists': this
 //    actual toggles-off if the currently selected livery is this newKey.
+//  - Prefix-intercept and prevent CIViewBaseLoadout.UpdateCamera when the text-input field is
+//    selected (like is done for headerInputUnitName.isSelected in that module).
 
 namespace LiveryGUI_ModExtensions
 {
@@ -372,6 +379,21 @@ desc: >-
                     toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
                     {
                         paneGO.SetActive(!paneGO.activeSelf);
+                        // first time wasn't updating the text-input-field with the livery-name. i don't know why.
+                        // INVOKE ALL THE REFRESH. MULTIPLY. STILL DOESN'T WORK FIRST TIME. ONLY SECOND TIME. ONLY SECOND TIME.
+                        string origLiveryKey = CIViewBaseLoadout.selectedUnitLivery;
+                        if (origLiveryKey == null && DataMultiLinkerEquipmentLivery.data.Count > 0)
+                            SelectLivery(DataMultiLinkerEquipmentLivery.data.First().Key);
+                        else
+                            SelectLivery(null);
+                        SelectLivery(origLiveryKey);
+                        liveryNameInput.ForceSelection(true);
+                        liveryNameInput.ForceSelection(false);
+                        RefreshSphereAndMechPreviews();
+                        UpdateLiveryListTooltips();
+                        UpdateWidgetPositioning(__instance);
+                        ResetSlidersAndTextToMatchLivery(GetSelectedLivery());
+                        RefreshSphereAndMechPreviews();
                     });
 
                     toggleLiveryGUIButtonGO.SetActive(true);
@@ -420,6 +442,7 @@ desc: >-
                     liveryNameInput.label.text = "Livery Name";
                     liveryNameInput.label.ProcessText();
                     liveryNameInput.characterLimit += 10;
+                    liveryNameInput.defaultText = "wat"; // (ends up unused?)
 
                     liveryNameInputGO.SetActive(true);
 
@@ -437,7 +460,7 @@ desc: >-
             {
                 // It would be possible to do something like (dangerous?) rename the livery, including changing its dictionary key.
                 // This could leave dangling references.
-                // Onstead, we'll have the on-input field do nothing itself, and let the 'create clone' button use this field's
+                // Instead, we'll have the on-input field do nothing itself, and let the 'create clone' button use this field's
                 // value as the new key/name for the newly cloned livery.
 
                 Contexts.sharedInstance.game.isInputBlocked = true; // (we've handled/consumed the input-event(s) this frame)
@@ -605,9 +628,12 @@ desc: >-
             static void SelectLivery(string liveryKey) {
                 if (!string.IsNullOrEmpty(liveryKey)) {
                     //Debug.Log($"!!! trying to clone livery... trying to set selected key={liveryKey} and command loadoutView.Redraw()...");
-                    CIViewBaseLoadout.selectedUnitLivery = liveryKey;
-                    object[] args = { liveryKey };
-                    AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryAttachAttempt").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player clicks on a livery in the list)
+                    if (liveryKey != CIViewBaseLoadout.selectedUnitLivery) // (re-selecting the livery toggles off the selection)
+                    {
+                        CIViewBaseLoadout.selectedUnitLivery = liveryKey;
+                        object[] args = { liveryKey };
+                        AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryAttachAttempt").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player clicks on a livery in the list)
+                    }
                     CIViewBaseLoadout.ins.Redraw(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint, false);
                 }
             }
@@ -623,6 +649,16 @@ desc: >-
 
             static void ResetSlidersAndTextToMatchLivery(DataContainerEquipmentLivery livery)
             {
+                Debug.Log($"[LiveryGUI] ResetSlidersAndTextToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");//todo.rem
+                if(string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
+                {
+                    liveryNameInput.Set("null");
+                } else
+                {
+                    liveryNameInput.Set(CIViewBaseLoadout.selectedUnitLivery);
+                }
+                liveryNameInput.UpdateLabel();
+
                 if (livery == null) return;
                 sliderHelpers["PrimaryR"].sliderBar.valueRaw   = livery.colorPrimary.r;
                 sliderHelpers["PrimaryG"].sliderBar.valueRaw   = livery.colorPrimary.g;
@@ -652,14 +688,6 @@ desc: >-
                 sliderHelpers["EffectY"].sliderBar.valueRaw    = livery.effect.y;
                 sliderHelpers["EffectZ"].sliderBar.valueRaw    = livery.effect.z;
                 sliderHelpers["EffectW"].sliderBar.valueRaw    = livery.effect.w;
-
-                if(string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
-                {
-                    liveryNameInput.value = "null";
-                } else
-                {
-                    liveryNameInput.value = CIViewBaseLoadout.selectedUnitLivery;
-                }
             }
 
             static void UpdateLiveryFromSliders() {
