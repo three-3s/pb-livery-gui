@@ -34,7 +34,6 @@ using Debug = UnityEngine.Debug;
 //    more gaps.) And 'alpha' is distinct from the others so could be... diff color? width?
 
 // TODO.MVP:
-//  - Write a metadata.yaml to suppress the startup-warning about the UserSaveData dir.
 //  - Minimum button readability: add tooltips (or convert to text-buttons).
 //  - Display the selected livery's name.
 
@@ -116,7 +115,28 @@ namespace LiveryGUI_ModExtensions
         static CIButton cloneLiveryButton;
         static CIButton saveLiveryButton;
 
-        static string GetLiveryGUISaveDir()
+        static string saveDirMetadataContent = @"priority: 0
+colorHue: 0.324
+id: UserSaveData_Directory
+ver: 0.0
+url: 
+includesConfigOverrides: false
+includesConfigEdits: false
+includesConfigTrees: false
+includesLibraries: false
+includesTextures: false
+includesLocalizationEdits: false
+includesLocalizations: false
+includesAssetBundles: false
+gameVersion2Compatible: true
+gameVersionMin: 1.0
+gameVersionMax: 
+name: UserSaveData Directory
+desc: >-
+  This 'mod' changes nothing. It's just a stub to suppress a warning message about mods saving data to a 'local mods' directory that the game assumes is itself a mod. (Feel free to deactivate this mod. That won't defeat its purpose.)
+";
+
+        static string GetUserSaveDataDir()
         {
             //   !!! BYG states:
             //   !!!   "Do not modify, create or edit files outside of AppData/Local/PhantomBrigade/Mods"
@@ -133,7 +153,12 @@ namespace LiveryGUI_ModExtensions
             //Debug.Log($"DataPathHelper.GetModsFolder(ModFolderType.User): {DataPathHelper.GetModsFolder(ModFolderType.User)}"); // under AppData/Local/PhantomBrigade/Mods
 
             string localModsDir = DataPathHelper.GetModsFolder(ModFolderType.User); // .../AppData/Local/PhantomBrigade/Mods/
-            return Path.Combine(localModsDir, "UserSavedData", "LiveryGUI");
+            return Path.Combine(localModsDir, "UserSavedData");
+        }
+
+        static string GetLiveryGUISaveDir()
+        {
+            return Path.Combine(GetUserSaveDataDir(), "LiveryGUI");
         }
 
 
@@ -488,8 +513,15 @@ namespace LiveryGUI_ModExtensions
 
             static void SaveLiveryToFile(DataContainerEquipmentLivery liveryDat)
             {
+                string userSaveDataDir = GetUserSaveDataDir();
                 string liveryGUISaveDir = GetLiveryGUISaveDir();
                 Directory.CreateDirectory(liveryGUISaveDir);
+
+                string saveDirMetadataFilePath = Path.Combine(userSaveDataDir, "metadata.yaml");
+                if (!File.Exists(saveDirMetadataFilePath)) {
+                    File.WriteAllText(saveDirMetadataFilePath, saveDirMetadataContent);
+                    Debug.Log($"[LiveryGUI] Wrote new {saveDirMetadataFilePath} (to suppress future warnings about that directory not itself being a mod)");
+                }
 
                 string liveryFileName = liveryDat.textName + ".yaml"; //todo.robustify
 
