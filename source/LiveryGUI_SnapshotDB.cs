@@ -15,23 +15,29 @@ namespace LiveryGUIMod
     // database of snapshots of initial/last-saved-to-disk state for each livery
     public class LiverySnapshotDB
     {
+        public static Dictionary<string, LiveryOriginalState> originalLiveries; // key = livery's key
+
+        //==============================================================================
         public class LiveryOriginalState
         {
             public bool ownedByLiveryGUI; // (as opposed to being built-in or provided by a basic liveries mod)
             public DataContainerEquipmentLivery onDiskDat; // (initial/unmodified, OR last-saved state. for 'revert' & 'is modified')
-            public void UpdateLiveryDatSnapshot(DataContainerEquipmentLivery newDat)
-            {
-                onDiskDat = DeepCopyLiveryDat(newDat);
-            }
+
+            //--------------------------------------------------------------
             public LiveryOriginalState(bool liveryOwnedByLiveryGUI, DataContainerEquipmentLivery liveryDat)
             {
                 this.ownedByLiveryGUI = liveryOwnedByLiveryGUI;
                 UpdateLiveryDatSnapshot(liveryDat);
             }
+
+            //--------------------------------------------------------------
+            public void UpdateLiveryDatSnapshot(DataContainerEquipmentLivery newDat)
+            {
+                onDiskDat = DeepCopyLiveryDat(newDat);
+            }
         }
 
-        public static Dictionary<string, LiveryOriginalState> originalLiveries; // key = livery's key
-
+        //==============================================================================
         static void DoInitIfNecessary()
         {
             if (originalLiveries == null)
@@ -40,11 +46,13 @@ namespace LiveryGUIMod
             }
         }
 
+        //==============================================================================
         public static DataContainerEquipmentLivery DeepCopyLiveryDat(DataContainerEquipmentLivery original)
         {
             return JsonUtility.FromJson<DataContainerEquipmentLivery>(JsonUtility.ToJson(original)); // (well. i guess it works.)
         }
 
+        //==============================================================================
         public static void AddLiveryDataSnapshot(string key, DataContainerEquipmentLivery liveryDat, bool liveryOwnedByLiveryGUI)
         {
             DoInitIfNecessary();
@@ -62,6 +70,7 @@ namespace LiveryGUIMod
             originalLiveries[key] = newRec;
         }
 
+        //==============================================================================
         // Record info about the liveries that are initially present (the built-in ones, and ones provided by basic livery mods)
         public static void SnapshotInitialLiveries()
         {
@@ -72,10 +81,7 @@ namespace LiveryGUIMod
                 return;
             }
 
-            if (originalLiveries == null)
-            {
-                originalLiveries = new Dictionary<string, LiveryOriginalState>();
-            }
+            DoInitIfNecessary();
 
             foreach (KeyValuePair<string, DataContainerEquipmentLivery> item in liveryDict)
             {
@@ -92,6 +98,24 @@ namespace LiveryGUIMod
                     continue;
                 }
                 AddLiveryDataSnapshot(key, liveryDat, false);
+            }
+        }
+
+        //==============================================================================
+        public static void AddOrUpdateSnapshot(string key, DataContainerEquipmentLivery liveryDat)
+        {
+            if (!originalLiveries.ContainsKey(key))
+            {
+                AddLiveryDataSnapshot(key, liveryDat, true);
+            }
+            else
+            {
+                if(!originalLiveries[key].ownedByLiveryGUI)
+                {
+                    Debug.Log($"[LiveryGUI] BUG: AddOrUpdateSnapshot(): key already exists, but LiverGUI mod does not own it?: {key}");
+                    return;
+                }
+                originalLiveries[key].UpdateLiveryDatSnapshot(liveryDat);
             }
         }
     }

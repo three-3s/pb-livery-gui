@@ -14,6 +14,7 @@ namespace LiveryGUIMod
 {
     public class LoadAndSave
     {
+        //==============================================================================
         public static void LoadUserSavedLiveries()
         {
             string liveryGUISaveDir = GetLiveryGUISaveDir();
@@ -69,11 +70,19 @@ namespace LiveryGUIMod
                 }
             }
 
-            Debug.Log($"[LiveryGUI] INFO: Loaded {loadedCount} user-saved liveries.");
+            Debug.Log($"[LiveryGUI] INFO: Loaded {loadedCount} user-saved liveries. Total liveries: {liveryDict.Count}");
         }
 
-        public static void SaveLiveryToFile(DataContainerEquipmentLivery liveryDat)
+        //==============================================================================
+        public static void SaveLiveryToFile(string key, DataContainerEquipmentLivery liveryDat)
         {
+            if(LiverySnapshotDB.originalLiveries.ContainsKey(key) && !LiverySnapshotDB.originalLiveries[key].ownedByLiveryGUI)
+            {
+                Debug.Log($"[LiveryGUI] USAGE: Refusing to save to this livery key/name because LiveryGUI does not own that livery. You need to clone the livery to a new key/name. key={key}");
+                //todo.status-msg-popup
+                return;
+            }
+
             string userSaveDataDir = GetUserSaveDataDir();
             string liveryGUISaveDir = GetLiveryGUISaveDir();
             Directory.CreateDirectory(liveryGUISaveDir);
@@ -85,12 +94,13 @@ namespace LiveryGUIMod
                 Debug.Log($"[LiveryGUI] INFO: Wrote new {saveDirMetadataFilePath} (to suppress future warnings about that directory not itself being a mod)");
             }
 
-            string liveryFileName = liveryDat.textName + ".yaml";
+            string liveryFileName = key + ".yaml";
 
             try
             {
                 UtilitiesYAML.SaveDataToFile(liveryGUISaveDir, liveryFileName, liveryDat, false);
                 Debug.Log($"[LiveryGUI] INFO: Saved {liveryFileName} to {liveryGUISaveDir}");
+                LiverySnapshotDB.AddOrUpdateSnapshot(key, liveryDat);
             }
             catch (Exception ex)
             {
@@ -98,6 +108,7 @@ namespace LiveryGUIMod
             }
         }
 
+        //==============================================================================
         static string GetUserSaveDataDir()
         {
             //   !!! BYG states:
@@ -118,11 +129,13 @@ namespace LiveryGUIMod
             return Path.Combine(localModsDir, "UserSavedData");
         }
 
+        //==============================================================================
         static string GetLiveryGUISaveDir()
         {
             return Path.Combine(GetUserSaveDataDir(), "LiveryGUI");
         }
 
+        //==============================================================================
         static readonly string saveDirMetadataContent = @"priority: 0
 colorHue: 0.324
 id: UserSaveData_Directory

@@ -43,6 +43,7 @@ namespace LiveryGUIMod
         public static CIButton saveLiveryButton;
         public static UIInput liveryNameInput;
 
+        //==============================================================================
         public static void RedrawLiveryGUI(CIViewBaseLoadout __instance)
         {
             if (paneGO == null)
@@ -209,7 +210,7 @@ namespace LiveryGUIMod
                 saveLiveryButton = saveLiveryButtonGO.GetComponent<CIButton>();
                 saveLiveryButton.callbackOnClick = new UICallback(() =>
                 {
-                    LoadAndSave.SaveLiveryToFile(GetSelectedLivery());
+                    LoadAndSave.SaveLiveryToFile(CIViewBaseLoadout.selectedUnitLivery, GetSelectedLivery());
                 });
 
                 ////////////////////////////////////////////////////////////////////////////////
@@ -240,6 +241,7 @@ namespace LiveryGUIMod
             ResetSlidersAndTextToMatchLivery(GetSelectedLivery());
         }//Postfix()
 
+        //==============================================================================
         static void OnLiveryNameInput()
         {
             // It would be possible to do something like (dangerous?) rename the livery, including changing its dictionary key.
@@ -251,6 +253,7 @@ namespace LiveryGUIMod
             return;
         }
 
+        //==============================================================================
         static void UpdateWidgetPositioning(CIViewBaseLoadout __instance)
         {
             UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
@@ -323,13 +326,14 @@ namespace LiveryGUIMod
             sliderHelpers["EffectW"].gameObject.transform.localPosition = new Vector3(x[1], y[15]);
         }
 
+        //==============================================================================
         static void UpdateLiveryListTooltips()
         {
 #if false // disabled due to buggy, sometimes get stuck up, sometimes stops working until you click. and it's kind of in the way of navigation and not super valuable while browsing
                 var liveryOptionInstances = (Dictionary<string, CIHelperLoadoutLivery>) AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")?.GetValue(CIViewBaseLoadout.ins);
                 if (liveryOptionInstances == null)
                 {
-                    Debug.Log($"[LiveryGUI] null liveryOptionInstances. isNull={AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")==null},{liveryOptionInstances==null}");
+                    Debug.Log($"[LiveryGUI] BUG: null liveryOptionInstances. isNull={AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")==null},{liveryOptionInstances==null}");
                     return;
                 }
 
@@ -338,7 +342,7 @@ namespace LiveryGUIMod
                     CIHelperLoadoutLivery liveryHelper = item.Value;
                     if (key == null || liveryHelper == null)
                     {
-                        Debug.Log($"[LiveryGUI] null key/val encountered: {key}, valIsNull={liveryHelper==null}");
+                        Debug.Log($"[LiveryGUI] BUG(?): null key/val encountered: {key}, valIsNull={liveryHelper==null}");
                         continue;
                     }
                     liveryHelper.button.tooltipUsed = true;
@@ -385,6 +389,7 @@ namespace LiveryGUIMod
             return newKey;
         }
 
+        //==============================================================================
         static void SelectLivery(string liveryKey)
         {
             if (!string.IsNullOrEmpty(liveryKey))
@@ -400,6 +405,7 @@ namespace LiveryGUIMod
             }
         }
 
+        //==============================================================================
         static DataContainerEquipmentLivery GetSelectedLivery()
         {
             string key = CIViewBaseLoadout.selectedUnitLivery;
@@ -409,6 +415,7 @@ namespace LiveryGUIMod
             return DataMultiLinker<DataContainerEquipmentLivery>.GetEntry(key, false);
         }
 
+        //==============================================================================
         static void ResetSlidersAndTextToMatchLivery(DataContainerEquipmentLivery livery)
         {
             Debug.Log($"[LiveryGUI] DEBUG-SPAM: ResetSlidersAndTextToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");//todo.rem
@@ -453,6 +460,7 @@ namespace LiveryGUIMod
             sliderHelpers["EffectW"].sliderBar.valueRaw = livery.effect.w;
         }
 
+        //==============================================================================
         static void UpdateLiveryFromSliders()
         {
             var livery = GetSelectedLivery();
@@ -488,6 +496,7 @@ namespace LiveryGUIMod
             livery.effect.w = sliderHelpers["EffectW"].sliderBar.valueRaw;
         }
 
+        //==============================================================================
         static void RefreshSphereAndMechPreviews()
         {
             int unitID = CIViewBaseLoadout.selectedUnitID;
