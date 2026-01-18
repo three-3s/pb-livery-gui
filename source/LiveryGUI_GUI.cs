@@ -215,7 +215,7 @@ namespace LiveryGUIMod
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // Livery GUI text-input field: for seeing & renaming the livery-key/file-name
-                GameObject liveryNameInputGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerInputUnitName.gameObject, paneGO.transform, false);
+                GameObject liveryNameInputGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerInputUnitName.gameObject, uiRoot/*paneGO.transform*/, false); // using uiRoot to make this initially-visible as a workaround for the text-display refusing to initially populate until it gets displayed AND THEN user clicks on something (after which it starts updating/working fine)
                 liveryNameInputGO.name = "liveryNameInputGO";
                 liveryNameInputGO.transform.localPosition = saveLiveryButtonGO.transform.localPosition + posStep;
                 liveryNameInputGO.transform.localScale = Vector3.one;
