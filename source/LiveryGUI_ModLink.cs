@@ -34,7 +34,6 @@ using Debug = UnityEngine.Debug;
 //    more gaps.) And 'alpha' is distinct from the others so could be... diff color? width?
 
 // TODO.MVP:
-//  - Rename ModLinks.cs and ModExtensions?return true;
 //  - Write a metadata.yaml to suppress the startup-warning about the UserSaveData dir.
 //  - Minimum button readability: add tooltips (or convert to text-buttons).
 //  - Display the selected livery's name.
@@ -62,7 +61,7 @@ using Debug = UnityEngine.Debug;
 //  - There might be some desire to go beyond the value-limits currently hardcoded. E.g., maybe
 //    up to 3.0 instead of just 2.0. Or maybe some params are effective to much higher..?
 
-namespace ModExtensions
+namespace LiveryGUI_ModExtensions
 {
     //==================================================================================================
     // (Having a class derived from ModLink might (?) be necessary, but the overrides are probably just
