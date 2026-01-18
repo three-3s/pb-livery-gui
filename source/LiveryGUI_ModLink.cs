@@ -425,7 +425,7 @@ desc: >-
 
                     ////////////////////////////////////////////////////////////////////////////////
                     // Livery GUI initial visibility
-                    paneGO.SetActive(true);
+                    paneGO.SetActive(false);
                 }//if(doOnce)
 
                 UpdateLiveryListTooltips();
