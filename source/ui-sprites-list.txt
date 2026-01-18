@@ -24,7 +24,7 @@ s_icon_l32_lc_settings:       a gear-icon
              _circle:         hollow circle-outline
              livery1:         paint-roller
              livery2:         paint-bucket
-s_icon_l32_edit1:         pencil-over-2-slider-bars
+s_icon_l32_edit1:         pencil-over-2-slider-bars   --- several of these should have a _menu_ first, as in _menu_edit1..4.
           _edit2:         pencil-over-circle-outline
           _edit3:         slider-bars (2)
           _edit4:         slider-bars (3)

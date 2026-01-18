@@ -39,8 +39,6 @@ using Debug = UnityEngine.Debug;
 //    buttons to revert-livery-to-snapshot, maybe revert-livery-name-input-box, and show whether
 //    the livery has been saved (maybe re-color the button, but don't inhibit it).
 //  - add text-popup on saved successfully or failed-and-why eg we-don't-own-the-key.
-//  - Minimum button readability: add tooltips (or convert to text-buttons). ideally, add a
-//    button-icon for clone, and switch the 'save' icon.
 //  - confirm i'm not introducing any new 'crashes' in the player.log (via any mods)
 //  - commit to or change away from using the AppData/Local mods folder
 //  - PUBLISH (github + steam workshop)

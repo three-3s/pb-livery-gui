@@ -155,7 +155,7 @@ namespace LiveryGUIMod
                 var toggleFrame = toggleLiveryGUIButtonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
                 var toggleFillIdle = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
                 var toggleFillHover = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
-                if (toggleIcon != null) toggleIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f);
+                if (toggleIcon != null) { toggleIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); toggleIcon.spriteName = "s_icon_l32_menu_edit4"; }
                 if (toggleFrame != null) toggleFrame.color = new Color(0.7f, 0.7f, 0.7f, 0.8f);
                 if (toggleFillIdle != null) toggleFillIdle.color = new Color(0.0f, 0.0f, 0.0f, 0.7f);
                 if (toggleFillHover != null) toggleFillHover.color = new Color(0.7f, 0.7f, 0.7f, 0.4f);
@@ -191,13 +191,13 @@ namespace LiveryGUIMod
                 cloneLiveryButtonGO.name = "cloneLiveryButtonGO";
                 cloneLiveryButtonGO.transform.localPosition += posStep;
                 var cloneIcon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                if (cloneIcon != null) cloneIcon.color = new Color(0.5f, 0.8f, 0.6f, 0.8f);
+                if (cloneIcon != null) { cloneIcon.color = new Color(0.5f, 0.8f, 0.6f, 0.8f); cloneIcon.spriteName = "s_icon_l32_lc_grid_plus"; }
 
                 GameObject saveLiveryButtonGO = GameObject.Instantiate(cloneLiveryButtonGO, paneGO.transform, false);
                 saveLiveryButtonGO.name = "saveLiveryButtonGO";
                 saveLiveryButtonGO.transform.localPosition += posStep;
                 var saveIcon = saveLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                if (saveIcon != null) saveIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f);
+                if (saveIcon != null) { saveIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f); saveIcon.spriteName = "s_icon_l32_lc_save1"; }
 
                 cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
                 cloneLiveryButton.callbackOnClick = new UICallback(() =>
