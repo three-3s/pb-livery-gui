@@ -35,9 +35,10 @@ using Debug = UnityEngine.Debug;
 
 // TODO.MVP:
 //  - Minimum button readability: add tooltips (or convert to text-buttons).
-//  - Display the selected livery's name.
+//  - Display the selected livery's name -- working except initially when page first opened is "-".
+//  - save-button... tie in with text-input field. maybe it just resets the field back to the thing's name. o/w need to clone-and-rename as part of save. (shrug)
 
-// TODO:
+// TODO.post-release:
 //  - What are string contentSource and Vector4 contentParameters? There's also string source,
 //    which I'd assumed was metadata, but am less sure about now. E.g., decal-overlays stuff?
 //    Or maybe there's some tagging for usability by randomly generated hostiles?
@@ -56,9 +57,13 @@ using Debug = UnityEngine.Debug;
 //  - Maybe a button to open the directory containing the livery .yaml files?
 //  - Maybe mark the liveries in the selection-list eg with a different color if they've been
 //    created (or overwritten by) this mod?
-//  - Maybe add a tooltip to each livery-list button that is the livery's name?
 //  - There might be some desire to go beyond the value-limits currently hardcoded. E.g., maybe
 //    up to 3.0 instead of just 2.0. Or maybe some params are effective to much higher..?
+//  - Fix the label above the text input field from "Name" to eg "Livery Name".
+//  - Remove the forced-capitalization on the text input field. (Seems to only affect display,
+//    not the actual string.)
+//  - Fix how 'select the already-existing key-livery when cloning but key already exists': this
+//    actual toggles-off if the currently selected livery is this newKey.
 
 namespace LiveryGUI_ModExtensions
 {
@@ -114,8 +119,9 @@ namespace LiveryGUI_ModExtensions
         static CIButton toggleLiveryGUIButton;
         static CIButton cloneLiveryButton;
         static CIButton saveLiveryButton;
+        static UIInput liveryNameInput;
 
-        static string saveDirMetadataContent = @"priority: 0
+        static readonly string saveDirMetadataContent = @"priority: 0
 colorHue: 0.324
 id: UserSaveData_Directory
 ver: 0.0
@@ -243,6 +249,10 @@ desc: >-
             //  BEFORE that DifficultyUtility.GetFlag() runs (and depending on what I say, either call the normal
             //  GetFlag() or use the result I give instead)"
             public static void Postfix(CIViewBaseLoadout __instance, string socketTarget, string hardpointTarget, bool closeOnRepeat) {
+                _ = socketTarget;
+                _ = hardpointTarget;
+                _ = closeOnRepeat;
+
                 //Debug.Log($"RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
 
                 if (paneGO == null)
@@ -353,8 +363,8 @@ desc: >-
                     var toggleFrame = toggleLiveryGUIButtonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
                     var toggleFillIdle = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
                     var toggleFillHover = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
-                    if (toggleIcon       != null) toggleIcon.color       = new Color(0.9f, 0.9f, 0.9f, 0.8f);
-                    if (toggleFrame      != null) toggleFrame.color      = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+                    if (toggleIcon      != null) toggleIcon.color      = new Color(0.9f, 0.9f, 0.9f, 0.8f);
+                    if (toggleFrame     != null) toggleFrame.color     = new Color(0.7f, 0.7f, 0.7f, 0.8f);
                     if (toggleFillIdle  != null) toggleFillIdle.color  = new Color(0.0f, 0.0f, 0.0f, 0.7f);
                     if (toggleFillHover != null) toggleFillHover.color = new Color(0.7f, 0.7f, 0.7f, 0.4f);
 
@@ -374,18 +384,18 @@ desc: >-
                     cloneLiveryButtonGO.name = "cloneLiveryButtonGO";
                     cloneLiveryButtonGO.transform.localPosition += posStep;
                     var cloneIcon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                    if (cloneIcon       != null) cloneIcon.color       = new Color(0.5f, 0.8f, 0.6f, 0.8f);
+                    if (cloneIcon != null) cloneIcon.color = new Color(0.5f, 0.8f, 0.6f, 0.8f);
 
                     GameObject saveLiveryButtonGO = GameObject.Instantiate(cloneLiveryButtonGO, paneGO.transform, false);
                     saveLiveryButtonGO.name = "saveLiveryButtonGO";
                     saveLiveryButtonGO.transform.localPosition += posStep;
                     var saveIcon = saveLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                    if (saveIcon       != null) saveIcon.color       = new Color(0.5f, 0.6f, 0.8f, 0.8f);
+                    if (saveIcon != null) saveIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f);
 
                     cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
                     cloneLiveryButton.callbackOnClick = new UICallback(() =>
                     {
-                        string newLiveryKey = DuplicateSelectedLivery();
+                        string newLiveryKey = CloneSelectedLivery();
                         SelectLivery(newLiveryKey);
                         RefreshSphereAndMechPreviews();
                     });
@@ -397,20 +407,53 @@ desc: >-
                     });
 
                     ////////////////////////////////////////////////////////////////////////////////
+                    // Livery GUI text-input field: for seeing & renaming the livery-key/file-name
+                    GameObject liveryNameInputGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerInputUnitName.gameObject, paneGO.transform, false);
+                    liveryNameInputGO.name = "liveryNameInputGO";
+                    liveryNameInputGO.transform.localPosition = saveLiveryButtonGO.transform.localPosition + posStep;
+                    liveryNameInputGO.transform.localScale = Vector3.one;
+
+                    liveryNameInput = liveryNameInputGO.GetComponent<UIInput>();
+                    liveryNameInput.onChange = new List<EventDelegate>() { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
+                    liveryNameInput.onReturnKey = UIInput.OnReturnKey.Submit;
+                    liveryNameInput.onSubmit = new List<EventDelegate> { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
+                    liveryNameInput.label.text = "Livery Name";
+                    liveryNameInput.label.ProcessText();
+                    liveryNameInput.characterLimit += 10;
+
+                    liveryNameInputGO.SetActive(true);
+
+                    ////////////////////////////////////////////////////////////////////////////////
                     // Livery GUI initial visibility
                     paneGO.SetActive(true);
                 }//if(doOnce)
-                
+
+                UpdateLiveryListTooltips();
                 UpdateWidgetPositioning(__instance);
-                SyncSlidersFromLivery(GetSelectedLivery());
+                ResetSlidersAndTextToMatchLivery(GetSelectedLivery());
             }//Postfix()
 
+            static void OnLiveryNameInput()
+            {
+                // It would be possible to do something like (dangerous?) rename the livery, including changing its dictionary key.
+                // This could leave dangling references.
+                // Onstead, we'll have the on-input field do nothing itself, and let the 'create clone' button use this field's
+                // value as the new key/name for the newly cloned livery.
+
+                Contexts.sharedInstance.game.isInputBlocked = true; // (we've handled/consumed the input-event(s) this frame)
+                return;
+            }
+
             static void UpdateWidgetPositioning(CIViewBaseLoadout __instance) {
+                UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
+                float pixelSizeAdj = root.pixelSizeAdjustment;
+
                 var uiRoot = __instance.liveryRootObject.transform;
                 float uiScale = uiRoot.lossyScale.x;
-                UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
                 int activeHeight = root.activeHeight;
-                float pixelSizeAdj = root.pixelSizeAdjustment;
+                _ = uiRoot;
+                _ = uiScale;
+                _ = activeHeight;
 
                 // calculate positions
                 const float yStep = 40f;
@@ -471,42 +514,66 @@ desc: >-
                 sliderHelpers["EffectZ"].gameObject.transform.localPosition    = new Vector3(x[1], y[14]);
                 sliderHelpers["EffectW"].gameObject.transform.localPosition    = new Vector3(x[1], y[15]);
             }
-            
-            static string DuplicateSelectedLivery()
-            {
-                //Debug.Log($"!!! trying to clone livery...");
 
+            static void UpdateLiveryListTooltips()
+            {
+#if false // disabled due to buggy, sometimes get stuck up, sometimes stops working until you click. and it's kind of in the way of navigation and not super valuable while browsing
+                var liveryOptionInstances = (Dictionary<string, CIHelperLoadoutLivery>) AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")?.GetValue(CIViewBaseLoadout.ins);
+                if (liveryOptionInstances == null)
+                {
+                    Debug.Log($"[LiveryGUI] null liveryOptionInstances. isNull={AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")==null},{liveryOptionInstances==null}");
+                    return;
+                }
+
+                foreach (var item in liveryOptionInstances) {
+                    string key = item.Key;
+                    CIHelperLoadoutLivery liveryHelper = item.Value;
+                    if (key == null || liveryHelper == null)
+                    {
+                        Debug.Log($"[LiveryGUI] null key/val encountered: {key}, valIsNull={liveryHelper==null}");
+                        continue;
+                    }
+                    liveryHelper.button.tooltipUsed = true;
+                    liveryHelper.button.tooltipKey = null;
+                    liveryHelper.button.AddTooltip(key, liveryHelper.name); // the 'title' is REALLY BIG AND CAPITALIZED, so probably leave title null and only use the text (?)
+                }
+#endif
+            }
+            
+            static string CloneSelectedLivery()
+            {
                 if (CIViewBaseLoadout.ins == null) return null;
 
-                string newKey = null;
+                var liveriesDict = DataMultiLinkerEquipmentLivery.data;
+                string newKey = liveryNameInput.value; // (from the text-input field)
+                if (string.IsNullOrEmpty(newKey))
+                    return null;
+
+                if (liveriesDict.ContainsKey(newKey))
+                {
+                    Debug.Log($"[LiveryGUI] Refusing to clone livery {newKey}: That key already exists. Selecting the existing livery-object.");
+                    return newKey;
+                }
+
+                DataContainerEquipmentLivery newCopy;
 
                 string currentKey = CIViewBaseLoadout.selectedUnitLivery;
-                if (string.IsNullOrEmpty(currentKey))
+                if (string.IsNullOrEmpty(currentKey) || !liveriesDict.TryGetValue(currentKey, out var original))
                 {
-                    newKey = null; // todo.7 new clone of default livery scheme
+                    newCopy = new DataContainerEquipmentLivery();
                 }
                 else
                 {
-                    //Debug.Log($"!!! trying to clone livery... start of nominal case");
-
-                    var liveriesDict = DataMultiLinkerEquipmentLivery.data;
-                    if (!liveriesDict.TryGetValue(currentKey, out var original))
-                        return null;
-
-                    // Deep copy (Unity-safe) // (...adequate)
-                    var newCopy = JsonUtility.FromJson<DataContainerEquipmentLivery>(
-                        JsonUtility.ToJson(original)
-                    );
-
-                    newKey = $"livery_gui_new_livery"; //todo
-
-                    newCopy.key = newKey;
-                    newCopy.textName = $"{original.textName} (LiveryGUI clone)"; //todo
-                    newCopy.source = $"LiveryGUI clone"; //todo
-
-                    liveriesDict[newKey] = newCopy;
-                    DataMultiLinkerEquipmentLivery.OnAfterDeserialization(); // (triggers rebuilding its .dataSorted)
+                    // Deep copy
+                    newCopy = JsonUtility.FromJson<DataContainerEquipmentLivery>(JsonUtility.ToJson(original)); // (well. i guess it works.)
                 }
+
+                newCopy.key = newKey;
+                newCopy.textName = newKey;
+                newCopy.source = $"LiveryGUI";
+
+                liveriesDict[newKey] = newCopy;
+                DataMultiLinkerEquipmentLivery.OnAfterDeserialization(); // (triggers rebuilding its .dataSorted)
 
                 return newKey;
             }
@@ -523,7 +590,7 @@ desc: >-
                     Debug.Log($"[LiveryGUI] Wrote new {saveDirMetadataFilePath} (to suppress future warnings about that directory not itself being a mod)");
                 }
 
-                string liveryFileName = liveryDat.textName + ".yaml"; //todo.robustify
+                string liveryFileName = liveryDat.textName + ".yaml";
 
                 try
                 {
@@ -533,8 +600,6 @@ desc: >-
                 {
                     Debug.Log($"[LiveryGUI] Failed to save {liveryFileName} to {liveryGUISaveDir}:\n{ex}");
                 }
-
-                //todo.result, maybe in that little successfully-saved popup that shows up after saving game
             }
 
             static void SelectLivery(string liveryKey) {
@@ -556,7 +621,7 @@ desc: >-
                 return DataMultiLinker<DataContainerEquipmentLivery>.GetEntry(key, false);
             }
 
-            static void SyncSlidersFromLivery(DataContainerEquipmentLivery livery)
+            static void ResetSlidersAndTextToMatchLivery(DataContainerEquipmentLivery livery)
             {
                 if (livery == null) return;
                 sliderHelpers["PrimaryR"].sliderBar.valueRaw   = livery.colorPrimary.r;
@@ -587,6 +652,14 @@ desc: >-
                 sliderHelpers["EffectY"].sliderBar.valueRaw    = livery.effect.y;
                 sliderHelpers["EffectZ"].sliderBar.valueRaw    = livery.effect.z;
                 sliderHelpers["EffectW"].sliderBar.valueRaw    = livery.effect.w;
+
+                if(string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
+                {
+                    liveryNameInput.value = "null";
+                } else
+                {
+                    liveryNameInput.value = CIViewBaseLoadout.selectedUnitLivery;
+                }
             }
 
             static void UpdateLiveryFromSliders() {
