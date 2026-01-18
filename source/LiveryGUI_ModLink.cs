@@ -77,6 +77,15 @@ using Debug = UnityEngine.Debug;
 //    actual toggles-off if the currently selected livery is this newKey.
 //  - Prefix-intercept and prevent CIViewBaseLoadout.UpdateCamera when the text-input field is
 //    selected (like is done for headerInputUnitName.isSelected in that module).
+//
+// ADDITIONAL PB CODE REFERENCES:
+//  - PB's CIViewPauseSave.cs has a popup-dialog for confirmation of overwrite
+//  - PB's DataManagerSave.DoSave presumably is responsible for the "Successfully saved" info-box:
+//			DataHelperSaveSerialization.NewFormatSave(savePath);
+//          if (DataManagerSave.saveNotificationUsed && Application.isPlaying)
+//          {
+//              CIViewOverworldLog.AddMessage(Txt.Get("ui_pause", "save_notification_confirmed", false) + " [sp=s_icon_m_save5]", true, -1f);
+//          }
 
 namespace LiveryGUIMod
 {

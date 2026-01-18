@@ -8,6 +8,37 @@
         }
     }
 
+
+the following console command is also helpful, providing a visualization (but point-and-click nor search capability?):
+   ui.view-enter uitools
+   (and ui.view-exit uitools)
+   https://wiki.braceyourselfgames.com/en/PhantomBrigade/Modding/ModSystemChanges (accessed 2026-01-18)
+
+OF NOTE:
+s_icon_l32_lc_settings:       a gear-icon
+             _save1:          a floppy-disk save icon
+             _load1:          an up-arrow-from-open-box icon
+             _grid_plus:      a 2-by-2 grid where the bottom-right cell is a '+'
+             _circle_slash:   standard 'no' symbol like 'no smoking/diving'
+             _circle_dashed:  dashed circle outline
+             _circle:         hollow circle-outline
+             livery1:         paint-roller
+             livery2:         paint-bucket
+s_icon_l32_edit1:         pencil-over-2-slider-bars
+          _edit2:         pencil-over-circle-outline
+          _edit3:         slider-bars (2)
+          _edit4:         slider-bars (3)
+          _retreat:       arrow making a V-shape like bouncing off, of a circle-on-ground, with a little X above
+          _star_outline
+          _star_filled
+          _trash
+          _trash_confirm
+          _confirm
+          _cancel
+          _action_move:   arrow pointing right
+          _action_wait:   "---"
+
+
 [Atlas] atlas_keyboard_and_mouse_dark
   - Keyboard_Black_0
   - Keyboard_Black_1
