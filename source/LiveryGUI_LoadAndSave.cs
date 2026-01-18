@@ -70,13 +70,13 @@ namespace LiveryGUIMod
                 }
             }
 
-            Debug.Log($"[LiveryGUI] INFO: Loaded {loadedCount} user-saved liveries. Total liveries: {liveryDict.Count}");
+            Debug.Log($"[LiveryGUI] INFO: Loaded {loadedCount} user-saved liveries. Total liveries: {liveryDict.Count} (though some may be hidden from player-selection list)");
         }
 
         //==============================================================================
         public static void SaveLiveryToFile(string key, DataContainerEquipmentLivery liveryDat)
         {
-            if(LiverySnapshotDB.originalLiveries.ContainsKey(key) && !LiverySnapshotDB.originalLiveries[key].ownedByLiveryGUI)
+            if (LiverySnapshotDB.originalLiveries.ContainsKey(key) && !LiverySnapshotDB.originalLiveries[key].ownedByLiveryGUI)
             {
                 Debug.Log($"[LiveryGUI] USAGE: Refusing to save to this livery key/name because LiveryGUI does not own that livery. You need to clone the livery to a new key/name. key={key}");
                 //todo.status-msg-popup

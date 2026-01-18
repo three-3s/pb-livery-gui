@@ -29,15 +29,8 @@ using Debug = UnityEngine.Debug;
 //     - https://wiki.braceyourselfgames.com/en/PhantomBrigade/Modding/ModSystem
 //
 
-// POSSIBLE IMPROVEMENTS:
-//  - GUI layout/presentation. Anchor to screen better? Readability concerns? White-on-white is
-//    hard to read. Would be nice to have some grouping for the bars. (There is spare space for
-//    more gaps.) And 'alpha' is distinct from the others so could be... diff color? width?
-
-// TODO.MVP:
-//  - rework clone/save/name functionality, consulting/updating LiverySnapshotDB, and add
-//    buttons to revert-livery-to-snapshot, maybe revert-livery-name-input-box, and show whether
-//    the livery has been saved (maybe re-color the button, but don't inhibit it).
+// TODO.MVP (getting close; < 8 hours?):
+//  - add buttons to revert-livery-to-snapshot (probably including name-input-box).
 //  - add text-popup on saved successfully or failed-and-why eg we-don't-own-the-key.
 //  - confirm i'm not introducing any new 'crashes' in the player.log (via any mods)
 //  - commit to or change away from using the AppData/Local mods folder
@@ -75,6 +68,10 @@ using Debug = UnityEngine.Debug;
 //    actual toggles-off if the currently selected livery is this newKey.
 //  - Prefix-intercept and prevent CIViewBaseLoadout.UpdateCamera when the text-input field is
 //    selected (like is done for headerInputUnitName.isSelected in that module).
+//  - Might be nice to have the save/clone buttons go red if the name-input is modified but the
+//    name is not available. (But red would also be nice for a "revert" button being clickable.)
+//  - Might want to use consistent color for the clone/save buttons, probably blue (esp if using
+//    red).
 //
 // ADDITIONAL PB CODE REFERENCES:
 //  - PB's CIViewPauseSave.cs has a popup-dialog for confirmation of overwrite

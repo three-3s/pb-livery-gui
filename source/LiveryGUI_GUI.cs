@@ -42,6 +42,7 @@ namespace LiveryGUIMod
         public static CIButton cloneLiveryButton;
         public static CIButton saveLiveryButton;
         public static UIInput liveryNameInput;
+        static Color grayedOutButtonColor = new Color(0.7f, 0.7f, 0.7f, 0.8f);
 
         //==============================================================================
         public static void RedrawLiveryGUI(CIViewBaseLoadout __instance)
@@ -59,7 +60,7 @@ namespace LiveryGUIMod
                 paneGO = new GameObject("LiveryAdvancedPane");
                 paneGO.transform.SetParent(uiRoot, false);
                 paneGO.AddComponent<LiveryAdvancedPaneMarker>();
-                paneGO.transform.localPosition = new Vector3(0f, -4f, 0f); // instead, anchor to edge of screen? particularly the right-side column?
+                paneGO.transform.localPosition = new Vector3(0f, 0f, 0f);
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // slider-bars for customizing the current livery
@@ -177,7 +178,7 @@ namespace LiveryGUIMod
                     RefreshSphereAndMechPreviews();
                     UpdateLiveryListTooltips();
                     UpdateWidgetPositioning(__instance);
-                    ResetSlidersAndTextToMatchLivery(GetSelectedLivery());
+                    ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
                     RefreshSphereAndMechPreviews();
                 });
 
@@ -187,47 +188,51 @@ namespace LiveryGUIMod
                 // Livery GUI buttons: 'clone livery', 'save livery to disk'
                 Vector3 posStep = new Vector3(80f, 0f, 0f);
 
-                GameObject cloneLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
-                cloneLiveryButtonGO.name = "cloneLiveryButtonGO";
-                cloneLiveryButtonGO.transform.localPosition += posStep;
-                var cloneIcon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                if (cloneIcon != null) { cloneIcon.color = new Color(0.5f, 0.8f, 0.6f, 0.8f); cloneIcon.spriteName = "s_icon_l32_lc_grid_plus"; }
-
-                GameObject saveLiveryButtonGO = GameObject.Instantiate(cloneLiveryButtonGO, paneGO.transform, false);
+                GameObject saveLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
                 saveLiveryButtonGO.name = "saveLiveryButtonGO";
                 saveLiveryButtonGO.transform.localPosition += posStep;
                 var saveIcon = saveLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
                 if (saveIcon != null) { saveIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f); saveIcon.spriteName = "s_icon_l32_lc_save1"; }
 
-                cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
-                cloneLiveryButton.callbackOnClick = new UICallback(() =>
-                {
-                    string newLiveryKey = CloneSelectedLivery();
-                    SelectLivery(newLiveryKey);
-                    RefreshSphereAndMechPreviews();
-                });
+                GameObject cloneLiveryButtonGO = GameObject.Instantiate(saveLiveryButtonGO, paneGO.transform, false);
+                cloneLiveryButtonGO.name = "cloneLiveryButtonGO";
+                cloneLiveryButtonGO.transform.localPosition += posStep;
+                var cloneIcon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                if (cloneIcon != null) { cloneIcon.color = new Color(0.5f, 0.8f, 0.6f, 0.8f); cloneIcon.spriteName = "s_icon_l32_lc_grid_plus"; }
 
                 saveLiveryButton = saveLiveryButtonGO.GetComponent<CIButton>();
                 saveLiveryButton.callbackOnClick = new UICallback(() =>
                 {
-                    LoadAndSave.SaveLiveryToFile(CIViewBaseLoadout.selectedUnitLivery, GetSelectedLivery());
+                    if (CIViewBaseLoadout.selectedUnitLivery != liveryNameInput.value)
+                        OnCloneLiveryClicked(); // new key/name was given; clone livery before saving it
+                    if (CIViewBaseLoadout.selectedUnitLivery == liveryNameInput.value)
+                    {
+                        LoadAndSave.SaveLiveryToFile(CIViewBaseLoadout.selectedUnitLivery, GetSelectedLivery());
+                        UpdateButtonColors();
+                    }
+                });
+
+                cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
+                cloneLiveryButton.callbackOnClick = new UICallback(() =>
+                {
+                    OnCloneLiveryClicked();
                 });
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // Livery GUI text-input field: for seeing & renaming the livery-key/file-name
                 GameObject liveryNameInputGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerInputUnitName.gameObject, uiRoot/*paneGO.transform*/, false); // using uiRoot to make this initially-visible as a workaround for the text-display refusing to initially populate until it gets displayed AND THEN user clicks on something (after which it starts updating/working fine)
                 liveryNameInputGO.name = "liveryNameInputGO";
-                liveryNameInputGO.transform.localPosition = saveLiveryButtonGO.transform.localPosition + posStep;
+                liveryNameInputGO.transform.localPosition = cloneLiveryButtonGO.transform.localPosition + new Vector3(56f, 0f, 0f);
                 liveryNameInputGO.transform.localScale = Vector3.one;
 
                 liveryNameInput = liveryNameInputGO.GetComponent<UIInput>();
                 liveryNameInput.onChange = new List<EventDelegate>() { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
                 liveryNameInput.onReturnKey = UIInput.OnReturnKey.Submit;
                 liveryNameInput.onSubmit = new List<EventDelegate> { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
-                liveryNameInput.label.text = "Livery Name";
+                liveryNameInput.label.text = "Livery Name Goes Here";
                 liveryNameInput.label.ProcessText();
                 liveryNameInput.characterLimit += 10;
-                liveryNameInput.defaultText = "wat"; // (ends up unused?)
+                liveryNameInput.defaultText = "default?"; // (ends up unused?)
 
                 liveryNameInputGO.SetActive(true);
 
@@ -238,7 +243,7 @@ namespace LiveryGUIMod
 
             UpdateLiveryListTooltips();
             UpdateWidgetPositioning(__instance);
-            ResetSlidersAndTextToMatchLivery(GetSelectedLivery());
+            ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
         }//Postfix()
 
         //==============================================================================
@@ -246,9 +251,10 @@ namespace LiveryGUIMod
         {
             // It would be possible to do something like (dangerous?) rename the livery, including changing its dictionary key.
             // This could leave dangling references.
-            // Instead, we'll have the on-input field do nothing itself, and let the 'create clone' button use this field's
-            // value as the new key/name for the newly cloned livery.
+            // Instead, we'll have the on-input field do nothing itself, and let the 'save' & 'create clone' buttons use this
+            // field's value as the new key/name for the newly cloned livery.
 
+            UpdateButtonColors();
             Contexts.sharedInstance.game.isInputBlocked = true; // (we've handled/consumed the input-event(s) this frame)
             return;
         }
@@ -352,6 +358,18 @@ namespace LiveryGUIMod
 #endif
         }
 
+        //==============================================================================
+        static void OnCloneLiveryClicked()
+        {
+            string newLiveryKey = CloneSelectedLivery();
+            if (newLiveryKey == liveryNameInput.value)
+            {
+                SelectLivery(newLiveryKey);
+            }
+            RefreshSphereAndMechPreviews();
+        }
+
+        //==============================================================================
         static string CloneSelectedLivery()
         {
             if (CIViewBaseLoadout.ins == null) return null;
@@ -363,8 +381,8 @@ namespace LiveryGUIMod
 
             if (liveriesDict.ContainsKey(newKey))
             {
-                Debug.Log($"[LiveryGUI] USAGE: Refusing to clone livery {newKey}: That key already exists. Selecting the existing livery-object.");
-                return newKey;
+                Debug.Log($"[LiveryGUI] USAGE: Refusing to clone livery {newKey}: That key already exists.");
+                return null;
             }
 
             DataContainerEquipmentLivery newCopy;
@@ -385,6 +403,8 @@ namespace LiveryGUIMod
 
             liveriesDict[newKey] = newCopy;
             DataMultiLinkerEquipmentLivery.OnAfterDeserialization(); // (triggers rebuilding its .dataSorted)
+
+            LiverySnapshotDB.AddLiveryDataSnapshot(newKey, newCopy, true);
 
             Debug.Log($"[LiveryGUI] INFO: cloned livery {origKey} to {newKey}");
             return newKey;
@@ -425,9 +445,9 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static void ResetSlidersAndTextToMatchLivery(DataContainerEquipmentLivery livery)
+        static void ResetLiveryGUIWidgetsToMatchLivery(DataContainerEquipmentLivery livery)
         {
-            //Debug.Log($"[LiveryGUI] DEBUG-SPAM: ResetSlidersAndTextToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");
+            //Debug.Log($"[LiveryGUI] DEBUG-SPAM: ResetLiveryGUIWidgetsToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");
             if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
             {
                 liveryNameInput.Set("null");
@@ -438,35 +458,75 @@ namespace LiveryGUIMod
             }
             liveryNameInput.UpdateLabel();
 
-            if (livery == null) return;
-            sliderHelpers["PrimaryR"].sliderBar.valueRaw = livery.colorPrimary.r;
-            sliderHelpers["PrimaryG"].sliderBar.valueRaw = livery.colorPrimary.g;
-            sliderHelpers["PrimaryB"].sliderBar.valueRaw = livery.colorPrimary.b;
-            sliderHelpers["PrimaryA"].sliderBar.valueRaw = livery.colorPrimary.a;
-            sliderHelpers["SecondaryR"].sliderBar.valueRaw = livery.colorSecondary.r;
-            sliderHelpers["SecondaryG"].sliderBar.valueRaw = livery.colorSecondary.g;
-            sliderHelpers["SecondaryB"].sliderBar.valueRaw = livery.colorSecondary.b;
-            sliderHelpers["SecondaryA"].sliderBar.valueRaw = livery.colorSecondary.a;
-            sliderHelpers["TertiaryR"].sliderBar.valueRaw = livery.colorTertiary.r;
-            sliderHelpers["TertiaryG"].sliderBar.valueRaw = livery.colorTertiary.g;
-            sliderHelpers["TertiaryB"].sliderBar.valueRaw = livery.colorTertiary.b;
-            sliderHelpers["TertiaryA"].sliderBar.valueRaw = livery.colorTertiary.a;
-            sliderHelpers["PrimaryX"].sliderBar.valueRaw = livery.materialPrimary.x;
-            sliderHelpers["PrimaryY"].sliderBar.valueRaw = livery.materialPrimary.y;
-            sliderHelpers["PrimaryZ"].sliderBar.valueRaw = livery.materialPrimary.z;
-            sliderHelpers["PrimaryW"].sliderBar.valueRaw = livery.materialPrimary.w;
-            sliderHelpers["SecondaryX"].sliderBar.valueRaw = livery.materialSecondary.x;
-            sliderHelpers["SecondaryY"].sliderBar.valueRaw = livery.materialSecondary.y;
-            sliderHelpers["SecondaryZ"].sliderBar.valueRaw = livery.materialSecondary.z;
-            sliderHelpers["SecondaryW"].sliderBar.valueRaw = livery.materialSecondary.w;
-            sliderHelpers["TertiaryX"].sliderBar.valueRaw = livery.materialTertiary.x;
-            sliderHelpers["TertiaryY"].sliderBar.valueRaw = livery.materialTertiary.y;
-            sliderHelpers["TertiaryZ"].sliderBar.valueRaw = livery.materialTertiary.z;
-            sliderHelpers["TertiaryW"].sliderBar.valueRaw = livery.materialTertiary.w;
-            sliderHelpers["EffectX"].sliderBar.valueRaw = livery.effect.x;
-            sliderHelpers["EffectY"].sliderBar.valueRaw = livery.effect.y;
-            sliderHelpers["EffectZ"].sliderBar.valueRaw = livery.effect.z;
-            sliderHelpers["EffectW"].sliderBar.valueRaw = livery.effect.w;
+            if (livery != null)
+            {
+                sliderHelpers["PrimaryR"].sliderBar.valueRaw = livery.colorPrimary.r;
+                sliderHelpers["PrimaryG"].sliderBar.valueRaw = livery.colorPrimary.g;
+                sliderHelpers["PrimaryB"].sliderBar.valueRaw = livery.colorPrimary.b;
+                sliderHelpers["PrimaryA"].sliderBar.valueRaw = livery.colorPrimary.a;
+                sliderHelpers["SecondaryR"].sliderBar.valueRaw = livery.colorSecondary.r;
+                sliderHelpers["SecondaryG"].sliderBar.valueRaw = livery.colorSecondary.g;
+                sliderHelpers["SecondaryB"].sliderBar.valueRaw = livery.colorSecondary.b;
+                sliderHelpers["SecondaryA"].sliderBar.valueRaw = livery.colorSecondary.a;
+                sliderHelpers["TertiaryR"].sliderBar.valueRaw = livery.colorTertiary.r;
+                sliderHelpers["TertiaryG"].sliderBar.valueRaw = livery.colorTertiary.g;
+                sliderHelpers["TertiaryB"].sliderBar.valueRaw = livery.colorTertiary.b;
+                sliderHelpers["TertiaryA"].sliderBar.valueRaw = livery.colorTertiary.a;
+                sliderHelpers["PrimaryX"].sliderBar.valueRaw = livery.materialPrimary.x;
+                sliderHelpers["PrimaryY"].sliderBar.valueRaw = livery.materialPrimary.y;
+                sliderHelpers["PrimaryZ"].sliderBar.valueRaw = livery.materialPrimary.z;
+                sliderHelpers["PrimaryW"].sliderBar.valueRaw = livery.materialPrimary.w;
+                sliderHelpers["SecondaryX"].sliderBar.valueRaw = livery.materialSecondary.x;
+                sliderHelpers["SecondaryY"].sliderBar.valueRaw = livery.materialSecondary.y;
+                sliderHelpers["SecondaryZ"].sliderBar.valueRaw = livery.materialSecondary.z;
+                sliderHelpers["SecondaryW"].sliderBar.valueRaw = livery.materialSecondary.w;
+                sliderHelpers["TertiaryX"].sliderBar.valueRaw = livery.materialTertiary.x;
+                sliderHelpers["TertiaryY"].sliderBar.valueRaw = livery.materialTertiary.y;
+                sliderHelpers["TertiaryZ"].sliderBar.valueRaw = livery.materialTertiary.z;
+                sliderHelpers["TertiaryW"].sliderBar.valueRaw = livery.materialTertiary.w;
+                sliderHelpers["EffectX"].sliderBar.valueRaw = livery.effect.x;
+                sliderHelpers["EffectY"].sliderBar.valueRaw = livery.effect.y;
+                sliderHelpers["EffectZ"].sliderBar.valueRaw = livery.effect.z;
+                sliderHelpers["EffectW"].sliderBar.valueRaw = livery.effect.w;
+            }
+
+            UpdateButtonColors();
+        }
+
+        //==============================================================================
+        static void UpdateButtonColors()
+        {
+            bool liveryDataIsModified = LiverySnapshotDB.IsCurrentLiveryModified();
+            bool liveryNameIsModified = (CIViewBaseLoadout.selectedUnitLivery != liveryNameInput.value);
+            bool liveryIsModifed = (liveryDataIsModified || liveryNameIsModified);
+
+            var saveIcon = saveLiveryButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (saveIcon != null)
+            {
+                if (liveryIsModifed &&
+                    (!DataMultiLinkerEquipmentLivery.data.ContainsKey(liveryNameInput.value) ||
+                    (LiverySnapshotDB.originalLiveries.ContainsKey(liveryNameInput.value) && LiverySnapshotDB.originalLiveries[liveryNameInput.value].ownedByLiveryGUI)))
+                {
+                    saveIcon.color = new Color(0.6f, 0.7f, 1f, 1f);
+                }
+                else
+                {
+                    saveIcon.color = grayedOutButtonColor;
+                }
+            }
+
+            var cloneIcon = cloneLiveryButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (cloneIcon != null)
+            {
+                if (liveryNameIsModified && !string.IsNullOrEmpty(liveryNameInput.value) && !DataMultiLinkerEquipmentLivery.data.ContainsKey(liveryNameInput.value))
+                {
+                    cloneIcon.color = new Color(0.5f, 0.8f, 1f, 1f);
+                }
+                else
+                {
+                    cloneIcon.color = grayedOutButtonColor;
+                }
+            }
         }
 
         //==============================================================================

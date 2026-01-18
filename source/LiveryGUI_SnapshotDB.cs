@@ -53,6 +53,12 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
+        public static bool LiveryDatsMatch(DataContainerEquipmentLivery a, DataContainerEquipmentLivery b)
+        {
+            return (JsonUtility.ToJson(a) == JsonUtility.ToJson(b)); // (may as well commit to the bit.)
+        }
+
+        //==============================================================================
         public static void AddLiveryDataSnapshot(string key, DataContainerEquipmentLivery liveryDat, bool liveryOwnedByLiveryGUI)
         {
             DoInitIfNecessary();
@@ -117,6 +123,30 @@ namespace LiveryGUIMod
                 }
                 originalLiveries[key].UpdateLiveryDatSnapshot(liveryDat);
             }
+        }
+
+        //==============================================================================
+        public static bool IsCurrentLiveryModified()
+        {
+            string key = CIViewBaseLoadout.selectedUnitLivery;
+
+            if (string.IsNullOrEmpty(key))
+                return false;
+
+            var liveryDict = DataMultiLinkerEquipmentLivery.data;
+            if (liveryDict == null || !liveryDict.ContainsKey(key) || liveryDict[key] == null)
+            {
+                Debug.Log($"[LiveryGUI] ERROR: IsCurrentLiveryModified(): DataMultiLinkerEquipmentLivery.data is null ({liveryDict == null}) or doesn't contain selected livery key (key={key}, present={liveryDict.ContainsKey(key)}) or the livery is null ({liveryDict[key] == null}).");
+                return false;
+            }
+
+            if (!originalLiveries.ContainsKey(key))
+            {
+                Debug.Log($"[LiveryGUI] BUG: IsCurrentLiveryModified(): originalLiveries DB doesn't contain key={key}");
+                return false;
+            }
+
+            return !LiveryDatsMatch(LiverySnapshotDB.originalLiveries[key].onDiskDat, DataMultiLinkerEquipmentLivery.data[key]);
         }
     }
 }
