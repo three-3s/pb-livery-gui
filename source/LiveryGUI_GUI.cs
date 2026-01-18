@@ -369,8 +369,8 @@ namespace LiveryGUIMod
 
             DataContainerEquipmentLivery newCopy;
 
-            string currentKey = CIViewBaseLoadout.selectedUnitLivery;
-            if (string.IsNullOrEmpty(currentKey) || !liveriesDict.TryGetValue(currentKey, out var original))
+            string origKey = CIViewBaseLoadout.selectedUnitLivery;
+            if (string.IsNullOrEmpty(origKey) || !liveriesDict.TryGetValue(origKey, out var original))
             {
                 newCopy = new DataContainerEquipmentLivery();
             }
@@ -386,23 +386,32 @@ namespace LiveryGUIMod
             liveriesDict[newKey] = newCopy;
             DataMultiLinkerEquipmentLivery.OnAfterDeserialization(); // (triggers rebuilding its .dataSorted)
 
+            Debug.Log($"[LiveryGUI] INFO: cloned livery {origKey} to {newKey}");
             return newKey;
         }
 
         //==============================================================================
         static void SelectLivery(string liveryKey)
         {
-            if (!string.IsNullOrEmpty(liveryKey))
+            //Debug.Log($"!!! trying to set selected key={liveryKey} (from {CIViewBaseLoadout.selectedUnitLivery}) and command loadoutView.Redraw()...");
+            if (string.IsNullOrEmpty(liveryKey))
             {
-                //Debug.Log($"!!! trying to clone livery... trying to set selected key={liveryKey} and command loadoutView.Redraw()...");
-                if (liveryKey != CIViewBaseLoadout.selectedUnitLivery) // (re-selecting the livery toggles off the selection)
-                {
-                    CIViewBaseLoadout.selectedUnitLivery = liveryKey;
-                    object[] args = { liveryKey };
-                    AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryAttachAttempt").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player clicks on a livery in the list)
-                }
-                CIViewBaseLoadout.ins.Redraw(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint, false);
+                if(!string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
+                    liveryKey = CIViewBaseLoadout.selectedUnitLivery; // This "re-selects" it, which per the below call to OnLiveryAttachAttempt, toggles/de-selects it. (Passing a null key gets ignored.)
+                // else: selected livery is already null
             }
+            else
+            {
+                if (liveryKey == CIViewBaseLoadout.selectedUnitLivery) // (avoid re-selecting the livery, which deselects/toggles-off the selection)
+                    liveryKey = null;
+                // else: go ahead and select the new liveryKey
+            }
+
+            CIViewBaseLoadout.selectedUnitLivery = liveryKey;
+            object[] args = { liveryKey };
+            AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryAttachAttempt").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player clicks on a livery in the list)
+
+            CIViewBaseLoadout.ins.Redraw(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint, false);
         }
 
         //==============================================================================
@@ -418,7 +427,7 @@ namespace LiveryGUIMod
         //==============================================================================
         static void ResetSlidersAndTextToMatchLivery(DataContainerEquipmentLivery livery)
         {
-            Debug.Log($"[LiveryGUI] DEBUG-SPAM: ResetSlidersAndTextToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");//todo.rem
+            //Debug.Log($"[LiveryGUI] DEBUG-SPAM: ResetSlidersAndTextToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");
             if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
             {
                 liveryNameInput.Set("null");
