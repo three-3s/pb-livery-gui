@@ -64,7 +64,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LiveryGUI_LoadAndSave.cs" />
+    <Compile Include="LiveryGUI_GUI.cs" />
     <Compile Include="LiveryGUI_ModLink.cs" />
+    <Compile Include="LiveryGUI_SnapshotDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
