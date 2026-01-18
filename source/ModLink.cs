@@ -3,6 +3,7 @@ using HarmonyLib;
 using PhantomBrigade;
 using PhantomBrigade.Data;
 using PhantomBrigade.Mods;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -32,18 +33,34 @@ using Debug = UnityEngine.Debug;
 //    hard to read. Would be nice to have some grouping for the bars. (There is spare space for
 //    more gaps.) And 'alpha' is distinct from the others so could be... diff color? width?
 
+// TODO.MVP:
+//  - Rename ModLinks.cs and ModExtensions?return true;
+//  - Write a metadata.yaml to suppress the startup-warning about the UserSaveData dir.
+//  - Minimum button readability: add tooltips (or convert to text-buttons).
+//  - Display the selected livery's name.
+
 // TODO:
-//  - Need to avoid modifying the built-in liveries. Would like a copy-to-new button. Maybe save
-//    all the liveries to a master .yml file in the AppData (or a folder with multiple). And load
-//    those at startup.
 //  - What are string contentSource and Vector4 contentParameters? There's also string source,
 //    which I'd assumed was metadata, but am less sure about now. E.g., decal-overlays stuff?
 //    Or maybe there's some tagging for usability by randomly generated hostiles?
 //    There's also hidden, textName, and priority (which I've ignored other than co-opting
 //    textName at least for now, to tie it to file-name)
+//     - Regarding contentSource, it might fail to load if it's not an expected source?
+//          bool flag3 = !string.IsNullOrEmpty(dataContainerEquipmentLivery.contentSource);
+//          if (!flag3 || SettingUtility.IsEntFound(dataContainerEquipmentLivery.contentSource))
+//             'addThatLiveryToLiveriesList' // (snipped from RedrawLiveryOptionsFull())
 //  - Decide whether overriding of existing built-in liveries should be permitted via this same
 //    'save-on-request and load-on-init' mechanism.
-//  - Add a text-box for showing-name-of & naming the livery.
+//  - Add a text-box for showing-name-of & renaming the livery.
+//  - Better button icons, probably with tooltips.
+//  - Save-status messages (success & failure).
+//  - Ideally would want to be able to delete liveries.
+//  - Maybe a button to open the directory containing the livery .yaml files?
+//  - Maybe mark the liveries in the selection-list eg with a different color if they've been
+//    created (or overwritten by) this mod?
+//  - Maybe add a tooltip to each livery-list button that is the livery's name?
+//  - There might be some desire to go beyond the value-limits currently hardcoded. E.g., maybe
+//    up to 3.0 instead of just 2.0. Or maybe some params are effective to much higher..?
 
 namespace ModExtensions
 {
@@ -64,7 +81,7 @@ namespace ModExtensions
         public override void OnLoad(Harmony harmonyInstance)
         {
             base.OnLoad(harmonyInstance);
-            Debug.Log($"OnLoad | Mod: {modID} | Index: {modIndexPreload} | Path: {modPath}");
+            //Debug.Log($"OnLoad | Mod: {modID} | Index: {modIndexPreload} | Path: {modPath}");
         }
 #endif
     }//class
@@ -99,6 +116,98 @@ namespace ModExtensions
         static CIButton toggleLiveryGUIButton;
         static CIButton cloneLiveryButton;
         static CIButton saveLiveryButton;
+
+        static string GetLiveryGUISaveDir()
+        {
+            //   !!! BYG states:
+            //   !!!   "Do not modify, create or edit files outside of AppData/Local/PhantomBrigade/Mods"
+            //
+            // Note: That is the local-mods directory, so maybe be careful about dumping user-data into the mod's own directory; e.g., maybe create a userSavedData under MyMod dir?
+            // Any dir created directly in Mods, PB might try to load as a mod. (Presumably it quickly gives up after it fails to find a metadata.yaml, but still.)
+            // But I don't want to have the Unity-app-PB-SDK "Export to user (deploy locally)" delete my saved data.
+            // So maybe modders could use a structure like AppData/Local/PhantomBrigade/Mods/UserSavedData/MyModAbc123? Hm.
+            //
+            // DO NOT USE: Application.persistentDataPath                          // DO NOT USE. under AppData/LocalLow   (eg /Brace Yourself Games/Phantom Brigade/Mods)
+            // DO NOT USE: DataPathHelper.GetModsFolder(ModFolderType.Application) // DO NOT USE. under steamapps/common/Phantom Brigade/Mods
+            // DO NOT USE: DataPathHelper.GetModsFolder(ModFolderType.Workshop)    // DO NOT USE. under steamapps/workshop/content/553540
+
+            //Debug.Log($"DataPathHelper.GetModsFolder(ModFolderType.User): {DataPathHelper.GetModsFolder(ModFolderType.User)}"); // under AppData/Local/PhantomBrigade/Mods
+
+            string localModsDir = DataPathHelper.GetModsFolder(ModFolderType.User); // .../AppData/Local/PhantomBrigade/Mods/
+            return Path.Combine(localModsDir, "UserSavedData", "LiveryGUI");
+        }
+
+
+        // Load all liveries the user previously saved to file.
+        //
+        // "Dear Harmony, please call into this OnInit class whenever DataMultiLinkerEquipmentLivery.OnAfterDeserialization() runs"
+        [HarmonyPatch(typeof(DataMultiLinkerEquipmentLivery), MethodType.Normal), HarmonyPatch("OnAfterDeserialization")]
+        public class OnInit
+        {
+            static bool loadedYet = false;
+
+            // "Dear Harmony, due to this function being named Prefix(), please call this function BEFORE that
+            //  DataMultiLinkerEquipmentLivery.OnAfterDeserialization() runs."
+            public static void Prefix() {
+                if (loadedYet)
+                    return;
+                loadedYet = true;
+
+                string liveryGUISaveDir = GetLiveryGUISaveDir();
+
+                if (!Directory.Exists(liveryGUISaveDir))
+                {
+                    Debug.Log($"[LiveryGUI] User-saved liveries directory doesn't exist yet (i.e., user hasn't saved any liveries yet; {liveryGUISaveDir}).");
+                    return;
+                }
+
+                var files = Directory.GetFiles(liveryGUISaveDir, "*.yaml");
+                if (files.Length == 0)
+                {
+                    Debug.Log($"[LiveryGUI] No user-saved livery files found (i.e., user hasn't saved any liveries yet; no *.yaml files in {liveryGUISaveDir}).");
+                    return;
+                }
+
+                var liveryDict = DataMultiLinkerEquipmentLivery.data;
+                int loadedCount = 0;
+
+                foreach (string path in files)
+                {
+                    try
+                    {
+                        var livery = UtilitiesYAML.LoadDataFromFile<DataContainerEquipmentLivery>(path, false, false);
+                        if (livery == null)
+                        {
+                            Debug.LogWarning($"[LiveryGUI] Failed to load livery from {path}");
+                            continue;
+                        }
+
+                        string key = Path.GetFileNameWithoutExtension(path);
+                        livery.key = key;
+
+                        if (string.IsNullOrEmpty(livery.textName))
+                            livery.textName = key;
+
+                        // Avoid collisions with base-game or other mods
+                        if (liveryDict.ContainsKey(livery.key))
+                        {
+                            Debug.LogWarning($"[LiveryGUI] Livery key already exists, skipping: {livery.key}");
+                            continue;
+                        }
+
+                        liveryDict[livery.key] = livery;
+                        loadedCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"[LiveryGUI] Exception loading livery file '{path}':\n{ex}");
+                    }
+                }
+
+                Debug.Log($"[LiveryGUI] Loaded {loadedCount} user-saved liveries.");
+            }
+        }
+
 
         // RedrawForLivery() gets invoked when navigating to the livery-select page, and when choosing a
         // different livery or livery-slot. We'll create (and repopulate values for) our livery sliders here.
@@ -272,7 +381,7 @@ namespace ModExtensions
                 SyncSlidersFromLivery(GetSelectedLivery());
             }//Postfix()
 
-            private static void UpdateWidgetPositioning(CIViewBaseLoadout __instance) {
+            static void UpdateWidgetPositioning(CIViewBaseLoadout __instance) {
                 var uiRoot = __instance.liveryRootObject.transform;
                 float uiScale = uiRoot.lossyScale.x;
                 UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
@@ -339,9 +448,9 @@ namespace ModExtensions
                 sliderHelpers["EffectW"].gameObject.transform.localPosition    = new Vector3(x[1], y[15]);
             }
             
-            public static string DuplicateSelectedLivery()
+            static string DuplicateSelectedLivery()
             {
-                Debug.Log($"!!! trying to clone livery...");
+                //Debug.Log($"!!! trying to clone livery...");
 
                 if (CIViewBaseLoadout.ins == null) return null;
 
@@ -354,7 +463,7 @@ namespace ModExtensions
                 }
                 else
                 {
-                    Debug.Log($"!!! trying to clone livery... start of nominal case");
+                    //Debug.Log($"!!! trying to clone livery... start of nominal case");
 
                     var liveriesDict = DataMultiLinkerEquipmentLivery.data;
                     if (!liveriesDict.TryGetValue(currentKey, out var original))
@@ -378,40 +487,28 @@ namespace ModExtensions
                 return newKey;
             }
 
-            public static string GetLiveryGUISaveDir()
-            {
-                //   !!! BYG states:
-                //   !!!   "Do not modify, create or edit files outside of AppData/Local/PhantomBrigade/Mods"
-                //
-                // Note: That is the local-mods directory, so maybe be careful about dumping user-data into the mod's own directory; e.g., maybe create a userSavedData under MyMod dir?
-                // Any dir created directly in Mods, PB might try to load as a mod. (Presumably it quickly gives up after it fails to find a metadata.yaml, but still.)
-                // But I don't want to have the Unity-app-PB-SDK "Export to user (deploy locally)" delete my saved data.
-                // So maybe modders could use a structure like AppData/Local/PhantomBrigade/Mods/UserSavedData/MyModAbc123? Hm.
-                //
-                // DO NOT USE: Application.persistentDataPath                          // DO NOT USE. under AppData/LocalLow   (eg /Brace Yourself Games/Phantom Brigade/Mods)
-                // DO NOT USE: DataPathHelper.GetModsFolder(ModFolderType.Application) // DO NOT USE. under steamapps/common/Phantom Brigade/Mods
-                // DO NOT USE: DataPathHelper.GetModsFolder(ModFolderType.Workshop)    // DO NOT USE. under steamapps/workshop/content/553540
-
-                //Debug.Log($"DataPathHelper.GetModsFolder(ModFolderType.User): {DataPathHelper.GetModsFolder(ModFolderType.User)}"); // under AppData/Local/PhantomBrigade/Mods
-
-                string localModsDir = DataPathHelper.GetModsFolder(ModFolderType.User); // .../AppData/Local/PhantomBrigade/Mods/
-                return Path.Combine(localModsDir, "UserSavedData", "LiveryGUI");
-            }
-
-            public static void SaveLiveryToFile(DataContainerEquipmentLivery liveryDat)
+            static void SaveLiveryToFile(DataContainerEquipmentLivery liveryDat)
             {
                 string liveryGUISaveDir = GetLiveryGUISaveDir();
                 Directory.CreateDirectory(liveryGUISaveDir);
 
                 string liveryFileName = liveryDat.textName + ".yaml"; //todo.robustify
-                UtilitiesYAML.SaveDataToFile(liveryGUISaveDir, liveryFileName, liveryDat, false);
+
+                try
+                {
+                    UtilitiesYAML.SaveDataToFile(liveryGUISaveDir, liveryFileName, liveryDat, false);
+                    Debug.Log($"[LiveryGUI] Saved {liveryFileName} to {liveryGUISaveDir}");
+                } catch(Exception ex)
+                {
+                    Debug.Log($"[LiveryGUI] Failed to save {liveryFileName} to {liveryGUISaveDir}:\n{ex}");
+                }
 
                 //todo.result, maybe in that little successfully-saved popup that shows up after saving game
             }
 
-            public static void SelectLivery(string liveryKey) {
+            static void SelectLivery(string liveryKey) {
                 if (!string.IsNullOrEmpty(liveryKey)) {
-                    Debug.Log($"!!! trying to clone livery... trying to set selected key={liveryKey} and command loadoutView.Redraw()...");
+                    //Debug.Log($"!!! trying to clone livery... trying to set selected key={liveryKey} and command loadoutView.Redraw()...");
                     CIViewBaseLoadout.selectedUnitLivery = liveryKey;
                     object[] args = { liveryKey };
                     AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryAttachAttempt").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player clicks on a livery in the list)
@@ -419,7 +516,7 @@ namespace ModExtensions
                 }
             }
 
-            private static DataContainerEquipmentLivery GetSelectedLivery()
+            static DataContainerEquipmentLivery GetSelectedLivery()
             {
                 string key = CIViewBaseLoadout.selectedUnitLivery;
                 if (string.IsNullOrEmpty(key))
