@@ -29,10 +29,6 @@ using Debug = UnityEngine.Debug;
 //     - https://wiki.braceyourselfgames.com/en/PhantomBrigade/Modding/ModSystem
 //
 
-// TODO.MVP (getting close; < 8 hours?):
-//  - confirm i'm not introducing any new 'crashes' in the player.log (via any mods)
-//  - PUBLISH (github + steam workshop)
-
 // BUGS:
 //  - The livery-name text-box is initially "-". Doing just about anything makes it work, but
 //    I haven't figured out how to get it to refresh or unstuck before whatever it is fixes it.
