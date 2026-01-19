@@ -70,8 +70,6 @@ using Debug = UnityEngine.Debug;
 //    selected (like is done for headerInputUnitName.isSelected in that module).
 //  - Might be nice to have the save/clone buttons go red if the name-input is modified but the
 //    name is not available. (But red would also be nice for a "revert" button being clickable.)
-//  - Might want to use consistent color for the clone/save buttons, probably blue (esp if using
-//    red).
 //
 // ADDITIONAL PB CODE REFERENCES:
 //  - PB's CIViewPauseSave.cs has a popup-dialog for confirmation of overwrite

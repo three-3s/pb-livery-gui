@@ -42,7 +42,10 @@ namespace LiveryGUIMod
         public static CIButton cloneLiveryButton;
         public static CIButton saveLiveryButton;
         public static UIInput liveryNameInput;
-        static Color grayedOutButtonColor = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+        static readonly Color activeButtonColor = new Color(0.6f, 0.7f, 1f, 1f);
+        static readonly Color grayedOutButtonColor = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+        static readonly Color activeButtonBGColor = new Color(0.25f, 0.36f, 0.58f, 0.7f);
+        static readonly Color grayedOutButtonBGColor = new Color(0.0f, 0.0f, 0.0f, 0.7f);
 
         //==============================================================================
         public static void RedrawLiveryGUI(CIViewBaseLoadout __instance)
@@ -501,30 +504,36 @@ namespace LiveryGUIMod
             bool liveryIsModifed = (liveryDataIsModified || liveryNameIsModified);
 
             var saveIcon = saveLiveryButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-            if (saveIcon != null)
+            var saveFillIdle = saveLiveryButton.gameObject.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+            if (saveIcon != null && saveFillIdle != null)
             {
                 if (liveryIsModifed &&
                     (!DataMultiLinkerEquipmentLivery.data.ContainsKey(liveryNameInput.value) ||
                     (LiverySnapshotDB.originalLiveries.ContainsKey(liveryNameInput.value) && LiverySnapshotDB.originalLiveries[liveryNameInput.value].ownedByLiveryGUI)))
                 {
-                    saveIcon.color = new Color(0.6f, 0.7f, 1f, 1f);
+                    saveIcon.color = activeButtonColor;
+                    saveFillIdle.color = activeButtonBGColor;
                 }
                 else
                 {
                     saveIcon.color = grayedOutButtonColor;
+                    saveFillIdle.color = grayedOutButtonBGColor;
                 }
             }
 
             var cloneIcon = cloneLiveryButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-            if (cloneIcon != null)
+            var cloneFillIdle = cloneLiveryButton.gameObject.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+            if (cloneIcon != null && cloneFillIdle != null)
             {
                 if (liveryNameIsModified && !string.IsNullOrEmpty(liveryNameInput.value) && !DataMultiLinkerEquipmentLivery.data.ContainsKey(liveryNameInput.value))
                 {
-                    cloneIcon.color = new Color(0.5f, 0.8f, 1f, 1f);
+                    cloneIcon.color = activeButtonColor;
+                    cloneFillIdle.color = activeButtonBGColor;
                 }
                 else
                 {
                     cloneIcon.color = grayedOutButtonColor;
+                    cloneFillIdle.color = grayedOutButtonBGColor;
                 }
             }
         }
