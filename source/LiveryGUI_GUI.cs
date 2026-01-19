@@ -357,7 +357,7 @@ namespace LiveryGUIMod
                 var liveryOptionInstances = (Dictionary<string, CIHelperLoadoutLivery>) AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")?.GetValue(CIViewBaseLoadout.ins);
                 if (liveryOptionInstances == null)
                 {
-                    Debug.Log($"[LiveryGUI] BUG: null liveryOptionInstances. isNull={AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")==null},{liveryOptionInstances==null}");
+                    Debug.Warning($"[LiveryGUI] BUG: null liveryOptionInstances. isNull={AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")==null},{liveryOptionInstances==null}");
                     return;
                 }
 
@@ -366,7 +366,7 @@ namespace LiveryGUIMod
                     CIHelperLoadoutLivery liveryHelper = item.Value;
                     if (key == null || liveryHelper == null)
                     {
-                        Debug.Log($"[LiveryGUI] BUG(?): null key/val encountered: {key}, valIsNull={liveryHelper==null}");
+                        Debug.Warning($"[LiveryGUI] BUG(?): null key/val encountered: {key}, valIsNull={liveryHelper==null}");
                         continue;
                     }
                     liveryHelper.button.tooltipUsed = true;
@@ -408,7 +408,7 @@ namespace LiveryGUIMod
 
             if (!DataMultiLinkerEquipmentLivery.data.ContainsKey(activeLiveryKeyForLookup))
             {
-                Debug.Log($"[LiveryGUI] BUG: Couldn't find DataMultiLinkerEquipmentLivery.data key={activeLiveryKeyForLookup}");
+                Debug.LogWarning($"[LiveryGUI] BUG: Couldn't find DataMultiLinkerEquipmentLivery.data key={activeLiveryKeyForLookup}");
             }
             else
             {
@@ -441,6 +441,7 @@ namespace LiveryGUIMod
                 dstLivery.effect.y            = origLivery.effect.y;
                 dstLivery.effect.z            = origLivery.effect.z;
                 dstLivery.effect.w            = origLivery.effect.w;
+                CIViewOverworldLog.AddMessage($"Reset livery to last saved version. [sp=s_icon_l32_retreat]");
             }
 
             RefreshSphereAndMechPreviews();
@@ -458,7 +459,8 @@ namespace LiveryGUIMod
 
             if (liveriesDict.ContainsKey(newKey))
             {
-                Debug.Log($"[LiveryGUI] USAGE: Refusing to clone livery {newKey}: That key already exists.");
+                Debug.LogWarning($"[LiveryGUI] USAGE: Refusing to clone livery {newKey}: That key already exists.");
+                CIViewOverworldLog.AddMessage($"No. A livery with that Name already exists. [sp=s_icon_l32_cancel]");
                 return null;
             }
 
@@ -484,13 +486,13 @@ namespace LiveryGUIMod
             LiverySnapshotDB.AddLiveryDataSnapshot(newKey, newCopy, true);
 
             Debug.Log($"[LiveryGUI] INFO: cloned livery {origKey} to {newKey}");
+            CIViewOverworldLog.AddMessage($"Created a new copy of that livery. [sp=s_icon_l32_lc_grid_plus]");
             return newKey;
         }
 
         //==============================================================================
         static void SelectLivery(string liveryKey)
         {
-            //Debug.Log($"!!! trying to set selected key={liveryKey} (from {CIViewBaseLoadout.selectedUnitLivery}) and command loadoutView.Redraw()...");
             if (string.IsNullOrEmpty(liveryKey))
             {
                 if(!string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))

@@ -34,6 +34,7 @@ namespace LiveryGUIMod
 
             var liveryDict = DataMultiLinkerEquipmentLivery.data;
             int loadedCount = 0;
+            int failCount = 0;
 
             foreach (string path in files)
             {
@@ -43,6 +44,7 @@ namespace LiveryGUIMod
                     if (livery == null)
                     {
                         Debug.LogWarning($"[LiveryGUI] WARNING: Failed to load livery from {path}");
+                        failCount++;
                         continue;
                     }
 
@@ -56,6 +58,7 @@ namespace LiveryGUIMod
                     if (liveryDict.ContainsKey(livery.key))
                     {
                         Debug.LogWarning($"[LiveryGUI] WARNING: Livery key already exists, skipping: {livery.key}");
+                        failCount++;
                         continue;
                     }
 
@@ -67,10 +70,15 @@ namespace LiveryGUIMod
                 catch (Exception ex)
                 {
                     Debug.LogError($"[LiveryGUI] WARNING: Exception loading livery file '{path}':\n{ex}");
+                    failCount++;
                 }
             }
 
             Debug.Log($"[LiveryGUI] INFO: Loaded {loadedCount} user-saved liveries. Total liveries: {liveryDict.Count} (though some may be hidden from player-selection list)");
+            if (failCount > 0)
+            {
+                CIViewOverworldLog.AddMessage($"LiveryGUI: Failed to load {failCount} liveries. See Player.log for more info. [sp=s_text_24_exclamation]");
+            }
         }
 
         //==============================================================================
@@ -78,8 +86,8 @@ namespace LiveryGUIMod
         {
             if (LiverySnapshotDB.originalLiveries.ContainsKey(key) && !LiverySnapshotDB.originalLiveries[key].ownedByLiveryGUI)
             {
-                Debug.Log($"[LiveryGUI] USAGE: Refusing to save to this livery key/name because LiveryGUI does not own that livery. You need to clone the livery to a new key/name. key={key}");
-                //todo.status-msg-popup
+                Debug.LogWarning($"[LiveryGUI] USAGE: Refusing to save to this livery key/name because LiveryGUI does not own that livery. You need to clone the livery to a new key/name. key={key}");
+                CIViewOverworldLog.AddMessage($"No. LiveryGUI does not own the livery with that Name. [sp=s_icon_l32_cancel]");
                 return;
             }
 
@@ -93,10 +101,12 @@ namespace LiveryGUIMod
                 UtilitiesYAML.SaveDataToFile(liveryGUISaveDir, liveryFileName, liveryDat, false);
                 Debug.Log($"[LiveryGUI] INFO: Saved {liveryFileName} to {liveryGUISaveDir}");
                 LiverySnapshotDB.AddOrUpdateSnapshot(key, liveryDat);
+                CIViewOverworldLog.AddMessage($"Saved livery. [sp=s_icon_m_save5]");
             }
             catch (Exception ex)
             {
-                Debug.Log($"[LiveryGUI] WARNING: Failed to save {liveryFileName} to {liveryGUISaveDir}:\n{ex}");
+                Debug.LogError($"[LiveryGUI] WARNING: Failed to save {liveryFileName} to {liveryGUISaveDir}:\n{ex}");
+                CIViewOverworldLog.AddMessage($"Failed to save. See Player.log for more info. [sp=s_text_24_exclamation]");
             }
         }
 

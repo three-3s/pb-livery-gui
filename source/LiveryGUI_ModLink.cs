@@ -30,8 +30,6 @@ using Debug = UnityEngine.Debug;
 //
 
 // TODO.MVP (getting close; < 8 hours?):
-//  - add buttons to revert-livery-to-snapshot (probably including name-input-box).
-//  - add text-popup on saved successfully or failed-and-why eg we-don't-own-the-key.
 //  - confirm i'm not introducing any new 'crashes' in the player.log (via any mods)
 //  - PUBLISH (github + steam workshop)
 

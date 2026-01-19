@@ -62,12 +62,12 @@ namespace LiveryGUIMod
             DoInitIfNecessary();
             if (string.IsNullOrEmpty(key) || liveryDat == null)
             {
-                Debug.Log($"[LiveryGUI] BUG: AddLiveryDataSnapshot(): key/dat is null? {key}, liverDat_null={liveryDat == null}");
+                Debug.LogWarning($"[LiveryGUI] BUG: AddLiveryDataSnapshot(): key/dat is null? {key}, liverDat_null={liveryDat == null}");
                 return;
             }
             if (originalLiveries.ContainsKey(key))
             {
-                Debug.Log($"[LiveryGUI] BUG: AddLiveryDataSnapshot(): key already exists?: {key}");
+                Debug.LogWarning($"[LiveryGUI] BUG: AddLiveryDataSnapshot(): key already exists?: {key}");
                 return;
             }
             LiveryOriginalState newRec = new LiveryOriginalState(liveryOwnedByLiveryGUI, liveryDat);
@@ -81,7 +81,7 @@ namespace LiveryGUIMod
             var liveryDict = DataMultiLinkerEquipmentLivery.data;
             if (liveryDict == null)
             {
-                Debug.Log($"[LiveryGUI] ERROR: SnapshotInitialLiveries(): DataMultiLinkerEquipmentLivery.data is null");
+                Debug.LogError($"[LiveryGUI] ERROR: SnapshotInitialLiveries(): DataMultiLinkerEquipmentLivery.data is null");
                 return;
             }
 
@@ -93,12 +93,12 @@ namespace LiveryGUIMod
                 DataContainerEquipmentLivery liveryDat = item.Value;
                 if (key == null || liveryDat == null)
                 {
-                    Debug.Log($"[LiveryGUI] BUG: SnapshotInitialLiveries(): null key/val encountered: key={key}, valIsNull={liveryDat == null}");
+                    Debug.LogWarning($"[LiveryGUI] BUG: SnapshotInitialLiveries(): null key/val encountered: key={key}, valIsNull={liveryDat == null}");
                     continue;
                 }
                 if (originalLiveries.ContainsKey(key))
                 {
-                    Debug.Log($"[LiveryGUI] BUG: SnapshotInitialLiveries(): key already exists?: {key}");
+                    Debug.LogWarning($"[LiveryGUI] BUG: SnapshotInitialLiveries(): key already exists?: {key}");
                     continue;
                 }
                 AddLiveryDataSnapshot(key, liveryDat, false);
@@ -116,7 +116,7 @@ namespace LiveryGUIMod
             {
                 if(!originalLiveries[key].ownedByLiveryGUI)
                 {
-                    Debug.Log($"[LiveryGUI] BUG: AddOrUpdateSnapshot(): key already exists, but LiverGUI mod does not own it?: {key}");
+                    Debug.LogWarning($"[LiveryGUI] BUG: AddOrUpdateSnapshot(): key already exists, but LiverGUI mod does not own it?: {key}");
                     return;
                 }
                 originalLiveries[key].UpdateLiveryDatSnapshot(liveryDat);
@@ -134,13 +134,13 @@ namespace LiveryGUIMod
             var liveryDict = DataMultiLinkerEquipmentLivery.data;
             if (liveryDict == null || !liveryDict.ContainsKey(key) || liveryDict[key] == null)
             {
-                Debug.Log($"[LiveryGUI] ERROR: IsCurrentLiveryModified(): DataMultiLinkerEquipmentLivery.data is null ({liveryDict == null}) or doesn't contain selected livery key (key={key}, present={liveryDict.ContainsKey(key)}) or the livery is null ({liveryDict[key] == null}).");
+                Debug.LogError($"[LiveryGUI] ERROR: IsCurrentLiveryModified(): DataMultiLinkerEquipmentLivery.data is null ({liveryDict == null}) or doesn't contain selected livery key (key={key}, present={liveryDict.ContainsKey(key)}) or the livery is null ({liveryDict[key] == null}).");
                 return false;
             }
 
             if (!originalLiveries.ContainsKey(key))
             {
-                Debug.Log($"[LiveryGUI] BUG: IsCurrentLiveryModified(): originalLiveries DB doesn't contain key={key}");
+                Debug.LogWarning($"[LiveryGUI] BUG: IsCurrentLiveryModified(): originalLiveries DB doesn't contain key={key}");
                 return false;
             }
 
