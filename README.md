@@ -12,7 +12,7 @@ These liveries are saved to a single common location, and are usable across all 
 
 Created after Phantom Brigade v2.0.
 
-Steam Workshop page: https:// TODO
+[Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996)
 
 
 
