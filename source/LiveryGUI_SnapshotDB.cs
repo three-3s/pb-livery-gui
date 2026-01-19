@@ -15,7 +15,8 @@ namespace LiveryGUIMod
     // database of snapshots of initial/last-saved-to-disk state for each livery
     public class LiverySnapshotDB
     {
-        public static Dictionary<string, LiveryOriginalState> originalLiveries; // key = livery's key
+        public static Dictionary<string, LiveryOriginalState> originalLiveries = new Dictionary<string, LiveryOriginalState>(); // key = livery's key
+        public readonly static LiveryOriginalState defaultLivery = new LiveryOriginalState(false, new DataContainerEquipmentLivery()); // for null livery
 
         //==============================================================================
         public class LiveryOriginalState
@@ -40,10 +41,7 @@ namespace LiveryGUIMod
         //==============================================================================
         static void DoInitIfNecessary()
         {
-            if (originalLiveries == null)
-            {
-                originalLiveries = new Dictionary<string, LiveryOriginalState>();
-            }
+            // no-op
         }
 
         //==============================================================================

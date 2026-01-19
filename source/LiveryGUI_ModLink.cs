@@ -33,7 +33,6 @@ using Debug = UnityEngine.Debug;
 //  - add buttons to revert-livery-to-snapshot (probably including name-input-box).
 //  - add text-popup on saved successfully or failed-and-why eg we-don't-own-the-key.
 //  - confirm i'm not introducing any new 'crashes' in the player.log (via any mods)
-//  - commit to or change away from using the AppData/Local mods folder
 //  - PUBLISH (github + steam workshop)
 
 // BUGS:
@@ -70,6 +69,13 @@ using Debug = UnityEngine.Debug;
 //    selected (like is done for headerInputUnitName.isSelected in that module).
 //  - Might be nice to have the save/clone buttons go red if the name-input is modified but the
 //    name is not available. (But red would also be nice for a "revert" button being clickable.)
+//  - It seems like the liveryKey=null should map to "default" (?). But that's not hooked up right
+//    now, and the sliders do nothing for the null livery. No reason that case couldn't be made
+//    to work, though it'd possibly affect many operations needing to know that null="default"
+//    mapping.
+//
+// ADDITIONAL POSSIBLE IMPROVEMENTS:
+//  - There's a fair amount of brute-force item-by-item a.primR=b.primR,a.primG=b.primG etc.
 //
 // ADDITIONAL PB CODE REFERENCES:
 //  - PB's CIViewPauseSave.cs has a popup-dialog for confirmation of overwrite
