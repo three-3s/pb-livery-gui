@@ -1,5 +1,5 @@
 priority: 0
-colorHue: 0.111
+colorHue: 0.55
 id: LiveryGUI
 ver: 0.1
 url: 
@@ -12,10 +12,10 @@ includesLocalizationEdits: false
 includesLocalizations: false
 includesAssetBundles: false
 gameVersion2Compatible: true
-gameVersionMin: 1.0
+gameVersionMin: 2.0
 gameVersionMax: 
 name: Livery GUI
 desc: >-
-  This mod provides an in-game GUI for adjusting mech livery parameters. TODO FULLER FEATURES DESC.
+  This mod provides an in-game GUI for adjusting mech livery parameters. Go to the base's livery selection menu, click the new "sliders" button to toggle on the new GUI. Select a starting livery. Type in a new name, and click the 'clone' button (the 2x2-grid-with-a-plus-sign). Adjust the sliders. Click the 'save' button. There is also a button for 'reset to last saved version of this livery'.
 
-  (Source code: todo)
+  (Source code: https://github.com/three-3s/pb-livery-gui)
