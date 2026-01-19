@@ -4,15 +4,29 @@
 
 ## Overview
 
-This mod provides an in-game GUI for adjusting mech livery parameters.
+In the base game, mech paint schemes (“liveries”) are limited to pre-set color and material combinations.
 
-Go to the base's livery selection menu, click the new "sliders" button to toggle on the new GUI. Select a starting livery. Type in a new name, and click the 'clone' button (the 2x2-grid-with-a-plus-sign). Adjust the sliders. Click the 'save' button. There is also a button for 'reset to last saved version of this livery'.
+This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+
+Basic usage
+
+1. Go to the Base.
+2. Select a Mech, then open the Livery selection page.
+3. Click the new “Sliders” button to toggle the livery editor UI.
+4. Select an existing livery to use as a starting point.
+5. Enter a new name, then click the Clone button (the 2×2 grid with a “+” icon).
+6. Adjust colors and material settings using the sliders.
+7. Click Save to store the livery.
+
+Additional controls:
+
+* Reset: Reverts the current livery to its last saved state.
 
 These liveries are saved to a single common location, and are usable across all save games on that machine.
 
 Created after Phantom Brigade v2.0.
 
-[Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996)
+([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
 
 
 
