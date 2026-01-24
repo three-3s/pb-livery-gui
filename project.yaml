@@ -6,7 +6,9 @@ workshop:
   title: 
   description: 
   internalData: 
-  changes: 'v0.1: Initial release.'
+  changes: |
+    'v1.0: Sliders for Supporter Upgrade DLC (*no effect without that DLC). Adjusted some slider ranges.'
+    'v0.1: Initial release.'
   tags:
   - Customization
   - UI

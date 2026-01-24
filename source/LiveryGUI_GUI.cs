@@ -12,8 +12,12 @@ using Debug = UnityEngine.Debug;
 
 namespace LiveryGUIMod
 {
-    // marker for whether we've initialized our LiveryGUI sliders into a given root-GUI-thingy yet
-    class LiveryAdvancedPaneMarker : MonoBehaviour { } // todo: defunct?
+    public enum SliderKind
+    {
+        Continuous,
+        Discrete,
+        // Toggle -- supported by the 'helper', but not needed/implemented in LiveryGUI
+    }
 
     // each of these is used to initialize one slider-bar
     public class SliderConfig
@@ -23,13 +27,34 @@ namespace LiveryGUIMod
         public Color fillColor;
         public float min;
         public float max;
-        public SliderConfig(string nameIn, string labelIn, Color fillColorIn, float minIn = 0f, float maxIn = 1f)
+        public SliderKind sliderKind;
+        public SliderConfig(string nameIn, string labelIn, Color fillColorIn, float minIn = 0f, float maxIn = 1f, SliderKind sliderKindIn = SliderKind.Continuous)
         {
             name = nameIn;
             label = labelIn;
             fillColor = fillColorIn;
             min = minIn;
             max = maxIn;
+            sliderKind = sliderKindIn;
+        }
+    }
+
+    // relating the SliderKind.Discrete selection to the livery's float contentParameters.w
+    public class ContentW
+    {
+        public static string[] names = { "none (w=0.0)", "dots (w=1.0)", "lines (w=2.0)", "sheen (w=3.0)" };
+        public static int idx = 0;
+        public static void SetLevel(float val)
+        {
+            idx = (int) Math.Min(Math.Max(0f, val + 0.1f), (float)names.Length - 1f);
+        }
+        public static float GetLevelValue()
+        {
+            return (float)idx;
+        }
+        public static string GetLevelName()
+        {
+            return names[idx];
         }
     }
 
@@ -65,15 +90,16 @@ namespace LiveryGUIMod
 
                 paneGO = new GameObject("LiveryAdvancedPane");
                 paneGO.transform.SetParent(uiRoot, false);
-                paneGO.AddComponent<LiveryAdvancedPaneMarker>();
                 paneGO.transform.localPosition = new Vector3(0f, 0f, 0f);
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // slider-bars for customizing the current livery
                 const float loC = 0f; // min color-slider val (color-component < 0 causes the whole color to be black)
-                const float hiC = 2f; // max color-slider val
-                const float loNC = -2f; // min non-color-slider
-                const float hiNC = 2f; // max non-color-slider
+                const float hiC = +2f; // max color-slider val
+                const float loS = -0.5f; // min shininess
+                const float hiS = +1.5f; // max shininess
+                const float loNC = -5f; // min non-color-slider
+                const float hiNC = +5f; // max non-color-slider
                 Color R = new Color(0.6f, 0.1f, 0.1f, 0.5f);
                 Color G = new Color(0.1f, 0.6f, 0.1f, 0.5f);
                 Color B = new Color(0.1f, 0.1f, 0.8f, 0.5f);
@@ -92,17 +118,21 @@ namespace LiveryGUIMod
                         { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",  G, loC,  hiC) },
                         { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",  B, loC,  hiC) },
                         { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  A, loNC, hiNC) },
-                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",   A, loNC, hiNC) },
-                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",   A, loNC, hiNC) },
-                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",   A, loNC, hiNC) },
+                        { "ContentX",   new SliderConfig("ContentX",   "Supporter DLC X", R, loNC, hiNC) },
+                        { "ContentY",   new SliderConfig("ContentY",   "Supporter DLC Y", G, loNC, hiNC) },
+                        { "ContentZ",   new SliderConfig("ContentZ",   "Supporter DLC Z", B, loNC, hiNC) },
+                        { "ContentW",   new SliderConfig("ContentW",   "Supporter DLC W", A, loNC, hiNC, SliderKind.Discrete) },
+                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",   A, loS,  hiS)  },
+                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",   A, loS,  hiS)  },
+                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",   A, loS,  hiS)  },
                         { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",   B, loNC, hiNC) },
-                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X", A, loNC, hiNC) },
-                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y", A, loNC, hiNC) },
-                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z", A, loNC, hiNC) },
+                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X", A, loS,  hiS)  },
+                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y", A, loS,  hiS)  },
+                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z", A, loS,  hiS)  },
                         { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W", B, loNC, hiNC) },
-                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",  A, loNC, hiNC) },
-                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",  A, loNC, hiNC) },
-                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",  A, loNC, hiNC) },
+                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",  A, loS,  hiS)  },
+                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",  A, loS,  hiS)  },
+                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",  A, loS,  hiS)  },
                         { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",  B, loNC, hiNC) },
                         { "EffectX",    new SliderConfig("EffectX",    "Effect X",    A, loNC, hiNC) },
                         { "EffectY",    new SliderConfig("EffectY",    "Effect Y",    A, loNC, hiNC) },
@@ -144,9 +174,34 @@ namespace LiveryGUIMod
                         RefreshSphereAndMechPreviews();
                     }, 0f);
 
-                    helper.toggleHolder.SetActive(false);
+                    // which aspect of the widget should be visible
+                    helper.sliderHolder.SetActive(false);
                     helper.levelHolder.SetActive(false);
-                    helper.sliderHolder.SetActive(true); // (affects visibility of the sliderBar itself)
+                    helper.toggleHolder.SetActive(false);
+                    if (cfg.sliderKind == SliderKind.Continuous)
+                    {
+                        helper.sliderHolder.SetActive(true);
+                    } else if (cfg.sliderKind == SliderKind.Discrete) {
+                        helper.levelHolder.SetActive(true);
+                        helper.levelHolder.transform.localPosition = sliderLocalPos + new Vector3(68f, 5f);
+                        helper.levelButtonLeft.transform.localPosition += new Vector3(68f, -5f);
+                        helper.levelButtonRight.transform.localPosition += new Vector3(-68f, -5f);
+                        //helper.sharedSpriteGradient.transform.localScale = new Vector3(0.518f, 0.919f); // not sure changing the sharedSpriteGradient doesn't affect Options menu
+                        //helper.sharedSpriteGradient.SetRGBColor(new Color(0.0f, 0.0f, 0.0f, 1f)); // very faint
+                        //helper.sharedSpriteGradient.gameObject.SetActive(true);
+                        helper.levelButtonLeft.callbackOnClick = new UICallback(() =>
+                        {
+                            ContentW.idx = (ContentW.idx - 1 + ContentW.names.Length) % ContentW.names.Length;
+                            UpdateLiveryFromSliders();
+                            RefreshSphereAndMechPreviews();
+                        });
+                        helper.levelButtonRight.callbackOnClick = new UICallback(() =>
+                        {
+                            ContentW.idx = (ContentW.idx + 1) % ContentW.names.Length;
+                            UpdateLiveryFromSliders();
+                            RefreshSphereAndMechPreviews();
+                        });
+                    }
 
                     sliderHelpers.Add(key, helper);
                 }
@@ -181,6 +236,7 @@ namespace LiveryGUIMod
                     SelectLivery(origLiveryKey);
                     liveryNameInput.ForceSelection(true);
                     liveryNameInput.ForceSelection(false);
+                    liveryNameInput.label.MarkAsChanged();
                     RefreshSphereAndMechPreviews();
                     UpdateLiveryListTooltips();
                     UpdateWidgetPositioning(__instance);
@@ -332,6 +388,10 @@ namespace LiveryGUIMod
             sliderHelpers["TertiaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[9]);
             sliderHelpers["TertiaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[10]);
             sliderHelpers["TertiaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[11]);
+            sliderHelpers["ContentX"].gameObject.transform.localPosition = new Vector3(x[0], y[12]);
+            sliderHelpers["ContentY"].gameObject.transform.localPosition = new Vector3(x[0], y[13]);
+            sliderHelpers["ContentZ"].gameObject.transform.localPosition = new Vector3(x[0], y[14]);
+            sliderHelpers["ContentW"].gameObject.transform.localPosition = new Vector3(x[0], y[15]);
             sliderHelpers["PrimaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[0]);
             sliderHelpers["PrimaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[1]);
             sliderHelpers["PrimaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[2]);
@@ -425,6 +485,10 @@ namespace LiveryGUIMod
                 dstLivery.colorTertiary.g     = origLivery.colorTertiary.g;
                 dstLivery.colorTertiary.b     = origLivery.colorTertiary.b;
                 dstLivery.colorTertiary.a     = origLivery.colorTertiary.a;
+                dstLivery.contentParameters.x = origLivery.contentParameters.x;
+                dstLivery.contentParameters.y = origLivery.contentParameters.y;
+                dstLivery.contentParameters.z = origLivery.contentParameters.z;
+                dstLivery.contentParameters.w = origLivery.contentParameters.w;
                 dstLivery.materialPrimary.x   = origLivery.materialPrimary.x;
                 dstLivery.materialPrimary.y   = origLivery.materialPrimary.y;
                 dstLivery.materialPrimary.z   = origLivery.materialPrimary.z;
@@ -551,6 +615,10 @@ namespace LiveryGUIMod
                 sliderHelpers["TertiaryG"].sliderBar.valueRaw = livery.colorTertiary.g;
                 sliderHelpers["TertiaryB"].sliderBar.valueRaw = livery.colorTertiary.b;
                 sliderHelpers["TertiaryA"].sliderBar.valueRaw = livery.colorTertiary.a;
+                sliderHelpers["ContentX"].sliderBar.valueRaw = livery.contentParameters.x;
+                sliderHelpers["ContentY"].sliderBar.valueRaw = livery.contentParameters.y;
+                sliderHelpers["ContentZ"].sliderBar.valueRaw = livery.contentParameters.z;
+                //sliderHelpers["ContentW"].sliderBar.valueRaw = livery.contentParameters.w;
                 sliderHelpers["PrimaryX"].sliderBar.valueRaw = livery.materialPrimary.x;
                 sliderHelpers["PrimaryY"].sliderBar.valueRaw = livery.materialPrimary.y;
                 sliderHelpers["PrimaryZ"].sliderBar.valueRaw = livery.materialPrimary.z;
@@ -567,6 +635,10 @@ namespace LiveryGUIMod
                 sliderHelpers["EffectY"].sliderBar.valueRaw = livery.effect.y;
                 sliderHelpers["EffectZ"].sliderBar.valueRaw = livery.effect.z;
                 sliderHelpers["EffectW"].sliderBar.valueRaw = livery.effect.w;
+
+                ContentW.SetLevel(livery.contentParameters.w);
+                sliderHelpers["ContentW"].levelLabel.text = ContentW.GetLevelName();
+                sliderHelpers["ContentW"].levelLabel.MarkAsChanged();
             }
 
             UpdateButtonColors();
@@ -648,6 +720,10 @@ namespace LiveryGUIMod
             livery.colorTertiary.g = sliderHelpers["TertiaryG"].sliderBar.valueRaw;
             livery.colorTertiary.b = sliderHelpers["TertiaryB"].sliderBar.valueRaw;
             livery.colorTertiary.a = sliderHelpers["TertiaryA"].sliderBar.valueRaw;
+            livery.contentParameters.x = sliderHelpers["ContentX"].sliderBar.valueRaw;
+            livery.contentParameters.y = sliderHelpers["ContentY"].sliderBar.valueRaw;
+            livery.contentParameters.z = sliderHelpers["ContentZ"].sliderBar.valueRaw;
+            //livery.contentParameters.w = sliderHelpers["ContentW"].sliderBar.valueRaw;
             livery.materialPrimary.x = sliderHelpers["PrimaryX"].sliderBar.valueRaw;
             livery.materialPrimary.y = sliderHelpers["PrimaryY"].sliderBar.valueRaw;
             livery.materialPrimary.z = sliderHelpers["PrimaryZ"].sliderBar.valueRaw;
@@ -664,6 +740,8 @@ namespace LiveryGUIMod
             livery.effect.y = sliderHelpers["EffectY"].sliderBar.valueRaw;
             livery.effect.z = sliderHelpers["EffectZ"].sliderBar.valueRaw;
             livery.effect.w = sliderHelpers["EffectW"].sliderBar.valueRaw;
+
+            livery.contentParameters.w = ContentW.GetLevelValue();
         }
 
         //==============================================================================

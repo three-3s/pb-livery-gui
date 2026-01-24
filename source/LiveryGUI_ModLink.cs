@@ -29,40 +29,38 @@ using Debug = UnityEngine.Debug;
 //     - https://wiki.braceyourselfgames.com/en/PhantomBrigade/Modding/ModSystem
 //
 
+// PRIORITY ITEMS:
+//  - This may or may not need some future proofing. E.g., copy the definition of the Serializable
+//    Data-livery container, so we can always load the consistently-defined version, then copy
+//    the values over item-by-item into an actual Livery. Or maybe it's OK to let the liveries
+//    fail to load if they change the livery definition. But I'm a bit concerned they could make
+//    a trivial change that would break the livery-loading. Presumably there's a safer pipeline
+//    built into the game. TODO: At least test it and confirm that eg adding/removing/renaming a
+//    field from the yaml does in fact prevent the livery from loading.
+
 // BUGS:
 //  - The livery-name text-box is initially "-". Doing just about anything makes it work, but
 //    I haven't figured out how to get it to refresh or unstuck before whatever it is fixes it.
+//    Sort of worked around by making the text field visible before 'show GUI' is clicked.
 
 // TODO.post-release:
-//  - What are string contentSource and Vector4 contentParameters? There's also string source,
-//    which I'd assumed was metadata, but am less sure about now. E.g., decal-overlays stuff?
-//    Or maybe there's some tagging for usability by randomly generated hostiles?
-//    There's also hidden, textName, and priority (which I've ignored other than co-opting
-//    textName at least for now, to tie it to file-name)
-//     - Regarding contentSource, it might fail to load if it's not an expected source?
-//          bool flag3 = !string.IsNullOrEmpty(dataContainerEquipmentLivery.contentSource);
-//          if (!flag3 || SettingUtility.IsEntFound(dataContainerEquipmentLivery.contentSource))
-//             'addThatLiveryToLiveriesList' // (snipped from RedrawLiveryOptionsFull())
-//  - Decide whether overriding of existing built-in liveries should be permitted via this same
-//    'save-on-request and load-on-init' mechanism.
-//  - Add a text-box for showing-name-of & renaming the livery.
-//  - Better button icons, probably with tooltips.
-//  - Save-status messages (success & failure).
+//  - Might be nice to apply exponential scaling curve to slider values, though that might need
+//    to be more or less built-in (or implemented into the slider).
+//  - Consider adding tooltips to buttons.
 //  - Ideally would want to be able to delete liveries.
 //  - Maybe a button to open the directory containing the livery .yaml files?
 //  - Maybe mark the liveries in the selection-list eg with a different color if they've been
-//    created (or overwritten by) this mod?
+//    created (or overwritten by) this mod? Or have unsaved changes?
 //  - There might be some desire to go beyond the value-limits currently hardcoded. E.g., maybe
 //    up to 3.0 instead of just 2.0. Or maybe some params are effective to much higher..?
+//    Could/should at least let it support not-clamping upon load just to fit in the slider
+//    limits. But maybe it would be possible to create a set of widgets where you could specify
+//    min/max limits, activate picker mode, and apply those limits to any clicked-on sliders.
 //  - Fix the label above the text input field from "Name" to eg "Livery Name".
 //  - Remove the forced-capitalization on the text input field. (Seems to only affect display,
 //    not the actual string.)
-//  - Fix how 'select the already-existing key-livery when cloning but key already exists': this
-//    actual toggles-off if the currently selected livery is this newKey.
 //  - Prefix-intercept and prevent CIViewBaseLoadout.UpdateCamera when the text-input field is
 //    selected (like is done for headerInputUnitName.isSelected in that module).
-//  - Might be nice to have the save/clone buttons go red if the name-input is modified but the
-//    name is not available. (But red would also be nice for a "revert" button being clickable.)
 //  - It seems like the liveryKey=null should map to "default" (?). But that's not hooked up right
 //    now, and the sliders do nothing for the null livery. No reason that case couldn't be made
 //    to work, though it'd possibly affect many operations needing to know that null="default"
@@ -70,15 +68,6 @@ using Debug = UnityEngine.Debug;
 //
 // ADDITIONAL POSSIBLE IMPROVEMENTS:
 //  - There's a fair amount of brute-force item-by-item a.primR=b.primR,a.primG=b.primG etc.
-//
-// ADDITIONAL PB CODE REFERENCES:
-//  - PB's CIViewPauseSave.cs has a popup-dialog for confirmation of overwrite
-//  - PB's DataManagerSave.DoSave presumably is responsible for the "Successfully saved" info-box:
-//			DataHelperSaveSerialization.NewFormatSave(savePath);
-//          if (DataManagerSave.saveNotificationUsed && Application.isPlaying)
-//          {
-//              CIViewOverworldLog.AddMessage(Txt.Get("ui_pause", "save_notification_confirmed", false) + " [sp=s_icon_m_save5]", true, -1f);
-//          }
 
 namespace LiveryGUIMod
 {
