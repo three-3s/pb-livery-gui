@@ -98,6 +98,8 @@ namespace LiveryGUIMod
                 const float hiC = +2f; // max color-slider val
                 const float loS = -0.5f; // min shininess
                 const float hiS = +1.5f; // max shininess
+                const float loA = -20f; // min alpha
+                const float hiA = +5f;  // max alpha
                 const float loNC = -5f; // min non-color-slider
                 const float hiNC = +5f; // max non-color-slider
                 Color R = new Color(0.6f, 0.1f, 0.1f, 0.5f);
@@ -109,15 +111,15 @@ namespace LiveryGUIMod
                         { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   R, loC,  hiC) },
                         { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   G, loC,  hiC) },
                         { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   B, loC,  hiC) },
-                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",   A, loNC, hiNC) },
+                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",   A, loA,  hiA) },
                         { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R", R, loC,  hiC) },
                         { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G", G, loC,  hiC) },
                         { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B", B, loC,  hiC) },
-                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A", A, loNC, hiNC) },
+                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A", A, loA,  hiA) },
                         { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",  R, loC,  hiC) },
                         { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",  G, loC,  hiC) },
                         { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",  B, loC,  hiC) },
-                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  A, loNC, hiNC) },
+                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  A, loA,  hiA) },
                         { "ContentX",   new SliderConfig("ContentX",   "Supporter DLC X", R, loNC, hiNC) },
                         { "ContentY",   new SliderConfig("ContentY",   "Supporter DLC Y", G, loNC, hiNC) },
                         { "ContentZ",   new SliderConfig("ContentZ",   "Supporter DLC Z", B, loNC, hiNC) },
