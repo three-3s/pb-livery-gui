@@ -1,7 +1,7 @@
 priority: 0
 colorHue: 0.55
 id: LiveryGUI
-ver: 0.1
+ver: 1.1.0
 url: 
 includesConfigOverrides: false
 includesConfigEdits: false
@@ -14,8 +14,9 @@ includesAssetBundles: false
 gameVersion2Compatible: true
 gameVersionMin: 2.0
 gameVersionMax: 
-name: Livery GUI
+name: Livery GUI - Edit mech colors & materials
 desc: >-
-  This mod provides an in-game GUI for adjusting mech livery parameters. Go to the base's livery selection menu, click the new "sliders" button to toggle on the new GUI. Select a starting livery. Type in a new name, and click the 'clone' button (the 2x2-grid-with-a-plus-sign). Adjust the sliders. Click the 'save' button. There is also a button for 'reset to last saved version of this livery'.
+  Adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
 
-  (Source code: https://github.com/three-3s/pb-livery-gui)
+
+  Go to the "mech paint" part of the base, and click on the new "sliders" button. Choose a livery to start from, give it a new name and click Save or Clone button. Adjust the sliders to your liking. Remember to Save any changes to your livery. (There's also a Reset button.)
