@@ -67,6 +67,7 @@ namespace LiveryGUIMod
         public static CIButton resetLiveryButton;
         public static CIButton saveLiveryButton;
         public static CIButton cloneLiveryButton;
+        public static CIButton favoriteLiveryButton; // (same as built-in right-click on the livery icons)
         public static UIInput liveryNameInput;
         static readonly Color activeButtonFGColor = new Color(0.6f, 0.7f, 1f, 1f);
         static readonly Color activeButtonBGColor = new Color(0.25f, 0.36f, 0.58f, 0.7f);
@@ -324,6 +325,22 @@ namespace LiveryGUIMod
                 liveryNameInput.defaultText = "default?"; // (ends up unused?)
 
                 liveryNameInputGO.SetActive(true);
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // More Livery GUI buttons: 'toggle as favorited'
+                GameObject favoriteLiveryButtonGO = GameObject.Instantiate(saveLiveryButtonGO, paneGO.transform, false);
+                favoriteLiveryButtonGO.name = "favoriteLiveryButton";
+                favoriteLiveryButtonGO.transform.localPosition += new Vector3(500f, 0f);
+                var favoriteIcon = favoriteLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                if (favoriteIcon != null) { favoriteIcon.color = new Color(1f, 1f, 0.2f, 0.8f); favoriteIcon.spriteName = spriteNameStarOutline; } // (we'll toggle between Outline & Filled)
+
+                favoriteLiveryButton = favoriteLiveryButtonGO.GetComponent<CIButton>();
+                favoriteLiveryButton.callbackOnClick = new UICallback(() =>
+                {
+                    object[] args = { CIViewBaseLoadout.selectedUnitLivery };
+                    AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryFavoriteToggle").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player right-clicks on a livery in the list)
+                    UpdateButtonColors();
+                });
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // Listener for right-click drag & release, for sliders.
@@ -608,10 +625,18 @@ namespace LiveryGUIMod
         static DataContainerEquipmentLivery GetSelectedLivery()
         {
             string key = CIViewBaseLoadout.selectedUnitLivery;
-            if (string.IsNullOrEmpty(key))
+            if (key.IsNullOrEmpty())
                 return null;
 
             return DataMultiLinker<DataContainerEquipmentLivery>.GetEntry(key, false);
+        }
+
+        //==============================================================================
+        static bool SelectedLiveryIsFavorited()
+        {
+            if (CIViewBaseLoadout.selectedUnitLivery.IsNullOrEmpty())
+                return false;
+            return (CIViewBaseLoadout.liveryKeysFavorite.Contains(CIViewBaseLoadout.selectedUnitLivery));
         }
 
         //==============================================================================
@@ -727,6 +752,10 @@ namespace LiveryGUIMod
                     resetFillIdle.color = grayedOutButtonBGColor;
                 }
             }
+
+            var favoriteIcon = favoriteLiveryButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (favoriteIcon != null)
+                favoriteIcon.spriteName = (SelectedLiveryIsFavorited()) ? spriteNameStarFilled : spriteNameStarOutline;
         }
 
         //==============================================================================

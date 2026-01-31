@@ -44,7 +44,7 @@ using Debug = UnityEngine.Debug;
 //    Sort of worked around by making the text field visible before 'show GUI' is clicked.
 
 // TODO.post-release:
-//  - Ergonomics: Add a button to 'favorite'. Clearer highlight of current? Jump to current?
+//  - Ergonomics: Clearer highlight of current livery? Favorite-icon color? Jump to current?
 //    Next/prev buttons? Clone-this-then-reset-orig? Could be as reset button labeled for prev.
 //  - Might be nice to apply exponential scaling curve to slider values, though that might need
 //    to be more or less built-in (or implemented into the slider).
