@@ -27,27 +27,35 @@ namespace LiveryGUIMod {
         public void Awake()
         {
             // called once (per instance), when navigating to livery tab
+            origLockMode = Cursor.lockState;
         }
 
         //==============================================================================
         public CIBar GetSliderBar() { return sliderBar; }
         public void CaptureRightClickFor(CIBar thisSlider)
         {
-            ReleaseMouseCapture();
-            sliderBar = thisSlider;
-            if (sliderBar != null)
-            {
-                origBarColor = sliderBar.spriteFill.color;
-                sliderBar.spriteFill.color = highlightColor;
-            }
+            if (sliderBar == null)
+                origLockMode = Cursor.lockState;
 
-            ////// Locked-to-None restores the mouse to center of window? Hrm. Can capture mouse position,
-            ////// but I'm not sure how to restore (other than a win32-specific-dll hacky thing).
-            ////Cursor.lockState = CursorLockMode.Locked;
-            ////savedMouseX = Input.mousePosition.x;
-            ////savedMouseY = Input.mousePosition.y;
-            origLockMode = Cursor.lockState;
-            Cursor.lockState = CursorLockMode.Confined;
+            ReleaseMouseCapture();
+
+            if (Input.GetMouseButton(1))
+            {
+                sliderBar = thisSlider;
+                if (sliderBar != null)
+                {
+                    origBarColor = sliderBar.spriteFill.color;
+                    sliderBar.spriteFill.color = highlightColor;
+                }
+
+                ////// Locked-to-None restores the mouse to center of window? Hrm. Can capture mouse position,
+                ////// but I'm not sure how to restore (other than a win32-specific-dll hacky thing).
+                ////Cursor.lockState = CursorLockMode.Locked;
+                ////savedMouseX = Input.mousePosition.x;
+                ////savedMouseY = Input.mousePosition.y;
+                origLockMode = Cursor.lockState;
+                Cursor.lockState = CursorLockMode.Confined;
+            }
         }
 
         //==============================================================================
@@ -84,7 +92,7 @@ namespace LiveryGUIMod {
         //==============================================================================
         public void Update()
         {
-            // called frequently, likely once per frame (per instance)
+            // called once per frame (per instance)
             //Debug.Log($"[LiveryGUI] SliderRightClickHandler.Update (sliderBar={sliderBar?.name ?? "{none}"})");
             //Debug.Log($"[LiveryGUI] SliderRightClickHandler.Update: GetMouseButton(1)={Input.GetMouseButton(1)} GetMouseButtonDown(1)={Input.GetMouseButtonDown(1)}, GetMouseButtonUp(1)={Input.GetMouseButtonUp(1)}");
             
