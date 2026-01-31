@@ -74,6 +74,10 @@ namespace LiveryGUIMod
         static readonly Color grayedOutButtonBGColor = new Color(0.0f, 0.0f, 0.0f, 0.7f);
         static readonly Color activeRedButtonFGColor = new Color(1f, 0.38f, 0.38f, 1f);
         static readonly Color activeRedButtonBGColor = new Color(0.61f, 0.22f, 0.22f, 1f);
+        static SliderRightClickHandler sliderRightClickHandler = null;
+
+        static readonly string spriteNameStarFilled = "s_icon_l32_star_filled";
+        static readonly string spriteNameStarOutline = "s_icon_l32_star_outline";
 
         //==============================================================================
         public static void RedrawLiveryGUI(CIViewBaseLoadout __instance)
@@ -156,6 +160,11 @@ namespace LiveryGUIMod
                     CIHelperSetting helper = helperGO.GetComponent<CIHelperSetting>();
                     helper.sharedLabelName.text = cfg.label;
 
+                    helper.sliderBar.callbackOnClickSecondary = new UICallback(value =>
+                    {
+                        OnClickSecondary(helper);
+                    }, 0f);
+
                     Vector3 sliderLocalPos = helper.sliderHolder.transform.localPosition;
                     sliderLocalPos.x -= 262f; // move the slider-bar left so it's under the label-text
                     helper.sliderHolder.transform.localPosition = sliderLocalPos;
@@ -228,6 +237,7 @@ namespace LiveryGUIMod
                 toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
                 {
                     paneGO.SetActive(!paneGO.activeSelf);
+
                     // first time wasn't updating the text-input-field with the livery-name. i don't know why.
                     // INVOKE ALL THE REFRESH. MULTIPLY. STILL DOESN'T WORK FIRST TIME. ONLY SECOND TIME. ONLY SECOND TIME.
                     string origLiveryKey = CIViewBaseLoadout.selectedUnitLivery;
@@ -244,6 +254,9 @@ namespace LiveryGUIMod
                     UpdateWidgetPositioning(__instance);
                     ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
                     RefreshSphereAndMechPreviews();
+
+                    // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder).
+                    // todo: maybe try letting the text-input always be active (on the livery page), just shoved offscreen
                 });
 
                 toggleLiveryGUIButtonGO.SetActive(true);
@@ -311,6 +324,11 @@ namespace LiveryGUIMod
                 liveryNameInput.defaultText = "default?"; // (ends up unused?)
 
                 liveryNameInputGO.SetActive(true);
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Listener for right-click drag & release, for sliders.
+                // (Just want one instance. Attached to Save button, somewhat arbitrarily.)
+                sliderRightClickHandler = saveLiveryButtonGO.AddComponent<SliderRightClickHandler>();
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // Livery GUI initial visibility
@@ -436,6 +454,13 @@ namespace LiveryGUIMod
                     liveryHelper.button.AddTooltip(key, liveryHelper.name); // the 'title' is REALLY BIG AND CAPITALIZED, so probably leave title null and only use the text (?)
                 }
 #endif
+        }
+
+        //==============================================================================
+        static void OnClickSecondary(CIHelperSetting helper)
+        {
+            //Debug.Log($"[LiveryGUI] OnClickSecondary {helper?.name ?? "{none}"}");
+            sliderRightClickHandler?.CaptureRightClickFor(helper.sliderBar);
         }
 
         //==============================================================================
@@ -744,6 +769,18 @@ namespace LiveryGUIMod
             livery.effect.w = sliderHelpers["EffectW"].sliderBar.valueRaw;
 
             livery.contentParameters.w = ContentW.GetLevelValue();
+
+            //todo: there's some circumstances that can cause severe graphical glitches in the form of multiple overlapping flickering large white circles with fuzzy edges, often with a black square in the middle. 
+            //todo: seems to affect light gray / white moreso than other colors, but significantly tied to some interplay between xary.W and xary.effect. (sum of color channels affects susceptibility?).
+            //todo: cap 1ary.W to -3..+3. but the loss of +4..+5 is visible loss and non-ideal. but +5 is very unfriendly to effect.
+            //todo: cap 1ary.effect to -4..+4
+            //todo: constrain 1ary.W with respect to 1ary.effect: 1ary.W=+1.5 is about the max safe value while 1ary.effect is -4.
+            //todo: constrain 1ary.W when adjusting 1ary.effect: as 1ary.effect goes from 0..-5, cap 1ary.W to be at most 5..1 (reduce positive-magnitude of this, while negative-magnitude of the other increases)
+            //todo: constrain 1ary.W when adjusting 1ary.effect: as 1ary.effect goes from 0..+5, cap 1ary.W to be more than -5..-1 (reduce neg-magnitude of this, while pos-magnitude of the other increases)
+            //todo: also constrain 1ary.effect while 1ary.W is being adjusted.
+            //todo: also apply to 2ary and 3ary.
+
+            // suppose i limit the R+G+B for a part to sum to 2.1 or so. how gray is that, can it be improved via negative-alpha/negative-metal. simple linear sum rather than perceptual? and would need to figure out how to hook that up so as to not cause feedback issues while actively dragging the color sliders. Can go down to about RGB=.5,.5,.5 and use negative alpha to brighten it to apparently full-white. Perhaps a larger-negative alpha cap could further work around this?
         }
 
         //==============================================================================
