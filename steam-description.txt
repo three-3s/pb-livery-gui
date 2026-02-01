@@ -1,0 +1,88 @@
+[h1]Overview[/h1]
+
+In the base game, mech paint schemes (“liveries”) are limited to pre-set color and material combinations.
+
+Can't find quite the right color combination?
+
+This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+
+Basic usage
+[olist]
+[*] Go to the Base.
+[*] Select a Mech, then open the Livery selection page.
+[*] Click the new “Sliders” button to toggle the livery editor UI.
+[*] Select an existing livery to use as a starting point.
+[*] Enter a new name, then click the Clone button (the 2×2 grid with a "+" icon).
+[*] Adjust colors and material settings using the sliders.
+[*] Click Save to store the livery.
+[/olist]
+
+Additional controls:
+[list]
+[*] Reset: Reverts the current livery to its last saved state.
+[/list]
+
+The game also lets you use the "move camera" keys to change the camera angle.
+
+These liveries are saved to a single common location, and are usable across all your save games.
+
+Created after Phantom Brigade v2.0.
+
+([url=https://github.com/three-3s/pb-livery-gui]Source code here[/url])
+
+
+
+[h1]Questions & Answers[/h1]
+
+[h2]Where are the livery files saved?[/h2]
+
+AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml
+
+For example:
+C:/Users/yourUserID/AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI
+
+[h2]Is it possible to use larger/smaller values than the sliders allow?[/h2]
+
+Yes, but the mod does not currently support this. (For colors at least, negative values 'break' the color and make it black. Colors that are too bright will eventually 'break' the color and start showing increasingly large black portions. The 'material' W parameters can trigger some major rendering glitches, particularly with certain 'effect' XYZ values)
+
+[h2]I can't change built-in liveries, or liveries provided by other mods?[/h2]
+
+No. But you can copy them and edit the copy.
+
+[h2]What if I uninstall this mod?[/h2]
+
+It seems to be OK. The liveries that no longer exist will look like default liveries. But you may need to re-assign affected parts to use different liveries, or right-click in the liveries page to clear out the liveries to "no livery". (Otherwise, if you had an old "upper torso" livery that no longer exists, if you change the livery of the whole mech or whole torso, the upper torso will still be stuck on "default livery".)
+
+But otherwise the game seems to handle disabling/uninstalling the mod well enough.
+
+[h2]I'm seeing big white circles?[/h2]
+
+The normal range for values is between 0 and 1. Anything else is experimental.
+
+The major culprit for the "big white circles" rendering glitch is having a primary, secondary, or tertiary material "W" value that is too large (positive or negative). You can sometimes work around this by adjusting the corresponding "effect" XYZ slider (for 'effect', X=primary, Y=secondary, Z=tertiary), or reducing the RGB color of the problem part (make R+G+B be less). Reducing the RGB may make it dimmer, but some brightness can be restored by using a negative 'A' component for that color.
+
+NOTE: The big white circles may only be visible from certain angles, so use the "move camera" buttons (WASD by default, for QWERTY keyboards) to examine the mech from multiple angles. Try to overshoot the elimination of the white circles by a bit, to help ensure they don't pop up when seen from just the right angle.
+
+[h2]The "Supporter DLC" sliders don't do anything?[/h2]
+
+The effects are only visibile if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0 (and you can adjust them from there). And the 'W' value should be set to something other than "none".
+
+[h2]The "effect W" slider doesn't do anything?[/h2]
+
+As far as I can tell, this value has no effect.
+
+[h2]Is there a way to delete liveries?[/h2]
+
+Not in-mod at the moment. But you can go manually delete any of them from AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
+
+This should be safe, other than your mech parts will be using the default livery until you specifically reassign liveries to the affected mech parts.
+
+[h2]Something went wrong?[/h2]
+
+There may be additional information in C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
+
+In particular, look for \[LiveryGUI\] items.
+
+[h2]Can I still use other mods that add liveries?[/h2]
+
+Yes. You won't be able to overwrite them, but you can copy them and edit the copies.
