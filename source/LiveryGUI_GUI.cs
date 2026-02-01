@@ -591,7 +591,8 @@ namespace LiveryGUIMod
             liveriesDict[newKey] = newCopy;
             DataMultiLinkerEquipmentLivery.OnAfterDeserialization(); // (triggers rebuilding its .dataSorted)
 
-            LiverySnapshotDB.AddLiveryDataSnapshot(newKey, newCopy, true);
+            LiverySnapshotDB.originalLiveries.TryGetValue(origKey, out var lastSavedLivery);
+            LiverySnapshotDB.AddLiveryDataSnapshot(newKey, lastSavedLivery.onDiskDat, true);
 
             Debug.Log($"[LiveryGUI] INFO: cloned livery {origKey} to {newKey}");
             CIViewOverworldLog.AddMessage($"Created a new copy of that livery. [sp=s_icon_l32_lc_grid_plus]");
