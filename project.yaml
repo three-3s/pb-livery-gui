@@ -2,7 +2,7 @@ workshop:
   publishedID: 3649585996
   visibility: Public
   textFromMetadataVersion: true
-  textFromMetadataMain: false
+  textFromMetadataMain: true
   title: 
   description: 
   internalData: 
