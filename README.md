@@ -17,10 +17,13 @@ Basic usage
 5. Enter a new name, then click the Clone button (the 2×2 grid with a “+” icon).
 6. Adjust colors and material settings using the sliders.
 7. Click Save to store the livery.
+8. The livery is ready to use.
 
 Additional controls:
 
 * Reset: Reverts the current livery to its last saved state.
+* Favorite: Toggles the (PB built-in) 'favorited livery' flag. (Keeps livery at front of list.)
+* Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
 
 These liveries are saved to a single common location, and are usable across all save games on that machine.
 

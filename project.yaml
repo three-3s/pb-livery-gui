@@ -2,11 +2,15 @@ workshop:
   publishedID: 3649585996
   visibility: Public
   textFromMetadataVersion: true
-  textFromMetadataMain: true
+  textFromMetadataMain: false
   title: 
   description: 
   internalData: 
   changes: >
+    'v1.2.0: Right-click-and-drag for precision (& modifier keys). Added favorite button for convenience.'
+
+
+
     'v1.1.0: Sliders for Supporter Upgrade DLC (*no effect without that DLC). Adjusted some slider ranges.'
 
 

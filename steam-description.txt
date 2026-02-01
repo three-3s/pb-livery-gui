@@ -15,11 +15,14 @@ Basic usage
 [*] Enter a new name, then click the Clone button (the 2×2 grid with a "+" icon).
 [*] Adjust colors and material settings using the sliders.
 [*] Click Save to store the livery.
+[*] The livery is ready to use.
 [/olist]
 
 Additional controls:
 [list]
 [*] Reset: Reverts the current livery to its last saved state.
+[*] Favorite: Toggles the (PB built-in) 'favorited livery' flag. (Keeps livery at front of list.)
+[*] Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
 [/list]
 
 The game also lets you use the "move camera" keys to change the camera angle.
