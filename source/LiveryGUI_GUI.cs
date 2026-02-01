@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.U2D;
 using Debug = UnityEngine.Debug;
 
 namespace LiveryGUIMod
@@ -28,14 +29,25 @@ namespace LiveryGUIMod
         public float min;
         public float max;
         public SliderKind sliderKind;
-        public SliderConfig(string nameIn, string labelIn, Color fillColorIn, float minIn = 0f, float maxIn = 1f, SliderKind sliderKindIn = SliderKind.Continuous)
+        public SliderConfig(string name, string label, Color fillColor, float min = 0f, float max = 1f, SliderKind sliderKind = SliderKind.Continuous)
         {
-            name = nameIn;
-            label = labelIn;
-            fillColor = fillColorIn;
-            min = minIn;
-            max = maxIn;
-            sliderKind = sliderKindIn;
+            this.name = name;
+            this.label = label;
+            this.fillColor = fillColor;
+            this.min = min;
+            this.max = max;
+            this.sliderKind = sliderKind;
+        }
+    }
+
+    public class LegendConfig
+    {
+        public string spriteName;
+        public Vector3 localPosition;
+        public LegendConfig(string spriteName, Vector3 localPosition)
+        {
+            this.spriteName = spriteName;
+            this.localPosition = localPosition;
         }
     }
 
@@ -341,6 +353,45 @@ namespace LiveryGUIMod
                     AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryFavoriteToggle").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player right-clicks on a livery in the list)
                     UpdateButtonColors();
                 });
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // row of no-op buttons, as a crude legend/hint about usable controls.
+                Vector3 smallPosStep = new Vector3(50f, 0f, 0f);
+                LegendConfig[] legendConfigs = {
+                    // note: the button icons seem to get left/right mirror'd
+                    new LegendConfig("mouse_right_outline", favoriteLiveryButtonGO.transform.localPosition + 1f * posStep + 0f * smallPosStep),
+                    new LegendConfig("mouse_left_outline",  favoriteLiveryButtonGO.transform.localPosition + 2f * posStep + 0f * smallPosStep),
+                    new LegendConfig("mouse_horizontal",    favoriteLiveryButtonGO.transform.localPosition + 2f * posStep + 1f * smallPosStep),
+                };
+                Color legendColor = new Color(1f, 0f, 0f, 0.2f);
+
+                foreach (LegendConfig legendConfig in legendConfigs)
+                {
+                    GameObject buttonGO = GameObject.Instantiate(favoriteLiveryButtonGO, paneGO.transform, false);
+                    buttonGO.name = "legend" + legendConfig.spriteName;
+                    buttonGO.transform.localPosition = legendConfig.localPosition;
+                    var buttonIcon = buttonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                    var buttonFrame = buttonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
+                    var buttonFillIdle = buttonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+                    var buttonFillHover = buttonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
+                    if (buttonIcon != null) { buttonIcon.color = new Color(1f, 1f, 1f, 0.8f); buttonIcon.spriteName = legendConfig.spriteName; }
+                    if (buttonFrame != null) buttonFrame.color = legendColor;
+                    if (buttonFillIdle != null) buttonFillIdle.color = legendColor;
+                    if (buttonFillHover != null) buttonFillHover.color = legendColor;
+                    var button = new CIButton();
+                    button = buttonGO.GetComponent<CIButton>();
+                    button.callbackOnClick = null;
+
+
+                    button.tooltipUsed = true;
+                    button.tooltipKey = null;
+                    button.AddTooltip(null, "Click on sliders or click-and-drag to set.\n\nPrecise:\nRight-click-and-hold, and move mouse <--->\nSpeed: SHIFT, ALT, CTRL");
+                    button.tooltipDelay = false;
+                    button.tooltipPivot = UIWidget.Pivot.TopRight;
+                    button.tooltipOffset = new Vector3(-77f + 100f -29f, -132f +84f -19f); //todo.test
+                    button.tooltipColor = legendColor;
+                    button.tooltipColorCustom = true;
+                }
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // Listener for right-click drag & release, for sliders.
