@@ -81,6 +81,8 @@ namespace LiveryGUIMod
         public static CIButton cloneLiveryButton;
         public static CIButton favoriteLiveryButton; // (same as built-in right-click on the livery icons)
         public static UIInput liveryNameInput;
+        static Vector3 liveryNameInputVisiblePos = Vector3.zero; // (as bug workaround, moves offscreen/onscreen rather than disables/enables)
+        static readonly Vector3 liveryNameInputOffscreenPos = new Vector3(20000f, 20000f, 0f);
         static readonly Color activeButtonFGColor = new Color(0.6f, 0.7f, 1f, 1f);
         static readonly Color activeButtonBGColor = new Color(0.25f, 0.36f, 0.58f, 0.7f);
         static readonly Color grayedOutButtonFGColor = new Color(0.7f, 0.7f, 0.7f, 0.8f);
@@ -324,7 +326,8 @@ namespace LiveryGUIMod
                 // Livery GUI text-input field: for seeing & renaming the livery-key/file-name
                 GameObject liveryNameInputGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerInputUnitName.gameObject, uiRoot/*paneGO.transform*/, false); // using uiRoot to make this initially-visible as a workaround for the text-display refusing to initially populate until it gets displayed AND THEN user clicks on something (after which it starts updating/working fine)
                 liveryNameInputGO.name = "liveryNameInputGO";
-                liveryNameInputGO.transform.localPosition = cloneLiveryButtonGO.transform.localPosition + new Vector3(56f, 0f, 0f);
+                liveryNameInputVisiblePos = cloneLiveryButtonGO.transform.localPosition + new Vector3(56f, 0f, 0f);
+                liveryNameInputGO.transform.localPosition = liveryNameInputOffscreenPos;
                 liveryNameInputGO.transform.localScale = Vector3.one;
 
                 liveryNameInput = liveryNameInputGO.GetComponent<UIInput>();
@@ -496,6 +499,8 @@ namespace LiveryGUIMod
             sliderHelpers["EffectY"].gameObject.transform.localPosition = new Vector3(x[1], y[13]);
             sliderHelpers["EffectZ"].gameObject.transform.localPosition = new Vector3(x[1], y[14]);
             sliderHelpers["EffectW"].gameObject.transform.localPosition = new Vector3(x[1], y[15]);
+
+            liveryNameInput.gameObject.transform.localPosition = paneGO.activeSelf ? liveryNameInputVisiblePos : liveryNameInputOffscreenPos;
         }
 
         //==============================================================================
