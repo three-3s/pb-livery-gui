@@ -1,7 +1,7 @@
 priority: 0
 colorHue: 0.55
 id: LiveryGUI
-ver: 1.2.0
+ver: 1.3.0-DEV-INTERNAL
 url: 
 includesConfigOverrides: false
 includesConfigEdits: false
@@ -19,4 +19,4 @@ desc: >-
   Adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
 
 
-  Go to the "mech paint" part of the base, and click on the new "sliders" button. Choose a livery to start from, give it a new name and click Save or Clone button. Adjust the sliders to your liking. Remember to Save any changes to your livery. (There's also a Reset button.)
+  Go to the "mech paint" part of the base, and click on the new "sliders" button. Choose a livery to start from, give it a new name, and click SAVE or CLONE button. Adjust the sliders to your liking. Remember to SAVE any changes to your livery.
