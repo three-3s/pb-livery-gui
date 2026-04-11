@@ -8,7 +8,7 @@ namespace LiveryGUIMod
     // Patch CIHelperLoadoutLivery.Redraw to:
     //  - Change the general button border, including the "favorite" icon (which is baked
     //    into the outline around the button) to always be simple gray, with white used for
-    //    selected/hovered icons. (Base PB has visiblity problems showing the current
+    //    selected/hovered icons. (Base PB has visibility problems showing the current
     //    selection the and favorite icon.)
     [HarmonyPatch(typeof(CIHelperLoadoutLivery), "Redraw")]
     public static class LiverySelectionStylesPatch

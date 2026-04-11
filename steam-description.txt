@@ -68,7 +68,7 @@ NOTE: The big white circles may only be visible from certain angles, so use the 
 
 [h2]The "Supporter DLC" sliders don't do anything?[/h2]
 
-The effects are only visibile if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0 (and you can adjust them from there). And the 'W' value should be set to something other than "none".
+The effects are only visible if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0 (and you can adjust them from there). And the 'W' value should be set to something other than "none".
 
 [h2]The "effect W" slider doesn't do anything?[/h2]
 

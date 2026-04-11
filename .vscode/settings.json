@@ -1,3 +1,15 @@
 {
-    "dotnet.preferCSharpExtension": true
+    "dotnet.preferCSharpExtension": true,
+    "cSpell.words": [
+        "Behaviour",
+        "Entitas",
+        "Hardpoint",
+        "Mathf",
+        "mechs",
+        "olist",
+        "Overworld",
+        "steamapps",
+        "uitools",
+        "WASD"
+    ]
 }

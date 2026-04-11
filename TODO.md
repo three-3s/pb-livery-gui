@@ -6,22 +6,19 @@
 //    a trivial change that would break the livery-loading. Presumably there's a safer pipeline
 //    built into the game. TODO: At least test it and confirm that eg adding/removing/renaming a
 //    field from the yaml does in fact prevent the livery from loading.
+//  - Translations.
 
-// BUGS:
-//  - The livery-name text-box is initially "-". Doing just about anything makes it work, but
-//    I haven't figured out how to get it to refresh or unstuck before whatever it is fixes it.
-//    Sort of worked around by making the text field visible before 'show GUI' is clicked.
-
-// TODO.post-release:
-//  - Ergonomics: Clearer highlight of current livery? Favorite-icon color? Jump to current?
-//    Next/prev buttons? Clone-this-then-reset-orig? Could be as reset button labeled for prev.
+// TODO:
+//  - Ergonomics: Jump-to-current? Next/prev buttons? Clone-this-then-reset-orig? Could be as
+//    reset button labeled for prev.
 //  - Might be nice to apply exponential scaling curve to slider values, though that might need
 //    to be more or less built-in (or implemented into the slider).
 //  - Consider adding tooltips to buttons.
 //  - Ideally would want to be able to delete liveries.
 //  - Maybe a button to open the directory containing the livery .yaml files?
 //  - Maybe mark the liveries in the selection-list eg with a different color if they've been
-//    created (or overwritten by) this mod? Or have unsaved changes?
+//    created (or overwritten by) this mod? Or have unsaved changes? (PatchSelectionStyle.cs
+//    is already doing some of this work, changing outline-color.)
 //  - There might be some desire to go beyond the value-limits currently hardcoded. E.g., maybe
 //    up to 3.0 instead of just 2.0. Or maybe some params are effective to much higher..?
 //    Could/should at least let it support not-clamping upon load just to fit in the slider
@@ -39,3 +36,11 @@
 //
 // ADDITIONAL POSSIBLE IMPROVEMENTS:
 //  - There's a fair amount of brute-force item-by-item a.primR=b.primR,a.primG=b.primG etc.
+//
+// BUGS:
+//   Minor: Favorite-star icon doesn't immediately update if user right-clicks on livery-list to
+//          de/favorite currently selected livery.
+//   Minor: If a livery gets assigned but later deleted, the mech's livery-slot(s) will look empty
+//          in PB's GUI but will actually still reference a non-existent livery, causing the
+//          default/null livery to be used for that livery-slot (but depicted as "no livery" in
+//          PB's GUI -- possibly causing confusion).

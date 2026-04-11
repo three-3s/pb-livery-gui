@@ -758,13 +758,13 @@ namespace LiveryGUIMod
         {
             bool liveryDataIsModified = LiverySnapshotDB.IsCurrentLiveryModified();
             bool liveryNameIsModified = (CIViewBaseLoadout.selectedUnitLivery != liveryNameInput.value);
-            bool liveryIsModifed = (liveryDataIsModified || liveryNameIsModified);
+            bool liveryIsModified = (liveryDataIsModified || liveryNameIsModified);
 
             var saveIcon = saveLiveryButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
             var saveFillIdle = saveLiveryButton.gameObject.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
             if (saveIcon != null && saveFillIdle != null)
             {
-                if (liveryIsModifed &&
+                if (liveryIsModified &&
                     (!DataMultiLinkerEquipmentLivery.data.ContainsKey(liveryNameInput.value) ||
                     (LiverySnapshotDB.originalLiveries.ContainsKey(liveryNameInput.value) && LiverySnapshotDB.originalLiveries[liveryNameInput.value].ownedByLiveryGUI)))
                 {
@@ -798,7 +798,7 @@ namespace LiveryGUIMod
             var resetFillIdle = resetLiveryButton.gameObject.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
             if (resetIcon != null && resetFillIdle != null)
             {
-                if (liveryIsModifed)
+                if (liveryIsModified)
                 {
                     resetIcon.color = activeRedButtonFGColor;
                     resetFillIdle.color = activeRedButtonBGColor;
