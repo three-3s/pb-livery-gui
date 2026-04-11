@@ -16,7 +16,7 @@ using Debug = UnityEngine.Debug;
 //    C:\Program Files(x86)\Steam\steamapps\common\Phantom Brigade\PhantomBrigade_Data\Managed\
 //    to the project's Reference Paths, which unfortunately isn't stored in the .csproj.
 //     - (and add reference to UnityEngine.JSONSerializeModule to the project)
-//  - Debug.Log goes to LocalLow/Brace.../.../Player.log
+//  - Debug.Log goes to %AppData%/LocalLow/Brace Yourself Games/Phantom Brigade/Player.log
 //  - Harmony.Debug = true + FileLog.Log (and FlushBuffer) goes to desktop harmony.log.txt
 //  - You may want to read more about (or ask a chatbot about):
 //     - How to use eg dnSpy to decompile & search the Phantom Brigade C# module assemblies.

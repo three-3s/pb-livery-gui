@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LiveryGUI_PatchSelectionStyle.cs" />
     <Compile Include="LiveryGUI_LoadAndSave.cs" />
     <Compile Include="LiveryGUI_GUI.cs" />
     <Compile Include="LiveryGUI_ModLink.cs" />
