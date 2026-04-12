@@ -83,8 +83,6 @@ namespace LiveryGUIMod
         public static CIButton cloneLiveryButton;
         public static CIButton favoriteLiveryButton; // (same as built-in right-click on the livery icons)
         public static UIInput liveryNameInput;
-        static Vector3 liveryNameInputVisiblePos = Vector3.zero; // (as bug workaround, moves offscreen/onscreen rather than disables/enables)
-        static readonly Vector3 liveryNameInputOffscreenPos = new Vector3(20000f, 20000f, 0f);
         static readonly Color activeButtonFGColor = new Color(0.6f, 0.7f, 1f, 1f);
         static readonly Color activeButtonBGColor = new Color(0.25f, 0.36f, 0.58f, 0.7f);
         static readonly Color grayedOutButtonFGColor = new Color(0.7f, 0.7f, 0.7f, 0.8f);
@@ -96,345 +94,367 @@ namespace LiveryGUIMod
         static readonly string spriteNameStarFilled = "s_icon_l32_star_filled";
         static readonly string spriteNameStarOutline = "s_icon_l32_star_outline";
 
+        // widget positions
+        class Positions {
+            // 3todo eventually rearrange these. LGToggle; PToggle (& CombinationViewToggle?), Favorite, Revert; Name, Save, Clone; Legends.
+            public static readonly float topRowY = +72f;
+            public static readonly Vector3 posStep = new Vector3(80f, 0f, 0f);
+            public static readonly Vector3 smallPosStep = new Vector3(50f, 0f, 0f);
+            public static readonly Vector3 posStepOverNameInputField = new Vector3(500f, 0f, 0f);
+
+            public static readonly Vector3 liveryGuiToggle = new Vector3(562f, topRowY, 0f); // in a blank spot on the top left of the livery sidebar that's on left portion of screen
+
+            public static readonly Vector3 pilotToggle = new Vector3(645f, topRowY, 0f); // top-left corner of the mech-preview region (just to the right of the liveryGuiToggle)
+            public static readonly Vector3 resetButton = pilotToggle + posStep;
+            public static readonly Vector3 saveButton = resetButton + posStep;
+            public static readonly Vector3 cloneButton = saveButton + posStep;
+            public static readonly Vector3 liveryName = cloneButton + new Vector3(56f, 0f, 0f); // (when not moved off-screen)
+            public static readonly Vector3 liveryName_hiddenOffscreen = new Vector3(20000f, 20000f, 0f);
+            public static readonly Vector3 favoriteButton = saveButton + posStepOverNameInputField;
+
+            public static readonly Vector3 legendGroup1Item1 = favoriteButton + 1f * posStep;
+            public static readonly Vector3 legendGroup2Item1 = favoriteButton + 2f * posStep;
+            public static readonly Vector3 legendGroup2Item2 = favoriteButton + 2f * posStep + 1f * smallPosStep;
+        }
+
         //==============================================================================
         public static void RedrawLiveryGUI(CIViewBaseLoadout __instance)
         {
-            if (paneGO == null)
-            {
-                //3todo eventually refactor to split init-code out into helper function
+            Initialize(__instance);
 
-                ////////////////////////////////////////////////////////////////////////////////
-                // create a new pane
-                var uiRoot = __instance.liveryRootObject.transform;
-                float uiScale = uiRoot.lossyScale.x;
-                UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
-                int activeHeight = root.activeHeight;
-                float pixelSizeAdj = root.pixelSizeAdjustment;
-
-                paneGO = new GameObject("LiveryAdvancedPane");
-                paneGO.transform.SetParent(uiRoot, false);
-                paneGO.transform.localPosition = new Vector3(0f, 0f, 0f);
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // slider-bars for customizing the current livery
-                const float loC = 0f; // min color-slider val (color-component < 0 causes the whole color to be black)
-                const float hiC = +2f; // max color-slider val
-                const float loS = -0.5f; // min shininess
-                const float hiS = +1.5f; // max shininess
-                const float loA = -20f; // min alpha
-                const float hiA = +5f;  // max alpha
-                const float loNC = -5f; // min non-color-slider
-                const float hiNC = +5f; // max non-color-slider
-                Color R = new Color(0.6f, 0.1f, 0.1f, 0.5f);
-                Color G = new Color(0.1f, 0.6f, 0.1f, 0.5f);
-                Color B = new Color(0.1f, 0.1f, 0.8f, 0.5f);
-                Color A = new Color(1f, 1f, 1f, 0.37f);
-                sliderHelpers = new Dictionary<string, CIHelperSetting>();
-                sliderConfigs = new Dictionary<string, SliderConfig>() {
-                        { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   R, loC,  hiC) },
-                        { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   G, loC,  hiC) },
-                        { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   B, loC,  hiC) },
-                        { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",   A, loA,  hiA) },
-                        { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R", R, loC,  hiC) },
-                        { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G", G, loC,  hiC) },
-                        { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B", B, loC,  hiC) },
-                        { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A", A, loA,  hiA) },
-                        { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",  R, loC,  hiC) },
-                        { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",  G, loC,  hiC) },
-                        { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",  B, loC,  hiC) },
-                        { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  A, loA,  hiA) },
-                        { "ContentX",   new SliderConfig("ContentX",   "Supporter DLC X", R, loNC, hiNC) },
-                        { "ContentY",   new SliderConfig("ContentY",   "Supporter DLC Y", G, loNC, hiNC) },
-                        { "ContentZ",   new SliderConfig("ContentZ",   "Supporter DLC Z", B, loNC, hiNC) },
-                        { "ContentW",   new SliderConfig("ContentW",   "Supporter DLC W", A, loNC, hiNC, SliderKind.Discrete) },
-                        { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",   A, loS,  hiS)  },
-                        { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",   A, loS,  hiS)  },
-                        { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",   A, loS,  hiS)  },
-                        { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",   B, loNC, hiNC) },
-                        { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X", A, loS,  hiS)  },
-                        { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y", A, loS,  hiS)  },
-                        { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z", A, loS,  hiS)  },
-                        { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W", B, loNC, hiNC) },
-                        { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",  A, loS,  hiS)  },
-                        { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",  A, loS,  hiS)  },
-                        { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",  A, loS,  hiS)  },
-                        { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",  B, loNC, hiNC) },
-                        { "EffectX",    new SliderConfig("EffectX",    "Effect X",    A, loNC, hiNC) },
-                        { "EffectY",    new SliderConfig("EffectY",    "Effect Y",    A, loNC, hiNC) },
-                        { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",    A, loNC, hiNC) },
-                        { "EffectW",    new SliderConfig("EffectW",    "Effect W",    B, loNC, hiNC) },
-                    };
-
-                // add sliders to pane
-                // (by cloning the 'options menu' prefab sliders)
-                var helperPrefab = CIViewPauseOptions.ins.settingPrefab;
-
-                foreach (var item in sliderConfigs)
-                {
-                    string key = item.Key;
-                    SliderConfig cfg = item.Value;
-
-                    var helperGO = GameObject.Instantiate(helperPrefab.gameObject, paneGO.transform, false);
-                    helperGO.name = cfg.name;
-                    CIHelperSetting helper = helperGO.GetComponent<CIHelperSetting>();
-                    helper.sharedLabelName.text = cfg.label;
-
-                    helper.sliderBar.callbackOnClickSecondary = new UICallback(value =>
-                    {
-                        OnClickSecondary(helper);
-                    }, 0f);
-
-                    Vector3 sliderLocalPos = helper.sliderHolder.transform.localPosition;
-                    sliderLocalPos.x -= 262f; // move the slider-bar left so it's under the label-text
-                    helper.sliderHolder.transform.localPosition = sliderLocalPos;
-
-                    helper.sliderBar.valueMin = cfg.min;
-                    helper.sliderBar.valueLimit = cfg.max;
-                    helper.sliderBar.labelFormat = "F3";
-                    helper.sliderBar.labelSuffix = "";
-                    helper.sliderBar.spriteFill.color = cfg.fillColor;
-
-                    helper.sharedSpriteBackground.gameObject.SetActive(false);
-                    helper.sharedSpriteGradient.gameObject.SetActive(false);
-                    helper.scrollElement.buttonBody.tooltipUsed = false;
-
-                    helper.sliderBar.callbackOnAdjustment = new UICallback(value =>
-                    {
-                        UpdateLiveryFromSliders();
-                        RefreshSphereAndMechPreviews();
-                    }, 0f);
-
-                    // which aspect of the widget should be visible
-                    helper.sliderHolder.SetActive(false);
-                    helper.levelHolder.SetActive(false);
-                    helper.toggleHolder.SetActive(false);
-                    if (cfg.sliderKind == SliderKind.Continuous)
-                    {
-                        helper.sliderHolder.SetActive(true);
-                    } else if (cfg.sliderKind == SliderKind.Discrete) {
-                        helper.levelHolder.SetActive(true);
-                        helper.levelHolder.transform.localPosition = sliderLocalPos + new Vector3(68f, 5f);
-                        helper.levelButtonLeft.transform.localPosition += new Vector3(68f, -5f);
-                        helper.levelButtonRight.transform.localPosition += new Vector3(-68f, -5f);
-                        //helper.sharedSpriteGradient.transform.localScale = new Vector3(0.518f, 0.919f); // not sure changing the sharedSpriteGradient doesn't affect Options menu
-                        //helper.sharedSpriteGradient.SetRGBColor(new Color(0.0f, 0.0f, 0.0f, 1f)); // very faint
-                        //helper.sharedSpriteGradient.gameObject.SetActive(true);
-                        helper.levelButtonLeft.callbackOnClick = new UICallback(() =>
-                        {
-                            ContentW.idx = (ContentW.idx - 1 + ContentW.names.Length) % ContentW.names.Length;
-                            UpdateLiveryFromSliders();
-                            RefreshSphereAndMechPreviews();
-                        });
-                        helper.levelButtonRight.callbackOnClick = new UICallback(() =>
-                        {
-                            ContentW.idx = (ContentW.idx + 1) % ContentW.names.Length;
-                            UpdateLiveryFromSliders();
-                            RefreshSphereAndMechPreviews();
-                        });
-                    }
-
-                    sliderHelpers.Add(key, helper);
-                }
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // toggle-button for Livery GUI visibility
-                GameObject toggleLiveryGUIButtonGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerButtonLivery.gameObject, uiRoot, false);
-                toggleLiveryGUIButtonGO.name = "LiveryAdvancedToggle";
-                toggleLiveryGUIButtonGO.transform.localPosition = new Vector3(562f, +72f, 0f); //3todo eventually pull the positioning vars out into a single list of constants
-                toggleLiveryGUIButtonGO.transform.localScale = Vector3.one;
-
-                var toggleIcon = toggleLiveryGUIButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                var toggleFrame = toggleLiveryGUIButtonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
-                var toggleFillIdle = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
-                var toggleFillHover = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
-                if (toggleIcon != null) { toggleIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); toggleIcon.spriteName = "s_icon_l32_menu_edit4"; }
-                if (toggleFrame != null) toggleFrame.color = new Color(0.7f, 0.7f, 0.7f, 0.8f);
-                if (toggleFillIdle != null) toggleFillIdle.color = new Color(0.0f, 0.0f, 0.0f, 0.7f);
-                if (toggleFillHover != null) toggleFillHover.color = new Color(0.7f, 0.7f, 0.7f, 0.4f);
-
-                toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
-                toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
-                {
-                    paneGO.SetActive(!paneGO.activeSelf);
-
-                    // first time wasn't updating the text-input-field with the livery-name. i don't know why.
-                    // INVOKE ALL THE REFRESH. MULTIPLY. STILL DOESN'T WORK FIRST TIME. ONLY SECOND TIME. ONLY SECOND TIME.
-                    string origLiveryKey = CIViewBaseLoadout.selectedUnitLivery;
-                    if (origLiveryKey == null && DataMultiLinkerEquipmentLivery.data.Count > 0)
-                        SelectLivery(DataMultiLinkerEquipmentLivery.data.First().Key);
-                    else
-                        SelectLivery(null);
-                    SelectLivery(origLiveryKey);
-                    liveryNameInput.ForceSelection(true);
-                    liveryNameInput.ForceSelection(false);
-                    liveryNameInput.label.MarkAsChanged();
-                    RefreshSphereAndMechPreviews();
-                    UpdateLiveryListTooltips();
-                    UpdateWidgetPositioning(__instance);
-                    ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
-                    RefreshSphereAndMechPreviews();
-
-                    // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder).
-                    // todo: maybe try letting the text-input always be active (on the livery page), just shoved offscreen
-                });
-
-                toggleLiveryGUIButtonGO.SetActive(true);
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // toggle-button for Pilot-Mode
-                GameObject pilotModeToggleGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
-                pilotModeToggleGO.name = "pilotModeToggleGO";
-                pilotModeToggleGO.transform.localPosition = new Vector3(645f, +68f, 0f);
-
-                var pilotIcon = pilotModeToggleGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //3todo choose a sprite. (maybe add that select-clicked-on-sprite to the ~"ui.view-enter uitools". and maybe also a search.)
-
-                pilotModeToggleButton = pilotModeToggleGO.GetComponent<CIButton>();
-                pilotModeToggleButton.callbackOnClick = new UICallback(() =>
-                {
-                    pilotModeActive = !pilotModeActive;
-                    UpdatePilotModeButtonVisuals();
-                    ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
-                    RefreshSphereAndMechPreviews();
-                });
-
-                pilotModeToggleGO.SetActive(true);
-                UpdatePilotModeButtonVisuals();
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // Livery GUI buttons: 'revert changes', 'clone livery', 'save livery to disk'
-                Vector3 posStep = new Vector3(80f, 0f, 0f);
-
-                GameObject resetLiveryButtonGO = GameObject.Instantiate(pilotModeToggleGO, paneGO.transform, false);
-                resetLiveryButtonGO.name = "resetLiveryButtonGO";
-                resetLiveryButtonGO.transform.localPosition += posStep;
-                var resetIcon = resetLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                if (resetIcon != null) { resetIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f); resetIcon.spriteName = "s_icon_l32_retreat"; }
-
-                GameObject saveLiveryButtonGO = GameObject.Instantiate(resetLiveryButtonGO, paneGO.transform, false);
-                saveLiveryButtonGO.name = "saveLiveryButtonGO";
-                saveLiveryButtonGO.transform.localPosition += posStep;
-                var saveIcon = saveLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                if (saveIcon != null) { saveIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f); saveIcon.spriteName = "s_icon_l32_lc_save1"; }
-
-                GameObject cloneLiveryButtonGO = GameObject.Instantiate(saveLiveryButtonGO, paneGO.transform, false);
-                cloneLiveryButtonGO.name = "cloneLiveryButtonGO";
-                cloneLiveryButtonGO.transform.localPosition += posStep;
-                var cloneIcon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                if (cloneIcon != null) { cloneIcon.color = new Color(0.5f, 0.8f, 0.6f, 0.8f); cloneIcon.spriteName = "s_icon_l32_lc_grid_plus"; }
-
-                resetLiveryButton = resetLiveryButtonGO.GetComponent<CIButton>();
-                resetLiveryButton.callbackOnClick = new UICallback(() =>
-                {
-                    OnResetLiveryClicked();
-                });
-
-                saveLiveryButton = saveLiveryButtonGO.GetComponent<CIButton>();
-                saveLiveryButton.callbackOnClick = new UICallback(() =>
-                {
-                    if (CIViewBaseLoadout.selectedUnitLivery != liveryNameInput.value)
-                        OnCloneLiveryClicked(); // new key/name was given; clone livery before saving it
-                    if (CIViewBaseLoadout.selectedUnitLivery == liveryNameInput.value)
-                    {
-                        LoadAndSave.SaveLiveryToFile(CIViewBaseLoadout.selectedUnitLivery, GetSelectedLivery());
-                        UpdateButtonColors();
-                    }
-                });
-
-                cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
-                cloneLiveryButton.callbackOnClick = new UICallback(() =>
-                {
-                    OnCloneLiveryClicked();
-                });
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // Livery GUI text-input field: for seeing & renaming the livery-key/file-name
-                GameObject liveryNameInputGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerInputUnitName.gameObject, uiRoot/*paneGO.transform*/, false); // using uiRoot to make this initially-visible as a workaround for the text-display refusing to initially populate until it gets displayed AND THEN user clicks on something (after which it starts updating/working fine)
-                liveryNameInputGO.name = "liveryNameInputGO";
-                liveryNameInputVisiblePos = cloneLiveryButtonGO.transform.localPosition + new Vector3(56f, 0f, 0f);
-                liveryNameInputGO.transform.localPosition = liveryNameInputOffscreenPos;
-                liveryNameInputGO.transform.localScale = Vector3.one;
-
-                liveryNameInput = liveryNameInputGO.GetComponent<UIInput>();
-                liveryNameInput.onChange = new List<EventDelegate>() { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
-                liveryNameInput.onReturnKey = UIInput.OnReturnKey.Submit;
-                liveryNameInput.onSubmit = new List<EventDelegate> { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
-                liveryNameInput.label.text = "Livery Name Goes Here";
-                liveryNameInput.label.ProcessText();
-                liveryNameInput.characterLimit += 10;
-                liveryNameInput.defaultText = "default?"; // (ends up unused?)
-
-                liveryNameInputGO.SetActive(true);
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // More Livery GUI buttons: 'toggle as favorited'
-                GameObject favoriteLiveryButtonGO = GameObject.Instantiate(saveLiveryButtonGO, paneGO.transform, false);
-                favoriteLiveryButtonGO.name = "favoriteLiveryButton";
-                favoriteLiveryButtonGO.transform.localPosition += new Vector3(500f, 0f);
-                var favoriteIcon = favoriteLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                if (favoriteIcon != null) { favoriteIcon.color = new Color(1f, 1f, 0.2f, 0.8f); favoriteIcon.spriteName = spriteNameStarOutline; } // (we'll toggle between Outline & Filled)
-
-                favoriteLiveryButton = favoriteLiveryButtonGO.GetComponent<CIButton>();
-                favoriteLiveryButton.callbackOnClick = new UICallback(() =>
-                {
-                    object[] args = { CIViewBaseLoadout.selectedUnitLivery };
-                    AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryFavoriteToggle").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player right-clicks on a livery in the list)
-                    UpdateButtonColors();
-                });
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // row of no-op buttons, as a crude legend/hint about usable controls.
-                Vector3 smallPosStep = new Vector3(50f, 0f, 0f);
-                LegendConfig[] legendConfigs = {
-                    // note: the button icons seem to get left/right mirror'd
-                    new LegendConfig("mouse_right_outline", favoriteLiveryButtonGO.transform.localPosition + 1f * posStep + 0f * smallPosStep),
-                    new LegendConfig("mouse_left_outline",  favoriteLiveryButtonGO.transform.localPosition + 2f * posStep + 0f * smallPosStep),
-                    new LegendConfig("mouse_horizontal",    favoriteLiveryButtonGO.transform.localPosition + 2f * posStep + 1f * smallPosStep),
-                };
-                Color legendColor = new Color(1f, 0f, 0f, 0.2f);
-
-                foreach (LegendConfig legendConfig in legendConfigs)
-                {
-                    GameObject buttonGO = GameObject.Instantiate(favoriteLiveryButtonGO, paneGO.transform, false);
-                    buttonGO.name = "legend" + legendConfig.spriteName;
-                    buttonGO.transform.localPosition = legendConfig.localPosition;
-                    var buttonIcon = buttonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                    var buttonFrame = buttonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
-                    var buttonFillIdle = buttonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
-                    var buttonFillHover = buttonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
-                    if (buttonIcon != null) { buttonIcon.color = new Color(1f, 1f, 1f, 0.8f); buttonIcon.spriteName = legendConfig.spriteName; }
-                    if (buttonFrame != null) buttonFrame.color = legendColor;
-                    if (buttonFillIdle != null) buttonFillIdle.color = legendColor;
-                    if (buttonFillHover != null) buttonFillHover.color = legendColor;
-                    var button = new CIButton();
-                    button = buttonGO.GetComponent<CIButton>();
-                    button.callbackOnClick = null;
-
-
-                    button.tooltipUsed = true;
-                    button.tooltipKey = null;
-                    button.AddTooltip(null, "Click on sliders or click-and-drag to set.\n\nPrecise:\nRight-click-and-hold, and move mouse <--->\nSpeed: SHIFT, ALT, CTRL");
-                    button.tooltipDelay = false;
-                    button.tooltipPivot = UIWidget.Pivot.TopRight;
-                    button.tooltipOffset = new Vector3(-77f + 100f -29f, -132f +84f -19f); //todo.test
-                    button.tooltipColor = legendColor;
-                    button.tooltipColorCustom = true;
-                }
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // Listener for right-click drag & release, for sliders.
-                // (Just want one instance. Attached to Save button, somewhat arbitrarily.)
-                sliderRightClickHandler = saveLiveryButtonGO.AddComponent<SliderRightClickHandler>();
-
-                ////////////////////////////////////////////////////////////////////////////////
-                // Livery GUI initial visibility
-                paneGO.SetActive(false);
-            }//if(doOnce)
-
-            UpdateLiveryListTooltips();
             UpdateWidgetPositioning(__instance);
             ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
-        }//Postfix()
+        }
+
+        //==============================================================================
+        static void Initialize(CIViewBaseLoadout __instance) {
+            if (paneGO != null)
+                return;
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // create a new pane
+            var uiRoot = __instance.liveryRootObject.transform;
+            float uiScale = uiRoot.lossyScale.x;
+            UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
+            int activeHeight = root.activeHeight;
+            float pixelSizeAdj = root.pixelSizeAdjustment;
+
+            paneGO = new GameObject("LiveryAdvancedPane");
+            paneGO.transform.SetParent(uiRoot, false);
+            paneGO.transform.localPosition = new Vector3(0f, 0f, 0f);
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // slider-bars for customizing the current livery
+            const float loC = 0f; // min color-slider val (color-component < 0 causes the whole color to be black)
+            const float hiC = +2f; // max color-slider val
+            const float loS = -0.5f; // min shininess
+            const float hiS = +1.5f; // max shininess
+            const float loA = -20f; // min alpha
+            const float hiA = +5f;  // max alpha
+            const float loNC = -5f; // min non-color-slider
+            const float hiNC = +5f; // max non-color-slider
+            Color R = new Color(0.6f, 0.1f, 0.1f, 0.5f);
+            Color G = new Color(0.1f, 0.6f, 0.1f, 0.5f);
+            Color B = new Color(0.1f, 0.1f, 0.8f, 0.5f);
+            Color A = new Color(1f, 1f, 1f, 0.37f);
+            sliderHelpers = new Dictionary<string, CIHelperSetting>();
+            sliderConfigs = new Dictionary<string, SliderConfig>() {
+                    //3todo consider making space for additional info like a small "?" button for each with tool explaining what the field does (ideally with translations).
+                    { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   R, loC,  hiC) },
+                    { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   G, loC,  hiC) },
+                    { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   B, loC,  hiC) },
+                    { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",   A, loA,  hiA) },
+                    { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R", R, loC,  hiC) },
+                    { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G", G, loC,  hiC) },
+                    { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B", B, loC,  hiC) },
+                    { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A", A, loA,  hiA) },
+                    { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",  R, loC,  hiC) },
+                    { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",  G, loC,  hiC) },
+                    { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",  B, loC,  hiC) },
+                    { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  A, loA,  hiA) },
+                    { "ContentX",   new SliderConfig("ContentX",   "Supporter DLC X", R, loNC, hiNC) },
+                    { "ContentY",   new SliderConfig("ContentY",   "Supporter DLC Y", G, loNC, hiNC) },
+                    { "ContentZ",   new SliderConfig("ContentZ",   "Supporter DLC Z", B, loNC, hiNC) },
+                    { "ContentW",   new SliderConfig("ContentW",   "Supporter DLC W", A, loNC, hiNC, SliderKind.Discrete) },
+                    { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",   A, loS,  hiS)  },
+                    { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",   A, loS,  hiS)  },
+                    { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",   A, loS,  hiS)  },
+                    { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",   B, loNC, hiNC) },
+                    { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X", A, loS,  hiS)  },
+                    { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y", A, loS,  hiS)  },
+                    { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z", A, loS,  hiS)  },
+                    { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W", B, loNC, hiNC) },
+                    { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",  A, loS,  hiS)  },
+                    { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",  A, loS,  hiS)  },
+                    { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",  A, loS,  hiS)  },
+                    { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",  B, loNC, hiNC) },
+                    { "EffectX",    new SliderConfig("EffectX",    "Effect X",    A, loNC, hiNC) },
+                    { "EffectY",    new SliderConfig("EffectY",    "Effect Y",    A, loNC, hiNC) },
+                    { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",    A, loNC, hiNC) },
+                    { "EffectW",    new SliderConfig("EffectW",    "Effect W",    B, loNC, hiNC) },
+                };
+
+            // add sliders to pane
+            // (by cloning the 'options menu' prefab sliders)
+            var helperPrefab = CIViewPauseOptions.ins.settingPrefab;
+
+            foreach (var item in sliderConfigs)
+            {
+                string key = item.Key;
+                SliderConfig cfg = item.Value;
+
+                var helperGO = GameObject.Instantiate(helperPrefab.gameObject, paneGO.transform, false);
+                helperGO.name = cfg.name;
+                CIHelperSetting helper = helperGO.GetComponent<CIHelperSetting>();
+                helper.sharedLabelName.text = cfg.label;
+
+                helper.sliderBar.callbackOnClickSecondary = new UICallback(value =>
+                {
+                    OnClickSecondary(helper);
+                }, 0f);
+
+                Vector3 sliderLocalPos = helper.sliderHolder.transform.localPosition;
+                sliderLocalPos.x -= 262f; // move the slider-bar left so it's under the label-text
+                helper.sliderHolder.transform.localPosition = sliderLocalPos;
+
+                helper.sliderBar.valueMin = cfg.min;
+                helper.sliderBar.valueLimit = cfg.max;
+                helper.sliderBar.labelFormat = "F3";
+                helper.sliderBar.labelSuffix = "";
+                helper.sliderBar.spriteFill.color = cfg.fillColor;
+
+                helper.sharedSpriteBackground.gameObject.SetActive(false);
+                helper.sharedSpriteGradient.gameObject.SetActive(false);
+                helper.scrollElement.buttonBody.tooltipUsed = false;
+
+                helper.sliderBar.callbackOnAdjustment = new UICallback(value =>
+                {
+                    UpdateLiveryFromSliders();
+                    RefreshSphereAndMechPreviews();
+                }, 0f);
+
+                // which aspect of the widget should be visible
+                helper.sliderHolder.SetActive(false);
+                helper.levelHolder.SetActive(false);
+                helper.toggleHolder.SetActive(false);
+                if (cfg.sliderKind == SliderKind.Continuous)
+                {
+                    helper.sliderHolder.SetActive(true);
+                } else if (cfg.sliderKind == SliderKind.Discrete) {
+                    helper.levelHolder.SetActive(true);
+                    helper.levelHolder.transform.localPosition = sliderLocalPos + new Vector3(68f, 5f);
+                    helper.levelButtonLeft.transform.localPosition += new Vector3(68f, -5f);
+                    helper.levelButtonRight.transform.localPosition += new Vector3(-68f, -5f);
+                    //helper.sharedSpriteGradient.transform.localScale = new Vector3(0.518f, 0.919f); // not sure changing the sharedSpriteGradient doesn't affect Options menu
+                    //helper.sharedSpriteGradient.SetRGBColor(new Color(0.0f, 0.0f, 0.0f, 1f)); // very faint
+                    //helper.sharedSpriteGradient.gameObject.SetActive(true);
+                    helper.levelButtonLeft.callbackOnClick = new UICallback(() =>
+                    {
+                        ContentW.idx = (ContentW.idx - 1 + ContentW.names.Length) % ContentW.names.Length;
+                        UpdateLiveryFromSliders();
+                        RefreshSphereAndMechPreviews();
+                    });
+                    helper.levelButtonRight.callbackOnClick = new UICallback(() =>
+                    {
+                        ContentW.idx = (ContentW.idx + 1) % ContentW.names.Length;
+                        UpdateLiveryFromSliders();
+                        RefreshSphereAndMechPreviews();
+                    });
+                }
+
+                sliderHelpers.Add(key, helper);
+            }//foreach
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // toggle-button for Livery GUI visibility
+            GameObject toggleLiveryGUIButtonGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerButtonLivery.gameObject, uiRoot, false);
+            toggleLiveryGUIButtonGO.name = "LiveryAdvancedToggle";
+            toggleLiveryGUIButtonGO.transform.localPosition = Positions.liveryGuiToggle;
+            toggleLiveryGUIButtonGO.transform.localScale = Vector3.one;
+
+            var toggleIcon = toggleLiveryGUIButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            var toggleFrame = toggleLiveryGUIButtonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
+            var toggleFillIdle = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+            var toggleFillHover = toggleLiveryGUIButtonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
+            if (toggleIcon != null) { toggleIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); toggleIcon.spriteName = "s_icon_l32_menu_edit4"; }
+            if (toggleFrame != null) toggleFrame.color = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+            if (toggleFillIdle != null) toggleFillIdle.color = new Color(0.0f, 0.0f, 0.0f, 0.7f);
+            if (toggleFillHover != null) toggleFillHover.color = new Color(0.7f, 0.7f, 0.7f, 0.4f);
+
+            toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
+            toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
+            {
+                paneGO.SetActive(!paneGO.activeSelf);
+
+                // first time wasn't updating the text-input-field with the livery-name. i don't know why.
+                // INVOKE ALL THE REFRESH. MULTIPLY. STILL DOESN'T WORK FIRST TIME. ONLY SECOND TIME. ONLY SECOND TIME.
+                string origLiveryKey = CIViewBaseLoadout.selectedUnitLivery;
+                if (origLiveryKey == null && DataMultiLinkerEquipmentLivery.data.Count > 0)
+                    SelectLivery(DataMultiLinkerEquipmentLivery.data.First().Key);
+                else
+                    SelectLivery(null);
+                SelectLivery(origLiveryKey);
+                liveryNameInput.ForceSelection(true);
+                liveryNameInput.ForceSelection(false);
+                liveryNameInput.label.MarkAsChanged();
+                RefreshSphereAndMechPreviews();
+                UpdateWidgetPositioning(__instance);
+                ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
+                RefreshSphereAndMechPreviews();
+
+                // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder).
+                // todo: maybe try letting the text-input always be active (on the livery page), just shoved offscreen
+            });
+
+            toggleLiveryGUIButtonGO.SetActive(true);
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // toggle-button for Pilot-Mode
+            GameObject pilotModeToggleGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            pilotModeToggleGO.name = "pilotModeToggleGO";
+            pilotModeToggleGO.transform.localPosition = Positions.pilotToggle;
+
+            var pilotIcon = pilotModeToggleGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //3todo choose a sprite. (maybe add that select-clicked-on-sprite to the ~"ui.view-enter uitools". and maybe also a search.)
+
+            pilotModeToggleButton = pilotModeToggleGO.GetComponent<CIButton>();
+            pilotModeToggleButton.callbackOnClick = new UICallback(() =>
+            {
+                pilotModeActive = !pilotModeActive;
+                UpdatePilotModeButtonVisuals();
+                ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
+                RefreshSphereAndMechPreviews();
+            });
+
+            pilotModeToggleGO.SetActive(true);
+            UpdatePilotModeButtonVisuals();
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // Livery GUI buttons: 'revert changes', 'clone livery', 'save livery to disk'
+            GameObject resetLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            resetLiveryButtonGO.name = "resetLiveryButtonGO";
+            resetLiveryButtonGO.transform.localPosition = Positions.resetButton;
+            var resetIcon = resetLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (resetIcon != null) { resetIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f); resetIcon.spriteName = "s_icon_l32_retreat"; }
+
+            GameObject saveLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            saveLiveryButtonGO.name = "saveLiveryButtonGO";
+            saveLiveryButtonGO.transform.localPosition = Positions.saveButton;
+            var saveIcon = saveLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (saveIcon != null) { saveIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f); saveIcon.spriteName = "s_icon_l32_lc_save1"; }
+
+            GameObject cloneLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            cloneLiveryButtonGO.name = "cloneLiveryButtonGO";
+            cloneLiveryButtonGO.transform.localPosition = Positions.cloneButton;
+            var cloneIcon = cloneLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (cloneIcon != null) { cloneIcon.color = new Color(0.5f, 0.8f, 0.6f, 0.8f); cloneIcon.spriteName = "s_icon_l32_lc_grid_plus"; }
+
+            resetLiveryButton = resetLiveryButtonGO.GetComponent<CIButton>();
+            resetLiveryButton.callbackOnClick = new UICallback(() =>
+            {
+                OnResetLiveryClicked();
+            });
+
+            saveLiveryButton = saveLiveryButtonGO.GetComponent<CIButton>();
+            saveLiveryButton.callbackOnClick = new UICallback(() =>
+            {
+                if (CIViewBaseLoadout.selectedUnitLivery != liveryNameInput.value)
+                    OnCloneLiveryClicked(); // new key/name was given; clone livery before saving it
+                if (CIViewBaseLoadout.selectedUnitLivery == liveryNameInput.value)
+                {
+                    LoadAndSave.SaveLiveryToFile(CIViewBaseLoadout.selectedUnitLivery, GetSelectedLivery());
+                    UpdateButtonColors();
+                }
+            });
+
+            cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
+            cloneLiveryButton.callbackOnClick = new UICallback(() =>
+            {
+                OnCloneLiveryClicked();
+            });
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // Livery GUI text-input field: for seeing & renaming the livery-key/file-name
+            GameObject liveryNameInputGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerInputUnitName.gameObject, uiRoot/*paneGO.transform*/, false); // bug workaround: using uiRoot to make this "visible" as a workaround for the text-display refusing to initially populate until it gets displayed AND THEN user clicks on something (after which it starts updating/working fine). We manually move this widget off-screen while LiveryGUI is toggled off.
+            liveryNameInputGO.name = "liveryNameInputGO";
+            liveryNameInputGO.transform.localPosition = Positions.liveryName_hiddenOffscreen;
+            liveryNameInputGO.transform.localScale = Vector3.one;
+
+            liveryNameInput = liveryNameInputGO.GetComponent<UIInput>();
+            liveryNameInput.onChange = new List<EventDelegate>() { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
+            liveryNameInput.onReturnKey = UIInput.OnReturnKey.Submit;
+            liveryNameInput.onSubmit = new List<EventDelegate> { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
+            liveryNameInput.label.text = "Livery Name Goes Here";
+            liveryNameInput.label.ProcessText();
+            liveryNameInput.characterLimit += 10;
+            liveryNameInput.defaultText = "default?"; // (ends up unused?)
+
+            liveryNameInputGO.SetActive(true);
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // More Livery GUI buttons: 'toggle as favorited'
+            GameObject favoriteLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            favoriteLiveryButtonGO.name = "favoriteLiveryButton";
+            favoriteLiveryButtonGO.transform.localPosition = Positions.favoriteButton;
+            var favoriteIcon = favoriteLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (favoriteIcon != null) { favoriteIcon.color = new Color(1f, 1f, 0.2f, 0.8f); favoriteIcon.spriteName = spriteNameStarOutline; } // (we'll toggle between Outline & Filled)
+
+            favoriteLiveryButton = favoriteLiveryButtonGO.GetComponent<CIButton>();
+            favoriteLiveryButton.callbackOnClick = new UICallback(() =>
+            {
+                object[] args = { CIViewBaseLoadout.selectedUnitLivery };
+                AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryFavoriteToggle").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player right-clicks on a livery in the list)
+                UpdateButtonColors();
+            });
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // row of no-op buttons, as a crude legend/hint about usable controls.
+            Vector3 smallPosStep = new Vector3(50f, 0f, 0f);
+            LegendConfig[] legendConfigs = {
+                // note: the button icons seem to get left/right mirror'd
+                new LegendConfig("mouse_right_outline", Positions.legendGroup1Item1),
+                new LegendConfig("mouse_left_outline",  Positions.legendGroup2Item1),
+                new LegendConfig("mouse_horizontal",    Positions.legendGroup2Item2),
+            };
+            Color legendColor = new Color(1f, 0f, 0f, 0.2f);
+
+            foreach (LegendConfig legendConfig in legendConfigs)
+            {
+                GameObject buttonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+                buttonGO.name = "legend" + legendConfig.spriteName;
+                buttonGO.transform.localPosition = legendConfig.localPosition;
+                var buttonIcon = buttonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                var buttonFrame = buttonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
+                var buttonFillIdle = buttonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+                var buttonFillHover = buttonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
+                if (buttonIcon != null) { buttonIcon.color = new Color(1f, 1f, 1f, 0.8f); buttonIcon.spriteName = legendConfig.spriteName; }
+                if (buttonFrame != null) buttonFrame.color = legendColor;
+                if (buttonFillIdle != null) buttonFillIdle.color = legendColor;
+                if (buttonFillHover != null) buttonFillHover.color = legendColor;
+                var button = new CIButton();
+                button = buttonGO.GetComponent<CIButton>();
+                button.callbackOnClick = null;
+
+                // 3todo update this with better description. ideally would support translations (and for any other tooltips/text).
+                button.tooltipUsed = true;
+                button.tooltipKey = null;
+                button.AddTooltip(null, "Click on sliders or click-and-drag to set.\n\nPrecise:\nRight-click-and-hold, and move mouse <--->\nSpeed: SHIFT, ALT, CTRL");
+                button.tooltipDelay = false;
+                button.tooltipPivot = UIWidget.Pivot.TopRight;
+                button.tooltipOffset = new Vector3(-77f + 100f -29f, -132f +84f -19f); //todo.test
+                button.tooltipColor = legendColor;
+                button.tooltipColorCustom = true;
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // Listener for right-click drag & release, for sliders.
+            // (Just want one instance. Attached to Save button, somewhat arbitrarily.)
+            sliderRightClickHandler = saveLiveryButtonGO.AddComponent<SliderRightClickHandler>();
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // Livery GUI initial visibility
+            paneGO.SetActive(false);
+        }//Initialize()
 
         //==============================================================================
         static void OnLiveryNameInput()
@@ -525,33 +545,7 @@ namespace LiveryGUIMod
             sliderHelpers["EffectZ"].gameObject.transform.localPosition = new Vector3(x[1], y[14]);
             sliderHelpers["EffectW"].gameObject.transform.localPosition = new Vector3(x[1], y[15]);
 
-            liveryNameInput.gameObject.transform.localPosition = paneGO.activeSelf ? liveryNameInputVisiblePos : liveryNameInputOffscreenPos;
-        }
-
-        //==============================================================================
-        static void UpdateLiveryListTooltips()
-        {
-#if false // disabled due to buggy, sometimes get stuck up, sometimes stops working until you click. and it's kind of in the way of navigation and not super valuable while browsing
-                var liveryOptionInstances = (Dictionary<string, CIHelperLoadoutLivery>) AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")?.GetValue(CIViewBaseLoadout.ins);
-                if (liveryOptionInstances == null)
-                {
-                    Debug.Warning($"[LiveryGUI] BUG: null liveryOptionInstances. isNull={AccessTools.Field(typeof(CIViewBaseLoadout), "liveryOptionInstances")==null},{liveryOptionInstances==null}");
-                    return;
-                }
-
-                foreach (var item in liveryOptionInstances) {
-                    string key = item.Key;
-                    CIHelperLoadoutLivery liveryHelper = item.Value;
-                    if (key == null || liveryHelper == null)
-                    {
-                        Debug.Warning($"[LiveryGUI] BUG(?): null key/val encountered: {key}, valIsNull={liveryHelper==null}");
-                        continue;
-                    }
-                    liveryHelper.button.tooltipUsed = true;
-                    liveryHelper.button.tooltipKey = null;
-                    liveryHelper.button.AddTooltip(key, liveryHelper.name); // the 'title' is REALLY BIG AND CAPITALIZED, so probably leave title null and only use the text (?)
-                }
-#endif
+            liveryNameInput.gameObject.transform.localPosition = paneGO.activeSelf ? Positions.liveryName : Positions.liveryName_hiddenOffscreen;
         }
 
         //==============================================================================
@@ -845,7 +839,7 @@ namespace LiveryGUIMod
         {
             // 3todo: eventually change the sprite, and don't mark it like the button itself is disabled. (an either-or option slider might also be appropriate?) and eventually revisit the colors.
             var go = pilotModeToggleButton.gameObject;
-            var pilotIcon = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            var _ = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
             var pilotFillIdle = go.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
 
             if (pilotFillIdle != null)
