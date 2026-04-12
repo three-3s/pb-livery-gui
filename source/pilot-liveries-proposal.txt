@@ -27,6 +27,7 @@ High-level design
 3) UI changes
 
 - Add a toggle in the Livery GUI: "Pilot Mode" (on/off). When off, GUI behaves as today (editing mech's livery). When on, GUI edits the selected pilot's PilotLiverySet.
+- (The existing GUI for editing the currently selected livery colors/materials can remain in place)
 - When Pilot Mode active, show an extra selector to pick the pilot (list of pilots assigned to the current mech or a global list). Minimal initial UX: only allow editing the pilot currently assigned to the selected mech (or show a dropdown of pilots aboard the player's roster).
 - Add a small legend/hint describing "PILOT_TRANSPARENT" meaning.
 - When Pilot Mode is selected and no pilot chosen, panel should be disabled or prompt to pick a pilot.
@@ -36,12 +37,11 @@ High-level design
 - Apply pilot liveries in the base only; ignore mission-time changes.
 - When switching into Pilot Mode and opening GUI for a mech, load the pilot's saved set into the GUI widgets. If the pilot has no entry, initialize blank (all "PILOT_TRANSPARENT").
 - On change (slider/button/assign livery for a slot), always write the change into PilotLiveryMap in memory and persist to disk immediately (or debounce/save-on-close). This avoids missing updates across many UI flows.
-- When a pilot is assigned to a mech (runtime event):
-  a) If pilot has a PilotLiverySet with non-transparent entries, save the mech's current livery assignments into MechOriginalLiveryMap[mechId] (only if not already saved for that pilot/mech), then apply pilot livery keys for each slot where the pilot's value != PILOT_TRANSPARENT. For transparent entries, leave mech's current livery unchanged.
-  b) If pilot has only transparent entries, do nothing.
+- When a pilot is assigned to a mech (runtime event), reapply the mech's saved base layer livery, then apply pilot livery keys for each slot where the pilot's value != PILOT_TRANSPARENT. For transparent entries, leave mech's current livery unchanged.
 - When a pilot is removed/unassigned from a mech: if MechOriginalLiveryMap contains an entry for that mechId (from earlier), restore those saved livery keys and clear the MechOriginalLiveryMap entry. If no saved entry exists, do nothing.
+- When entering into "mech" mode for editing liveries, any pilot liveries will need to be hidden, by reapplying the saved mech base livery selections to the active mech.
 
-- If a player edits the mech's livery while a pilot is assigned, treat the change as changing the mech's base livery (and update MechOriginalLiveryMap if it exists accordingly). This suggests that any time a livery is changed through the GUI and a pilot is currently assigned and the displayed target is "mech" mode, we should update the stored MechOriginalLiveryMap so that restoring still returns to the most recent base livery.
+- If a player edits the mech's livery assignments while a pilot is assigned but not in Pilot Mode, treat the change as changing the mech's base livery (and update MechOriginalLiveryMap if it exists accordingly). This suggests that any time a livery is changed through the GUI and a pilot is currently assigned and the displayed target is "mech" mode, we should update the stored MechOriginalLiveryMap so that restoring still returns to the most recent base livery.
 
 5) Implementation hooks
 
@@ -76,12 +76,13 @@ High-level design
 
 - Determine the save folder path: examine game's SaveManager / GamePaths from pb-spy or use known Steam save location. Better: hook into game save/load events and use the active save id path.
 - Write `LiveryGui_PilotLiveries_<saveId>.json` on change or game save. Load it on game load.
+- Note that the base game may end up saving/loading the "wrong" livery for the mech, and that the mod is assuming ownership over saving the base mech livery selections and the pilot livery "overlays", and then loading and applying them appropriately.
 
 11) Development plan (step-by-step)
 
 1. Add a new `PilotLiveryStore.cs` implementing:
    - Data structures
-   - JSON load/save helpers (use Unity's `JsonUtility` or Newtonsoft if available; otherwise simple manual serializer for dictionaries).
+   - JSON load/save helpers (use Unity's `JsonUtility` or Newtonsoft if available; otherwise simple manual serializer for dictionaries). Use existing mechanisms rather than adding new dependencies or inventing manual serialization -- such as JsonUtility.ToJson/FromJson.
    - Public API: `GetPilotLiverySet(string pilotId)`, `SetPilotLivery(string pilotId, string partKey, string liveryKey)`, `SaveForActiveSave()`, `LoadForActiveSave()`.
 
 2. Add constants and sentinel `PILOT_TRANSPARENT` in `LiveryGUI_GUI.cs` or `PilotLiveryStore.cs`.

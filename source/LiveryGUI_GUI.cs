@@ -302,8 +302,7 @@ namespace LiveryGUIMod
                 ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
                 RefreshSphereAndMechPreviews();
 
-                // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder).
-                // todo: maybe try letting the text-input always be active (on the livery page), just shoved offscreen
+                // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder). underlying issue for this workaround already resolved. clean this up.
             });
 
             toggleLiveryGUIButtonGO.SetActive(true);
@@ -438,7 +437,7 @@ namespace LiveryGUIMod
                 button.AddTooltip(null, "Click on sliders or click-and-drag to set.\n\nPrecise:\nRight-click-and-hold, and move mouse <--->\nSpeed: SHIFT, ALT, CTRL");
                 button.tooltipDelay = false;
                 button.tooltipPivot = UIWidget.Pivot.TopRight;
-                button.tooltipOffset = new Vector3(-77f + 100f -29f, -132f +84f -19f); //todo.test
+                button.tooltipOffset = new Vector3(-77f + 100f -29f, -132f +84f -19f);
                 button.tooltipColor = legendColor;
                 button.tooltipColorCustom = true;
             }
@@ -884,15 +883,15 @@ namespace LiveryGUIMod
             livery.contentParameters.w = ContentW.GetLevelValue();
 
             //todo: there's some circumstances that can cause severe graphical glitches in the form of multiple overlapping flickering large white circles with fuzzy edges, often with a black square in the middle.
-            //todo: seems to affect light gray / white moreso than other colors, but significantly tied to some interplay between xary.W and xary.effect. (sum of color channels affects susceptibility?).
-            //todo: cap 1ary.W to -3..+3. but the loss of +4..+5 is visible loss and non-ideal. but +5 is very unfriendly to effect.
-            //todo: cap 1ary.effect to -4..+4
-            //todo: constrain 1ary.W with respect to 1ary.effect: 1ary.W=+1.5 is about the max safe value while 1ary.effect is -4.
-            //todo: constrain 1ary.W when adjusting 1ary.effect: as 1ary.effect goes from 0..-5, cap 1ary.W to be at most 5..1 (reduce positive-magnitude of this, while negative-magnitude of the other increases)
-            //todo: constrain 1ary.W when adjusting 1ary.effect: as 1ary.effect goes from 0..+5, cap 1ary.W to be more than -5..-1 (reduce neg-magnitude of this, while pos-magnitude of the other increases)
-            //todo: also constrain 1ary.effect while 1ary.W is being adjusted.
-            //todo: also apply to 2ary and 3ary.
-
+            //  seems to affect light gray / white moreso than other colors, but significantly tied to some interplay between xary.W and xary.effect. (sum of color channels affects susceptibility?).
+            //  cap 1ary.W to -3..+3. but the loss of +4..+5 is visible loss and non-ideal. but +5 is very unfriendly to effect.
+            //  cap 1ary.effect to -4..+4
+            //  constrain 1ary.W with respect to 1ary.effect: 1ary.W=+1.5 is about the max safe value while 1ary.effect is -4.
+            //  constrain 1ary.W when adjusting 1ary.effect: as 1ary.effect goes from 0..-5, cap 1ary.W to be at most 5..1 (reduce positive-magnitude of this, while negative-magnitude of the other increases)
+            //  constrain 1ary.W when adjusting 1ary.effect: as 1ary.effect goes from 0..+5, cap 1ary.W to be more than -5..-1 (reduce neg-magnitude of this, while pos-magnitude of the other increases)
+            //  also constrain 1ary.effect while 1ary.W is being adjusted.
+            //  also apply to 2ary and 3ary.
+            //
             // suppose i limit the R+G+B for a part to sum to 2.1 or so. how gray is that, can it be improved via negative-alpha/negative-metal. simple linear sum rather than perceptual? and would need to figure out how to hook that up so as to not cause feedback issues while actively dragging the color sliders. Can go down to about RGB=.5,.5,.5 and use negative alpha to brighten it to apparently full-white. Perhaps a larger-negative alpha cap could further work around this?
         }
 
