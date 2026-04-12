@@ -1,0 +1,132 @@
+Goal
+
+- Preserve base game assignment of liveries to mech parts.
+- Preserve existing mod customization (sliders/buttons).
+- Extend mod to let the player assign a set of liveries per pilot and to apply those when a pilot is assigned to a mech in the base.
+
+High-level design
+
+1) Data model
+
+- PilotLiveryMap: Dictionary<string pilotUniqueId, PilotLiverySet>
+- PilotLiverySet: Dictionary<string partSlotKey, string liveryKey>
+  - partSlotKey: match the same logical part keys the base game uses for left/right arm/torso/etc (discover names from CIViewBaseLoadout / DataContainerEquipmentLivery usage).
+  - liveryKey: string key of a DataContainerEquipmentLivery entry; special sentinel value "PILOT_TRANSPARENT" means "no pilot livery here, leave mech's current livery intact".
+
+- MechOriginalLiveryMap (runtime only): Dictionary<int mechInstanceId, Dictionary<string partSlotKey, string liveryKey>>
+  - stored temporarily when a pilot with pilot-liveries is assigned; used to restore mech's own liveries when pilot is removed. Optionally persisted if desired.
+
+2) Persistence
+
+- Save pilot-livery assignments alongside save-game. Two practical options:
+  A) Integrate into game's save system (preferred long-term): find the game's save data type(s) and add a small mod-serializable field. Requires careful compatibility.
+  B) External per-save JSON (recommended for mod): create a small JSON file in the game's save directory per save slot, e.g., "LiveryGui_PilotLiveries_<saveId>.json". Read/write when the game loads/saves.
+
+- JSON structure: map pilot unique id -> map slot -> liveryKey. Include a version field.
+
+3) UI changes
+
+- Add a toggle in the Livery GUI: "Pilot Mode" (on/off). When off, GUI behaves as today (editing mech's livery). When on, GUI edits the selected pilot's PilotLiverySet.
+- When Pilot Mode active, show an extra selector to pick the pilot (list of pilots assigned to the current mech or a global list). Minimal initial UX: only allow editing the pilot currently assigned to the selected mech (or show a dropdown of pilots aboard the player's roster).
+- Add a small legend/hint describing "PILOT_TRANSPARENT" meaning.
+- When Pilot Mode is selected and no pilot chosen, panel should be disabled or prompt to pick a pilot.
+
+4) Behavior / lifecycle
+
+- Apply pilot liveries in the base only; ignore mission-time changes.
+- When switching into Pilot Mode and opening GUI for a mech, load the pilot's saved set into the GUI widgets. If the pilot has no entry, initialize blank (all "PILOT_TRANSPARENT").
+- On change (slider/button/assign livery for a slot), always write the change into PilotLiveryMap in memory and persist to disk immediately (or debounce/save-on-close). This avoids missing updates across many UI flows.
+- When a pilot is assigned to a mech (runtime event):
+  a) If pilot has a PilotLiverySet with non-transparent entries, save the mech's current livery assignments into MechOriginalLiveryMap[mechId] (only if not already saved for that pilot/mech), then apply pilot livery keys for each slot where the pilot's value != PILOT_TRANSPARENT. For transparent entries, leave mech's current livery unchanged.
+  b) If pilot has only transparent entries, do nothing.
+- When a pilot is removed/unassigned from a mech: if MechOriginalLiveryMap contains an entry for that mechId (from earlier), restore those saved livery keys and clear the MechOriginalLiveryMap entry. If no saved entry exists, do nothing.
+
+- If a player edits the mech's livery while a pilot is assigned, treat the change as changing the mech's base livery (and update MechOriginalLiveryMap if it exists accordingly). This suggests that any time a livery is changed through the GUI and a pilot is currently assigned and the displayed target is "mech" mode, we should update the stored MechOriginalLiveryMap so that restoring still returns to the most recent base livery.
+
+5) Implementation hooks
+
+- Locate where pilots are assigned/removed to mechs in the decompiled code (pb-spy). Typical places to inspect:
+  - CIViewBaseLoadout and related classes (the mod already works here).
+  - Methods in the player roster/assign logic (search for "AssignPilot", "OnPilotAssign", "SetCrew", or where Pilot entities are attached to Mech entities).
+- Add small event handlers / Harmony postfixes to the relevant assignment methods to call our ApplyPilotLiveries/RestoreMechLiveries logic.
+- Add GUI toggle/button to Livery GUI (in `LiveryGUI_GUI.cs`) and wire to switch mode. Reuse existing slider infrastructure so editing affects PilotLiveryMap rather than DataMultiLinkerEquipmentLivery entries when in pilot-mode.
+
+6) Mapping from pilot set to actual applied livery
+
+- When applying a pilot-livery for a part slot, do the same operation the base uses when a player picks a livery for that slot. That may be a call to the same CIViewBaseLoadout method that selects and attaches livery, or direct assignment into DataMultiLinkerEquipmentLivery.data for that slot and then calling CIViewBaseLoadout.Redraw/RefreshSphereAndMechPreviews. Reuse UpdateLiveryFromSliders() and RefreshSphereAndMechPreviews() logic where possible.
+
+7) Special-purpose "transparent" livery
+
+- Use a sentinel string constant, e.g., `const string PILOT_TRANSPARENT = "__PILOT_TRANSPARENT__"`.
+- Ensure this key is never inserted into DataMultiLinkerEquipmentLivery.data. Treat it as a no-op during application.
+- Optionally, allow a visible icon in the livery-picker UI to select the transparent sentinel.
+
+8) Edge cases and conflict resolution
+
+- Multiple pilots sharing a mech in quick succession: ensure MechOriginalLiveryMap is keyed by mechId and only kept while a pilot that replaced the mech's original livery is still assigned. If a second pilot is assigned while first is assigned, either overwrite MechOriginalLiveryMap with the mech's current base (safer) or chain history. Simpler approach: always update stored original to the current mech base on each pilot assignment if no stored value exists; if a stored value exists but pilot changes, restore first then save again.
+- Deleting a pilot or clearing roster: persist PilotLiveryMap but be tolerant if a pilot ID is absent.
+
+9) Files & code pointers to change in mod
+
+- `LiveryGUI_GUI.cs`: add toggle/button/UI to select Pilot Mode; modify UpdateLiveryFromSliders/Reset... to read/write pilot-targeted data when in pilot-mode; add helper functions to load/save a PilotLiverySet into/from the GUI widgets.
+- New file: `PilotLiveryStore.cs` (or similar): implement in-memory maps, persistence (JSON read/write), Apply/Restore helpers.
+- New file: `PilotLiveryHooks.cs`: Harmony patches (postfix) for pilot assignment and removal events to call Apply/Restore.
+
+10) Persistence implementation detail (recommended JSON mod file)
+
+- Determine the save folder path: examine game's SaveManager / GamePaths from pb-spy or use known Steam save location. Better: hook into game save/load events and use the active save id path.
+- Write `LiveryGui_PilotLiveries_<saveId>.json` on change or game save. Load it on game load.
+
+11) Development plan (step-by-step)
+
+1. Add a new `PilotLiveryStore.cs` implementing:
+   - Data structures
+   - JSON load/save helpers (use Unity's `JsonUtility` or Newtonsoft if available; otherwise simple manual serializer for dictionaries).
+   - Public API: `GetPilotLiverySet(string pilotId)`, `SetPilotLivery(string pilotId, string partKey, string liveryKey)`, `SaveForActiveSave()`, `LoadForActiveSave()`.
+
+2. Add constants and sentinel `PILOT_TRANSPARENT` in `LiveryGUI_GUI.cs` or `PilotLiveryStore.cs`.
+
+3. Add UI toggle and pilot selector in `LiveryGUI_GUI.cs`:
+   - When Pilot Mode on: change focus of GUI to write to PilotLiveryStore instead of DataMultiLinkerEquipmentLivery.
+   - Implement GUI load/restore helpers: `LoadPilotLiveryToWidgets(string pilotId)` and `SaveWidgetsToPilotLivery(string pilotId)`.
+
+4. Add Harmony postfix patches in `PilotLiveryHooks.cs` to hook into the code path that assigns/removes pilots to/from mechs. In postfixes call `PilotLiveryStore.ApplyPilotLiveriesToMechIfNeeded(mechId, pilotId)` or `PilotLiveryStore.RestoreMechLiveries(mechId)`.
+
+5. Wire the in-GUI assignment flow: when user edits a pilot-livery slot, write to PilotLiveryStore and call `ApplyPilotLiveriesToCurrentlyAssignedMechIfRelevant()` to immediately reflect changes when applicable.
+
+6. Implement persistence: read on mod init/game load, write on change and/or on game save event.
+
+7. Manual testing checklist
+   - Switching toggle on/off keeps existing mech livery behavior intact.
+   - Create a pilot-livery set, set some slots to concrete livery keys and some to transparent; save -> reload the base -> re-open GUI to verify persistent data.
+   - Assign pilot to mech: verify pilot livery applied only to non-transparent slots and mech original is restored on unassign.
+   - Edit mech base livery while a pilot is assigned, then remove pilot: verify restored base reflects the most recent base.
+   - Edge-case: assign pilot A then B; verify mech original is handled sensibly (restore or update accordingly).
+
+12. Future improvements
+   - UI polish: allow quick copy/paste of pilot sets, presets.
+   - Sync with existing favorite/clone/save workflow.
+   - Add unit tests (where possible) for JSON persistence and mapping logic.
+
+Notes and hints for inspection
+
+- Use your pb-spy decompiled sources and configs to find exact method and field names for pilot assignment logic and for livery application. Useful targets:
+  - anything referencing "livery" in CIView classes.
+  - methods that mutate `CIViewBaseLoadout.selectedUnitLivery` or call `OnLiveryAttachAttempt` (the mod already calls this via AccessTools). Reuse that mechanism.
+  - Pilot identity: the pilot unique id used by the game; if not obvious, consider using the pilot's entity id or a stable saved GUID on the PilotData object.
+
+Estimated effort
+
+- Design + data + JSON persistence: 2-4 hours
+- UI changes + widget wiring: 2-4 hours
+- Harmony patches to hook assignment/removal + testing: 2-4 hours
+- Polishing and edge-case fixes: 2-3 hours
+
+Deliverables for first increment
+
+- `PilotLiveryStore.cs` implementing storage + JSON persistence
+- UI toggle in `LiveryGUI_GUI.cs` to switch between mech-mode and pilot-mode
+- Basic hooks in `PilotLiveryHooks.cs` that respond to pilot assignment/removal and apply/restore liveries
+- Tests and manual verification steps documented above
+
+End of proposal

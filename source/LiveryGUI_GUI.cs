@@ -76,6 +76,8 @@ namespace LiveryGUIMod
         public static Dictionary<string, CIHelperSetting> sliderHelpers = null; // key = livery's key
         public static Dictionary<string, SliderConfig> sliderConfigs = null; // key = livery's key
         public static CIButton toggleLiveryGUIButton;
+        public static CIButton pilotModeToggleButton;
+        public static bool pilotModeActive = false;
         public static CIButton resetLiveryButton;
         public static CIButton saveLiveryButton;
         public static CIButton cloneLiveryButton;
@@ -99,6 +101,8 @@ namespace LiveryGUIMod
         {
             if (paneGO == null)
             {
+                //3todo eventually refactor to split init-code out into helper function
+
                 ////////////////////////////////////////////////////////////////////////////////
                 // create a new pane
                 var uiRoot = __instance.liveryRootObject.transform;
@@ -236,7 +240,7 @@ namespace LiveryGUIMod
                 // toggle-button for Livery GUI visibility
                 GameObject toggleLiveryGUIButtonGO = GameObject.Instantiate(CIViewBaseLoadout.ins.headerButtonLivery.gameObject, uiRoot, false);
                 toggleLiveryGUIButtonGO.name = "LiveryAdvancedToggle";
-                toggleLiveryGUIButtonGO.transform.localPosition = new Vector3(645f, +70f, 0f);
+                toggleLiveryGUIButtonGO.transform.localPosition = new Vector3(562f, +72f, 0f); //3todo eventually pull the positioning vars out into a single list of constants
                 toggleLiveryGUIButtonGO.transform.localScale = Vector3.one;
 
                 var toggleIcon = toggleLiveryGUIButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
@@ -277,10 +281,31 @@ namespace LiveryGUIMod
                 toggleLiveryGUIButtonGO.SetActive(true);
 
                 ////////////////////////////////////////////////////////////////////////////////
+                // toggle-button for Pilot-Mode
+                GameObject pilotModeToggleGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+                pilotModeToggleGO.name = "pilotModeToggleGO";
+                pilotModeToggleGO.transform.localPosition = new Vector3(645f, +68f, 0f);
+
+                var pilotIcon = pilotModeToggleGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //3todo choose a sprite. (maybe add that select-clicked-on-sprite to the ~"ui.view-enter uitools". and maybe also a search.)
+
+                pilotModeToggleButton = pilotModeToggleGO.GetComponent<CIButton>();
+                pilotModeToggleButton.callbackOnClick = new UICallback(() =>
+                {
+                    pilotModeActive = !pilotModeActive;
+                    UpdatePilotModeButtonVisuals();
+                    ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
+                    RefreshSphereAndMechPreviews();
+                });
+
+                pilotModeToggleGO.SetActive(true);
+                UpdatePilotModeButtonVisuals();
+
+                ////////////////////////////////////////////////////////////////////////////////
                 // Livery GUI buttons: 'revert changes', 'clone livery', 'save livery to disk'
                 Vector3 posStep = new Vector3(80f, 0f, 0f);
 
-                GameObject resetLiveryButtonGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+                GameObject resetLiveryButtonGO = GameObject.Instantiate(pilotModeToggleGO, paneGO.transform, false);
                 resetLiveryButtonGO.name = "resetLiveryButtonGO";
                 resetLiveryButtonGO.transform.localPosition += posStep;
                 var resetIcon = resetLiveryButtonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
@@ -816,6 +841,20 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
+        static void UpdatePilotModeButtonVisuals()
+        {
+            // 3todo: eventually change the sprite, and don't mark it like the button itself is disabled. (an either-or option slider might also be appropriate?) and eventually revisit the colors.
+            var go = pilotModeToggleButton.gameObject;
+            var pilotIcon = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            var pilotFillIdle = go.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+
+            if (pilotFillIdle != null)
+            {
+                pilotFillIdle.color = pilotModeActive ? activeButtonFGColor : grayedOutButtonFGColor;
+            }
+        }
+
+        //==============================================================================
         static void UpdateLiveryFromSliders()
         {
             var livery = GetSelectedLivery();
@@ -856,7 +895,7 @@ namespace LiveryGUIMod
 
             livery.contentParameters.w = ContentW.GetLevelValue();
 
-            //todo: there's some circumstances that can cause severe graphical glitches in the form of multiple overlapping flickering large white circles with fuzzy edges, often with a black square in the middle. 
+            //todo: there's some circumstances that can cause severe graphical glitches in the form of multiple overlapping flickering large white circles with fuzzy edges, often with a black square in the middle.
             //todo: seems to affect light gray / white moreso than other colors, but significantly tied to some interplay between xary.W and xary.effect. (sum of color channels affects susceptibility?).
             //todo: cap 1ary.W to -3..+3. but the loss of +4..+5 is visible loss and non-ideal. but +5 is very unfriendly to effect.
             //todo: cap 1ary.effect to -4..+4
