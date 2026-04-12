@@ -96,25 +96,25 @@ namespace LiveryGUIMod
 
         // widget positions
         class Positions {
-            // 3todo eventually rearrange these. LGToggle; PToggle (& CombinationViewToggle?), Favorite, Revert; Name, Save, Clone; Legends.
             public static readonly float topRowY = +72f;
             public static readonly Vector3 posStep = new Vector3(80f, 0f, 0f);
-            public static readonly Vector3 smallPosStep = new Vector3(50f, 0f, 0f);
-            public static readonly Vector3 posStepOverNameInputField = new Vector3(500f, 0f, 0f);
+            public static readonly Vector3 smallPosStep = new Vector3(55f, 0f, 0f);
+            public static readonly Vector3 minimalPosStep = new Vector3(50f, 0f, 0f);
+            public static readonly Vector3 posStepOverNameInputField = new Vector3(418f, 0f, 0f);
 
             public static readonly Vector3 liveryGuiToggle = new Vector3(562f, topRowY, 0f); // in a blank spot on the top left of the livery sidebar that's on left portion of screen
 
-            public static readonly Vector3 pilotToggle = new Vector3(645f, topRowY, 0f); // top-left corner of the mech-preview region (just to the right of the liveryGuiToggle)
+            public static readonly Vector3 favoriteButton = new Vector3(645f, topRowY, 0f); // top-left corner of the mech-preview region (just to the right of the liveryGuiToggle)
+            public static readonly Vector3 pilotToggle = favoriteButton + posStep;
             public static readonly Vector3 resetButton = pilotToggle + posStep;
-            public static readonly Vector3 saveButton = resetButton + posStep;
-            public static readonly Vector3 cloneButton = saveButton + posStep;
-            public static readonly Vector3 liveryName = cloneButton + new Vector3(56f, 0f, 0f); // (when not moved off-screen)
+            public static readonly Vector3 liveryName = resetButton + new Vector3(55f, 0f, 0f); // (when not moved off-screen)
             public static readonly Vector3 liveryName_hiddenOffscreen = new Vector3(20000f, 20000f, 0f);
-            public static readonly Vector3 favoriteButton = saveButton + posStepOverNameInputField;
+            public static readonly Vector3 saveButton = resetButton + posStepOverNameInputField;
+            public static readonly Vector3 cloneButton = saveButton + smallPosStep;
 
-            public static readonly Vector3 legendGroup1Item1 = favoriteButton + 1f * posStep;
-            public static readonly Vector3 legendGroup2Item1 = favoriteButton + 2f * posStep;
-            public static readonly Vector3 legendGroup2Item2 = favoriteButton + 2f * posStep + 1f * smallPosStep;
+            public static readonly Vector3 legendGroup1Item1 = cloneButton + 1f * posStep;
+            public static readonly Vector3 legendGroup2Item1 = cloneButton + 2f * posStep;
+            public static readonly Vector3 legendGroup2Item2 = cloneButton + 2f * posStep + 1f * minimalPosStep;
         }
 
         //==============================================================================
@@ -159,7 +159,7 @@ namespace LiveryGUIMod
             Color A = new Color(1f, 1f, 1f, 0.37f);
             sliderHelpers = new Dictionary<string, CIHelperSetting>();
             sliderConfigs = new Dictionary<string, SliderConfig>() {
-                    //3todo consider making space for additional info like a small "?" button for each with tool explaining what the field does (ideally with translations).
+                    //todo consider making space for additional info like a small "?" button for each with tool explaining what the field does (ideally with translations).
                     { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   R, loC,  hiC) },
                     { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   G, loC,  hiC) },
                     { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   B, loC,  hiC) },
@@ -313,9 +313,6 @@ namespace LiveryGUIMod
             GameObject pilotModeToggleGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
             pilotModeToggleGO.name = "pilotModeToggleGO";
             pilotModeToggleGO.transform.localPosition = Positions.pilotToggle;
-
-            var pilotIcon = pilotModeToggleGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-            if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //3todo choose a sprite. (maybe add that select-clicked-on-sprite to the ~"ui.view-enter uitools". and maybe also a search.)
 
             pilotModeToggleButton = pilotModeToggleGO.GetComponent<CIButton>();
             pilotModeToggleButton.callbackOnClick = new UICallback(() =>
@@ -837,15 +834,12 @@ namespace LiveryGUIMod
         //==============================================================================
         static void UpdatePilotModeButtonVisuals()
         {
-            // 3todo: eventually change the sprite, and don't mark it like the button itself is disabled. (an either-or option slider might also be appropriate?) and eventually revisit the colors.
             var go = pilotModeToggleButton.gameObject;
-            var _ = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
             var pilotFillIdle = go.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+            var pilotIcon = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
 
-            if (pilotFillIdle != null)
-            {
-                pilotFillIdle.color = pilotModeActive ? activeButtonFGColor : grayedOutButtonFGColor;
-            }
+            if (pilotFillIdle != null) { pilotFillIdle.color = pilotModeActive ? activeButtonFGColor : grayedOutButtonFGColor; } //todo.pilot-mode: fix color, or change to a toggle-slider or something.
+            if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //todo.pilot-mode choose a sprite. (maybe add that select-clicked-on-sprite to the ~"ui.view-enter uitools". and maybe also a search.)
         }
 
         //==============================================================================
