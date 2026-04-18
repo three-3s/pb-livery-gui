@@ -31,6 +31,10 @@ Created after Phantom Brigade v2.0.
 
 ([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
 
+Bonus features:
+
+* (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to click on sprites in the atlas.
+
 
 
 ## Questions & Answers

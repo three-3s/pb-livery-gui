@@ -33,6 +33,11 @@ Created after Phantom Brigade v2.0.
 
 ([url=https://github.com/three-3s/pb-livery-gui]Source code here[/url])
 
+Bonus features:
+[list]
+[*] (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to click on sprites in the atlas.
+[/list]
+
 
 
 [h1]Questions & Answers[/h1]

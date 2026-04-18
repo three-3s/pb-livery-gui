@@ -450,6 +450,8 @@ namespace LiveryGUIMod
             ////////////////////////////////////////////////////////////////////////////////
             // Livery GUI initial visibility
             paneGO.SetActive(false);
+
+            pilotModeToggleButton.gameObject.SetActive(false); //todo.pilot-mode: remove this line
         }//Initialize()
 
         //==============================================================================

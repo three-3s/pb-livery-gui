@@ -14,6 +14,9 @@ the following console command is also helpful, providing a visualization (but po
    (and ui.view-exit uitools)
    https://wiki.braceyourselfgames.com/en/PhantomBrigade/Modding/ModSystemChanges (accessed 2026-01-18)
 
+   and LiveryGUI now patches in support in uitools for clicking on the sprites in the atlas.
+
+
 OF NOTE:
 s_icon_l32_lc_settings:       a gear-icon
              _save1:          a floppy-disk save icon

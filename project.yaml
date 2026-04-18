@@ -7,6 +7,10 @@ workshop:
   description: 
   internalData: 
   changes: >
+    'v1.2.1: Some minor UI cleanup. (Plus patched in click-on-sprites support for PB's `ui.view-enter uitools` dev-tool)'
+
+
+
     'v1.2.0: Right-click-and-drag for precision (& modifier keys). Added favorite button for convenience.'
 
 
