@@ -35,7 +35,7 @@
 //    mapping.
 //
 // ADDITIONAL POSSIBLE IMPROVEMENTS:
-//  - There's a fair amount of brute-force item-by-item a.primR=b.primR,a.primG=b.primG etc.
+//  - (code) There's a fair amount of brute-force item-by-item a.primR=b.primR,a.primG=b.primG etc.
 //
 // BUGS:
 //   Minor: Favorite-star icon doesn't immediately update if user right-clicks on livery-list to

@@ -1,11 +1,7 @@
 using HarmonyLib;
-using PhantomBrigade;
-using PhantomBrigade.Mods;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 

@@ -1,9 +1,4 @@
-using PhantomBrigade;
-using PhantomBrigade.Game;
-using System;
-using System.Diagnostics.Tracing;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 // While right-click-held is active,
 // captures mouse movement, converting it to high-precision adjustment of current slider-bar.

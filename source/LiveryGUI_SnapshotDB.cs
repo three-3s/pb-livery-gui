@@ -1,12 +1,5 @@
-﻿using Entitas;
-using HarmonyLib;
-using PhantomBrigade;
-using PhantomBrigade.Data;
-using PhantomBrigade.Mods;
-using System;
+﻿using PhantomBrigade.Data;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 

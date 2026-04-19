@@ -1,14 +1,10 @@
-﻿using Entitas;
-using HarmonyLib;
+﻿using HarmonyLib;
 using PhantomBrigade;
 using PhantomBrigade.Data;
-using PhantomBrigade.Mods;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.U2D;
 using Debug = UnityEngine.Debug;
 
 namespace LiveryGUIMod
@@ -77,7 +73,6 @@ namespace LiveryGUIMod
         public static Dictionary<string, SliderConfig> sliderConfigs = null; // key = livery's key
         public static CIButton toggleLiveryGUIButton;
         public static CIButton pilotModeToggleButton;
-        public static bool pilotModeActive = false;
         public static CIButton resetLiveryButton;
         public static CIButton saveLiveryButton;
         public static CIButton cloneLiveryButton;
@@ -284,7 +279,12 @@ namespace LiveryGUIMod
             toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
             toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
             {
-                paneGO.SetActive(!paneGO.activeSelf);
+                bool newState = !paneGO.activeSelf;
+                paneGO.SetActive(newState);
+                if (newState)
+                    LiverySetsDB.OnViewEntered();
+                else
+                    LiverySetsDB.OnViewExited();
 
                 // first time wasn't updating the text-input-field with the livery-name. i don't know why.
                 // INVOKE ALL THE REFRESH. MULTIPLY. STILL DOESN'T WORK FIRST TIME. ONLY SECOND TIME. ONLY SECOND TIME.
@@ -316,7 +316,8 @@ namespace LiveryGUIMod
             pilotModeToggleButton = pilotModeToggleGO.GetComponent<CIButton>();
             pilotModeToggleButton.callbackOnClick = new UICallback(() =>
             {
-                pilotModeActive = !pilotModeActive;
+                bool newState = !LiverySetsDB.IsPilotModeActive;
+                LiverySetsDB.SetPilotModeActive(newState);
                 UpdatePilotModeButtonVisuals();
                 ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
                 RefreshSphereAndMechPreviews();
@@ -450,8 +451,6 @@ namespace LiveryGUIMod
             ////////////////////////////////////////////////////////////////////////////////
             // Livery GUI initial visibility
             paneGO.SetActive(false);
-
-            pilotModeToggleButton.gameObject.SetActive(false); //todo.pilot-mode: remove this line
         }//Initialize()
 
         //==============================================================================
@@ -839,7 +838,7 @@ namespace LiveryGUIMod
             var pilotFillIdle = go.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
             var pilotIcon = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
 
-            if (pilotFillIdle != null) { pilotFillIdle.color = pilotModeActive ? activeButtonFGColor : grayedOutButtonFGColor; } //todo.pilot-mode: fix color, or change to a toggle-slider or something.
+            if (pilotFillIdle != null) { pilotFillIdle.color = LiverySetsDB.IsPilotModeActive ? activeButtonFGColor : grayedOutButtonFGColor; } //todo.pilot-mode: fix color, or change to a toggle-slider or something.
             if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //todo.pilot-mode choose a sprite. (maybe add that select-clicked-on-sprite to the ~"ui.view-enter uitools". and maybe also a search.)
         }
 

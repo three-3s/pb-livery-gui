@@ -91,6 +91,8 @@
     <Compile Include="LiveryGUI_RightClick.cs" />
     <Compile Include="LiveryGUI_SnapshotDB.cs" />
     <Compile Include="LiveryGUI_UIToolsSpriteLookup.cs" />
+    <Compile Include="LiveryAssignmentSet.cs" />
+    <Compile Include="LiverySetsDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

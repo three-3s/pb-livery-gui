@@ -1,13 +1,7 @@
-﻿using Entitas;
-using HarmonyLib;
-using PhantomBrigade;
+﻿using HarmonyLib;
 using PhantomBrigade.Data;
 using PhantomBrigade.Mods;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 // INTRODUCTION / USAGE NOTES:
@@ -77,6 +71,105 @@ namespace LiveryGUIMod
 
                 LiverySnapshotDB.SnapshotInitialLiveries();
                 LoadAndSave.LoadUserSavedLiveries();
+            }
+        }
+
+        // Catch when the player attempts to attach a livery to a slot via the base UI.
+        // We'll notify our in-memory DB about the change so callers can update stored sets.
+        [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnLiveryAttachAttempt")]
+        public class OnLiveryAttachAttemptPatch
+        {
+            // 3todo.later: determine if need another hook-in for right-click-remove-livery
+            public static void Postfix(CIViewBaseLoadout __instance, object liveryKeyArg)
+            {
+                try
+                {
+                    string liveryKey = liveryKeyArg as string;
+                    int mechId = CIViewBaseLoadout.selectedUnitID;
+                    string partKey = LiverySetsDB.PartKey(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint);
+                    // 3todo.later: need to test how the null-or-empty works, with respect to PB's use of some sort of 'default'/null pseudo-livery.
+                    string key = string.IsNullOrEmpty(liveryKey) ? LiverySetsDB.PILOT_TRANSPARENT : liveryKey;
+                    Debug.Log($"[LiveryGUI] OnLiveryAttachAttempt: mech={mechId}, part={partKey}, livery={key}");
+                    LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, key);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in OnLiveryAttachAttemptPatch: {ex}");
+                }
+            }
+        }
+
+        // 3todo.later: consider implication of the "liveryPreservation" option (when swapping-out / attaching new parts to unit)
+        //3todo.later: test what happens when part is removed then same/different part reattached (with & without the preserve-mech-livery setting enabled?)
+        // Catch when player attempts to clear a livery from a slot. This slot could be whole-unit, or whole-part, or a subsystem/hardpoint on a part.
+        // We need to hook all three cases, but distinguish these from e.g. "remove the actual part", since that routes through these same functions.
+        [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnUnitRemoved")]
+        public class OnUnitRemovedPatch
+        {
+            public static void Postfix()
+            {
+                try
+                {
+                    if (CIViewBaseLoadout.liveryMode)
+                    {
+                        int mechId = CIViewBaseLoadout.selectedUnitID;
+                        string partKey = LiverySetsDB.PartKey(null, null);
+                        string liveryKey = LiverySetsDB.PILOT_TRANSPARENT;
+                        Debug.Log($"[LiveryGUI] OnUnitRemovedPatch: mech={mechId}, livery={liveryKey}");
+                        LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, liveryKey);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in OnUnitRemovedPatch: {ex}");
+                }
+            }
+        }
+        [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnSocketRemoved")]
+        public class OnSocketRemovedPatch
+        {
+            public static void Postfix(object socketArg)
+            {
+                try
+                {
+                    if (CIViewBaseLoadout.liveryMode)
+                    {
+                        string socket = socketArg as string;
+                        int mechId = CIViewBaseLoadout.selectedUnitID;
+                        string partKey = LiverySetsDB.PartKey(socket, null);
+                        string liveryKey = LiverySetsDB.PILOT_TRANSPARENT;
+                        Debug.Log($"[LiveryGUI] OnSocketRemovedPatch: mech={mechId}, part={partKey}, livery={liveryKey}");
+                        LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, liveryKey);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in OnSocketRemovedPatch: {ex}");
+                }
+            }
+        }
+        [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnHardpointRemoved")]
+        public class OnHardpointRemovedPatch
+        {
+            public static void Postfix(object hardpointArg)
+            {
+                try
+                {
+                    if (CIViewBaseLoadout.liveryMode)
+                    {
+                        string socket = CIViewBaseLoadout.selectedUnitSocket;
+                        string hardpoint = hardpointArg as string;
+                        int mechId = CIViewBaseLoadout.selectedUnitID;
+                        string partKey = LiverySetsDB.PartKey(socket, hardpoint);
+                        string liveryKey = LiverySetsDB.PILOT_TRANSPARENT;
+                        Debug.Log($"[LiveryGUI] OnHardpointRemovedPatch: mech={mechId}, part={partKey}, livery={liveryKey}");
+                        LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, liveryKey);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in OnHardpointRemovedPatch: {ex}");
+                }
             }
         }
 
