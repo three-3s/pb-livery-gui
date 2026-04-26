@@ -19,16 +19,14 @@ namespace LiveryGUIMod {
         private CursorLockMode origLockMode = CursorLockMode.None; // (user may have confined-to-window enabled via Options)
 
         //==============================================================================
-        public void Awake()
-        {
+        public void Awake() {
             // called once (per instance), when navigating to livery tab
             origLockMode = Cursor.lockState;
         }
 
         //==============================================================================
         public CIBar GetSliderBar() { return sliderBar; }
-        public void CaptureRightClickFor(CIBar thisSlider)
-        {
+        public void CaptureRightClickFor(CIBar thisSlider) {
             if (sliderBar == null)
                 origLockMode = Cursor.lockState;
 
@@ -54,8 +52,7 @@ namespace LiveryGUIMod {
         }
 
         //==============================================================================
-        public void ReleaseMouseCapture()
-        {
+        public void ReleaseMouseCapture() {
             Cursor.lockState = origLockMode;
             if (sliderBar != null)
                 sliderBar.spriteFill.color = origBarColor;
@@ -63,30 +60,25 @@ namespace LiveryGUIMod {
         }
 
         //==============================================================================
-        public void OnDisable()
-        {
+        public void OnDisable() {
             //Debug.Log($"[LiveryGUI] SliderRightClickHandler.OnDisable (sliderBar={sliderBar?.name ?? "{none}"})");
             ReleaseMouseCapture();
             sliderBar = null;
         }
-        public void OnDestroy()
-        {
+        public void OnDestroy() {
             ReleaseMouseCapture();
         }
-        public void OnApplicationFocus(bool hasFocus)
-        {
+        public void OnApplicationFocus(bool hasFocus) {
             //Debug.Log($"[LiveryGUI] SliderRightClickHandler.OnApplicationFocus (hasFocus={hasFocus})");
             if (!hasFocus) ReleaseMouseCapture();
         }
-        public void OnApplicationPause(bool paused)
-        {
+        public void OnApplicationPause(bool paused) {
             //Debug.Log($"[LiveryGUI] SliderRightClickHandler.OnApplicationPause (paused={paused})");
             if (paused) ReleaseMouseCapture();
         }
 
         //==============================================================================
-        public void Update()
-        {
+        public void Update() {
             // called once per frame (per instance)
             //Debug.Log($"[LiveryGUI] SliderRightClickHandler.Update (sliderBar={sliderBar?.name ?? "{none}"})");
             //Debug.Log($"[LiveryGUI] SliderRightClickHandler.Update: GetMouseButton(1)={Input.GetMouseButton(1)} GetMouseButtonDown(1)={Input.GetMouseButtonDown(1)}, GetMouseButtonUp(1)={Input.GetMouseButtonUp(1)}");

@@ -11,10 +11,8 @@ namespace LiveryGUIMod
     //    selected/hovered icons. (Base PB has visibility problems showing the current
     //    selection the and favorite icon.)
     [HarmonyPatch(typeof(CIHelperLoadoutLivery), "Redraw")]
-    public static class LiverySelectionStylesPatch
-    {
-        public static void Postfix(CIHelperLoadoutLivery __instance, DataContainerEquipmentLivery liveryData, bool unlocked, bool selected, bool favorite, bool fromContent)
-        {
+    public static class LiverySelectionStylesPatch {
+        public static void Postfix(CIHelperLoadoutLivery __instance, DataContainerEquipmentLivery liveryData, bool unlocked, bool selected, bool favorite, bool fromContent) {
             __instance.spriteFrame.gradientTop = Color.white;
             __instance.spriteFrame.gradientBottom = Color.white;
 

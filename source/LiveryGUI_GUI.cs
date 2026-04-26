@@ -7,26 +7,22 @@ using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace LiveryGUIMod
-{
-    public enum SliderKind
-    {
+namespace LiveryGUIMod {
+    public enum SliderKind {
         Continuous,
         Discrete,
         // Toggle -- supported by the 'helper', but not needed/implemented in LiveryGUI
     }
 
     // each of these is used to initialize one slider-bar
-    public class SliderConfig
-    {
+    public class SliderConfig {
         public string name;
         public string label;
         public Color fillColor;
         public float min;
         public float max;
         public SliderKind sliderKind;
-        public SliderConfig(string name, string label, Color fillColor, float min = 0f, float max = 1f, SliderKind sliderKind = SliderKind.Continuous)
-        {
+        public SliderConfig(string name, string label, Color fillColor, float min = 0f, float max = 1f, SliderKind sliderKind = SliderKind.Continuous) {
             this.name = name;
             this.label = label;
             this.fillColor = fillColor;
@@ -36,38 +32,31 @@ namespace LiveryGUIMod
         }
     }
 
-    public class LegendConfig
-    {
+    public class LegendConfig {
         public string spriteName;
         public Vector3 localPosition;
-        public LegendConfig(string spriteName, Vector3 localPosition)
-        {
+        public LegendConfig(string spriteName, Vector3 localPosition) {
             this.spriteName = spriteName;
             this.localPosition = localPosition;
         }
     }
 
     // relating the SliderKind.Discrete selection to the livery's float contentParameters.w
-    public class ContentW
-    {
+    public class ContentW {
         public static string[] names = { "none (w=0.0)", "dots (w=1.0)", "lines (w=2.0)", "sheen (w=3.0)" };
         public static int idx = 0;
-        public static void SetLevel(float val)
-        {
+        public static void SetLevel(float val) {
             idx = (int) Math.Min(Math.Max(0f, val + 0.1f), (float)names.Length - 1f);
         }
-        public static float GetLevelValue()
-        {
+        public static float GetLevelValue() {
             return (float)idx;
         }
-        public static string GetLevelName()
-        {
+        public static string GetLevelName() {
             return names[idx];
         }
     }
 
-    public class GUI
-    {
+    public class GUI {
         public static GameObject paneGO = null;
         public static Dictionary<string, CIHelperSetting> sliderHelpers = null; // key = livery's key
         public static Dictionary<string, SliderConfig> sliderConfigs = null; // key = livery's key
@@ -113,8 +102,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        public static void RedrawLiveryGUI(CIViewBaseLoadout __instance)
-        {
+        public static void RedrawLiveryGUI(CIViewBaseLoadout __instance) {
             Initialize(__instance);
 
             UpdateWidgetPositioning(__instance);
@@ -302,7 +290,7 @@ namespace LiveryGUIMod
                 ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
                 RefreshSphereAndMechPreviews();
 
-                // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder). underlying issue for this workaround already resolved. clean this up.
+                // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder). have a good enough workaround for the text-input field now, ie resolved elsewhere. clean this up.
             });
 
             toggleLiveryGUIButtonGO.SetActive(true);
@@ -402,6 +390,7 @@ namespace LiveryGUIMod
                 object[] args = { CIViewBaseLoadout.selectedUnitLivery };
                 AccessTools.Method(typeof(CIViewBaseLoadout), "OnLiveryFavoriteToggle").Invoke(CIViewBaseLoadout.ins, args); // (the built-in on-click handler when player right-clicks on a livery in the list)
                 UpdateButtonColors();
+                //3todo.later: BUG: there was something wrong here, but SSD failed and now I forgot what the exact issue was. button was left gray (or non-gray?) when it should have been colored (or not-colored). there's a bug where after clone, the Reset button remains red="i'm clickable", but doesn't actually do anything. (maybe that was it?)
             });
 
             ////////////////////////////////////////////////////////////////////////////////
@@ -432,7 +421,7 @@ namespace LiveryGUIMod
                 button = buttonGO.GetComponent<CIButton>();
                 button.callbackOnClick = null;
 
-                // 3todo update this with better description. ideally would support translations (and for any other tooltips/text).
+                // 3todo.later update this with better description. ideally would support translations (and for any other tooltips/text).
                 button.tooltipUsed = true;
                 button.tooltipKey = null;
                 button.AddTooltip(null, "Click on sliders or click-and-drag to set.\n\nPrecise:\nRight-click-and-hold, and move mouse <--->\nSpeed: SHIFT, ALT, CTRL");
@@ -454,8 +443,7 @@ namespace LiveryGUIMod
         }//Initialize()
 
         //==============================================================================
-        static void OnLiveryNameInput()
-        {
+        static void OnLiveryNameInput() {
             // It would be possible to do something like (dangerous?) rename the livery, including changing its dictionary key.
             // This could leave dangling references.
             // Instead, we'll have the on-input field do nothing itself, and let the 'save' & 'create clone' buttons use this
@@ -467,8 +455,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static void UpdateWidgetPositioning(CIViewBaseLoadout __instance)
-        {
+        static void UpdateWidgetPositioning(CIViewBaseLoadout __instance) {
             UIRoot root = __instance.gameObject.GetComponentInParent<UIRoot>();
             float pixelSizeAdj = root.pixelSizeAdjustment;
 
@@ -546,15 +533,13 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static void OnClickSecondary(CIHelperSetting helper)
-        {
+        static void OnClickSecondary(CIHelperSetting helper) {
             //Debug.Log($"[LiveryGUI] OnClickSecondary {helper?.name ?? "{none}"}");
             sliderRightClickHandler?.CaptureRightClickFor(helper.sliderBar);
         }
 
         //==============================================================================
-        static void OnCloneLiveryClicked()
-        {
+        static void OnCloneLiveryClicked() {
             string newLiveryKey = CloneSelectedLivery();
             if (newLiveryKey == liveryNameInput.value)
             {
@@ -628,8 +613,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static string CloneSelectedLivery()
-        {
+        static string CloneSelectedLivery() {
             if (CIViewBaseLoadout.ins == null) return null;
 
             var liveriesDict = DataMultiLinkerEquipmentLivery.data;
@@ -672,8 +656,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static void SelectLivery(string liveryKey)
-        {
+        static void SelectLivery(string liveryKey) {
             if (string.IsNullOrEmpty(liveryKey))
             {
                 if(!string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
@@ -695,8 +678,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static DataContainerEquipmentLivery GetSelectedLivery()
-        {
+        static DataContainerEquipmentLivery GetSelectedLivery() {
             string key = CIViewBaseLoadout.selectedUnitLivery;
             if (key.IsNullOrEmpty())
                 return null;
@@ -705,16 +687,16 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static bool SelectedLiveryIsFavorited()
-        {
+        static bool SelectedLiveryIsFavorited() {
             if (CIViewBaseLoadout.selectedUnitLivery.IsNullOrEmpty())
                 return false;
             return (CIViewBaseLoadout.liveryKeysFavorite.Contains(CIViewBaseLoadout.selectedUnitLivery));
         }
 
         //==============================================================================
-        static void ResetLiveryGUIWidgetsToMatchLivery(DataContainerEquipmentLivery livery)
-        {
+        static void ResetLiveryGUIWidgetsToMatchLivery(DataContainerEquipmentLivery livery) {
+            LiverySetsDB.OnMaybeMechSelectionChanged();
+
             //Debug.Log($"[LiveryGUI] DEBUG-SPAM: ResetLiveryGUIWidgetsToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");
             if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
             {
@@ -770,8 +752,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static void UpdateButtonColors()
-        {
+        static void UpdateButtonColors() {
             bool liveryDataIsModified = LiverySnapshotDB.IsCurrentLiveryModified();
             bool liveryNameIsModified = (CIViewBaseLoadout.selectedUnitLivery != liveryNameInput.value);
             bool liveryIsModified = (liveryDataIsModified || liveryNameIsModified);
@@ -832,8 +813,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static void UpdatePilotModeButtonVisuals()
-        {
+        static void UpdatePilotModeButtonVisuals() {
             var go = pilotModeToggleButton.gameObject;
             var pilotFillIdle = go.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
             var pilotIcon = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
@@ -843,8 +823,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static void UpdateLiveryFromSliders()
-        {
+        static void UpdateLiveryFromSliders() {
             var livery = GetSelectedLivery();
             if (livery == null)
                 return;
@@ -897,8 +876,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        static void RefreshSphereAndMechPreviews()
-        {
+        static void RefreshSphereAndMechPreviews() {
             int unitID = CIViewBaseLoadout.selectedUnitID;
             if (unitID < 0)
                 return;

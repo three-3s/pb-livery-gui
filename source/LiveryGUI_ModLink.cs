@@ -28,19 +28,16 @@ namespace LiveryGUIMod
     //==================================================================================================
     // (Having a class derived from ModLink might (?) be necessary, but the overrides are probably just
     //  leftover 'hello world' stuff at this point.)
-    public class ModLinkCustom : ModLink
-    {
+    public class ModLinkCustom : ModLink {
 #if false
         public static ModLinkCustom ins;
 
-        public override void OnLoadStart()
-        {
+        public override void OnLoadStart() {
             ins = this;
             //Debug.Log($"OnLoadStart");
         }
 
-        public override void OnLoad(Harmony harmonyInstance)
-        {
+        public override void OnLoad(Harmony harmonyInstance) {
             base.OnLoad(harmonyInstance);
             //Debug.Log($"OnLoad | Mod: {modID} | Index: {modIndexPreload} | Path: {modPath}");
         }
@@ -51,19 +48,14 @@ namespace LiveryGUIMod
     //+================================================================================================+
     //||                  MOD'S CONTROL-FLOW ENTRY POINT (via Harmony hooks)                          ||
     //+================================================================================================+
-    public class Patches
-    {
+    public class Patches {
         // Load all liveries the user previously saved to file.
         // Initializes the liveries-snapshots DB.
         //
-        // "Dear Harmony, please call into this OnInit class whenever DataMultiLinkerEquipmentLivery.OnAfterDeserialization() runs"
+        // "Dear Harmony, please call OnInit.Prefix() before whenever DataMultiLinkerEquipmentLivery.OnAfterDeserialization() runs"
         [HarmonyPatch(typeof(DataMultiLinkerEquipmentLivery), MethodType.Normal), HarmonyPatch("OnAfterDeserialization")]
-        public class OnInit
-        {
+        public class OnInit {
             static bool loadedYet = false;
-
-            // "Dear Harmony, due to this function being named Prefix(), please call this function BEFORE that
-            //  DataMultiLinkerEquipmentLivery.OnAfterDeserialization() runs."
             public static void Prefix() {
                 if (loadedYet)
                     return;
@@ -77,9 +69,7 @@ namespace LiveryGUIMod
         // Catch when the player attempts to attach a livery to a slot via the base UI.
         // We'll notify our in-memory DB about the change so callers can update stored sets.
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnLiveryAttachAttempt")]
-        public class OnLiveryAttachAttemptPatch
-        {
-            // 3todo.later: determine if need another hook-in for right-click-remove-livery
+        public class OnLiveryAttachAttemptPatch {
             public static void Postfix(CIViewBaseLoadout __instance, object liveryKeyArg)
             {
                 try
@@ -104,8 +94,7 @@ namespace LiveryGUIMod
         // Catch when player attempts to clear a livery from a slot. This slot could be whole-unit, or whole-part, or a subsystem/hardpoint on a part.
         // We need to hook all three cases, but distinguish these from e.g. "remove the actual part", since that routes through these same functions.
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnUnitRemoved")]
-        public class OnUnitRemovedPatch
-        {
+        public class OnUnitRemovedPatch {
             public static void Postfix()
             {
                 try
@@ -126,8 +115,7 @@ namespace LiveryGUIMod
             }
         }
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnSocketRemoved")]
-        public class OnSocketRemovedPatch
-        {
+        public class OnSocketRemovedPatch {
             public static void Postfix(object socketArg)
             {
                 try
@@ -149,8 +137,7 @@ namespace LiveryGUIMod
             }
         }
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnHardpointRemoved")]
-        public class OnHardpointRemovedPatch
-        {
+        public class OnHardpointRemovedPatch {
             public static void Postfix(object hardpointArg)
             {
                 try
@@ -175,13 +162,8 @@ namespace LiveryGUIMod
 
         // RedrawForLivery() gets invoked when navigating to the livery-select page, and when choosing a
         // different livery or livery-slot. We'll create (and repopulate values for) our livery sliders here.
-        //
-        // "Dear Harmony, please call into this RedrawLiveryGUI class whenever CIViewBaseLoadout.RedrawForLivery() runs"
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("RedrawForLivery")]
         public class RedrawLiveryGUI {
-            // "Dear Harmony, due to this function being named Postfix(), please call this RollForSalvage() function
-            //  BEFORE that DifficultyUtility.GetFlag() runs (and depending on what I say, either call the normal
-            //  GetFlag() or use the result I give instead)"
             public static void Postfix(CIViewBaseLoadout __instance, string socketTarget, string hardpointTarget, bool closeOnRepeat) {
                 _ = socketTarget;
                 _ = hardpointTarget;

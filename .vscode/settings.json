@@ -1,5 +1,8 @@
 {
     "dotnet.preferCSharpExtension": true,
+    "search.exclude": {
+        "source/.vs/": true,
+    },
     "cSpell.words": [
         "Behaviour",
         "Entitas",

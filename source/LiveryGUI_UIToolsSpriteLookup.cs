@@ -9,13 +9,11 @@ namespace LiveryGUIMod
 {
     //=========================================================================================
     [HarmonyPatch(typeof(CIViewInternalUITools), MethodType.Normal), HarmonyPatch("RedrawSprite")]
-    public class UIToolsSpriteLookupPatch
-    {
+    public class UIToolsSpriteLookupPatch {
         public static CIViewInternalUITools uitoolsView = null;
 
         //-------------------------------------------------------------------------------
-        public static void Postfix(CIViewInternalUITools __instance)
-        {
+        public static void Postfix(CIViewInternalUITools __instance) {
             if (uitoolsView) return;
             uitoolsView = __instance;
 
@@ -53,14 +51,12 @@ namespace LiveryGUIMod
     }//class UIToolsSpriteLookupPatch
 
     //=========================================================================================
-    public class AtlasSpriteClickHandler : MonoBehaviour
-    {
+    public class AtlasSpriteClickHandler : MonoBehaviour {
         //-------------------------------------------------------------------------------
         // Use NGUI's OnPress to trigger on mouse-down (isPressed==true). This avoids
         // missing the event when the user moves the mouse slightly while clicking
         // (which can be interpreted as a drag and not produce OnClick).
-        public void OnPress(bool isPressed)
-        {
+        public void OnPress(bool isPressed) {
             if (!isPressed) return; // only handle the initial mouse-down
 
             //Debug.Log($"[LiveryGUI.uitools-Patch] in AtlasSpriteClickHandler::OnClick(), for {gameObject.name}, bounds={gameObject.GetComponent<BoxCollider>()?.bounds} (ctr={gameObject.GetComponent<BoxCollider>()?.center}, sz={gameObject.GetComponent<BoxCollider>()?.size}), child of {transform.parent?.name}");

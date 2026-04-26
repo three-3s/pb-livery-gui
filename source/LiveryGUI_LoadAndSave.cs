@@ -5,11 +5,9 @@ using Debug = UnityEngine.Debug;
 
 namespace LiveryGUIMod
 {
-    public class LoadAndSave
-    {
+    public class LoadAndSave {
         //==============================================================================
-        public static void LoadUserSavedLiveries()
-        {
+        public static void LoadUserSavedLiveries() {
             string liveryGUISaveDir = GetLiveryGUISaveDir();
 
             if (!Directory.Exists(liveryGUISaveDir))
@@ -75,8 +73,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        public static void SaveLiveryToFile(string key, DataContainerEquipmentLivery liveryDat)
-        {
+        public static void SaveLiveryToFile(string key, DataContainerEquipmentLivery liveryDat) {
             if (LiverySnapshotDB.originalLiveries.ContainsKey(key) && !LiverySnapshotDB.originalLiveries[key].ownedByLiveryGUI)
             {
                 Debug.LogWarning($"[LiveryGUI] USAGE: Refusing to save to this livery key/name because LiveryGUI does not own that livery. You need to clone the livery to a new key/name. key={key}");
