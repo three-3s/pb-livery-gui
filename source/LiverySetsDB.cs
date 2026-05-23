@@ -69,6 +69,7 @@ namespace LiveryGUIMod {
                 string pilotId = string.IsNullOrEmpty(pilotIdOverride) ? ResolvePilotIdForMech(mechInstanceId) : pilotIdOverride;
                 if (!string.IsNullOrEmpty(pilotId) && TryGetPilotSet(pilotId, out var pilotSet)) {
                     // overlay: only apply pilot entries that are not the transparent sentinel
+                    PruneBaseDescendantsHiddenByPilotAssignments(finalSet, pilotSet);
                     foreach (var kv in pilotSet.Assignments) {
                         if (kv.Value == null) continue;
                         if (string.Equals(kv.Value, PILOT_TRANSPARENT, StringComparison.Ordinal)) continue;
@@ -120,6 +121,70 @@ namespace LiveryGUIMod {
                     }
                 }
             }
+        }
+
+        static void PruneBaseDescendantsHiddenByPilotAssignments(LiveryAssignmentSet finalSet, LiveryAssignmentSet pilotSet) {
+            if (finalSet == null || pilotSet == null)
+                return;
+
+            foreach (var kv in pilotSet.Assignments) {
+                if (!IsConcreteLiveryKey(kv.Value))
+                    continue;
+
+                ClearNonTransparentDescendantAssignments(finalSet, kv.Key);
+            }
+        }
+
+        static void ClearNonTransparentDescendantAssignments(LiveryAssignmentSet set, string ancestorPartKey) {
+            if (set == null || string.IsNullOrEmpty(ancestorPartKey))
+                return;
+
+            var keysToClear = new List<string>();
+            foreach (var kv in set.Assignments) {
+                if (IsConcreteLiveryKey(kv.Value) && IsDescendantPartKey(ancestorPartKey, kv.Key))
+                    keysToClear.Add(kv.Key);
+            }
+
+            foreach (string key in keysToClear)
+                set.SetForPart(key, PILOT_TRANSPARENT);
+        }
+
+        static bool IsDescendantPartKey(string ancestorPartKey, string candidatePartKey) {
+            if (string.IsNullOrEmpty(candidatePartKey) || string.Equals(ancestorPartKey, candidatePartKey, StringComparison.Ordinal))
+                return false;
+
+            if (!TrySplitPartKey(ancestorPartKey, out string ancestorSocket, out string ancestorHardpoint))
+                return false;
+
+            if (!TrySplitPartKey(candidatePartKey, out string candidateSocket, out string candidateHardpoint))
+                return false;
+
+            bool ancestorIsUnit = ancestorSocket == "<nosocket>" && ancestorHardpoint == "<nohardpoint>";
+            if (ancestorIsUnit)
+                return true;
+
+            bool ancestorIsSocket = ancestorHardpoint == "<nohardpoint>";
+            if (ancestorIsSocket)
+                return ancestorSocket == candidateSocket && candidateHardpoint != "<nohardpoint>";
+
+            return false;
+        }
+
+        static bool TrySplitPartKey(string partKey, out string socket, out string hardpoint) {
+            socket = null;
+            hardpoint = null;
+
+            int separatorIndex = string.IsNullOrEmpty(partKey) ? -1 : partKey.IndexOf(':');
+            if (separatorIndex < 0)
+                return false;
+
+            socket = partKey.Substring(0, separatorIndex);
+            hardpoint = partKey.Substring(separatorIndex + 1);
+            return true;
+        }
+
+        static bool IsConcreteLiveryKey(string liveryKey) {
+            return !string.IsNullOrEmpty(liveryKey) && !string.Equals(liveryKey, PILOT_TRANSPARENT, StringComparison.Ordinal);
         }
 
         static void AddTransparentAssignmentsForCurrentMechParts(LiveryAssignmentSet set, PersistentEntity unit) {
