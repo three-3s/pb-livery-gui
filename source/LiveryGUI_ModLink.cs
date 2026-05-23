@@ -23,8 +23,8 @@ using Debug = UnityEngine.Debug;
 //     - https://wiki.braceyourselfgames.com/en/PhantomBrigade/Modding/ModSystem
 //
 
-namespace LiveryGUIMod
-{
+namespace LiveryGUIMod {
+
     //==================================================================================================
     // (Having a class derived from ModLink might (?) be necessary, but the overrides are probably just
     //  leftover 'hello world' stuff at this point.)
@@ -71,20 +71,58 @@ namespace LiveryGUIMod
             }
         }
 
+        [HarmonyPatch(typeof(DataHelperSaveSerialization), MethodType.Normal), HarmonyPatch("NewFormatSave"), HarmonyPatch(new Type[] { typeof(string) })]
+        public class SaveGameLiverySetsPatch {
+            public static void Prefix(string savePath) {
+                try {
+                    LoadAndSave.SaveLiverySetsToSaveGameFolder(savePath);
+                }
+                catch (Exception ex) {
+                    Debug.LogError($"[LiveryGUI] Error saving livery sets: {ex}");
+                    CIViewOverworldLog.AddMessage($"Error saving livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(SaveSerializationHelper), MethodType.Normal), HarmonyPatch("LoadDataFromFormatExpected"), HarmonyPatch(new Type[] { typeof(string) })]
+        public class LoadGameLiverySetsPatch {
+            public static void Postfix(string savePath, bool __result) {
+                try {
+                    if (__result)
+                        LoadAndSave.LoadLiverySetsFromSaveGameFolder(savePath);
+                    else
+                        LiverySetsDB.ImportSaveGameLiverySets(null, null);
+                }
+                catch (Exception ex) {
+                    Debug.LogError($"[LiveryGUI] Error loading livery-sets: {ex}");
+                    CIViewOverworldLog.AddMessage($"Error loading livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(DataHelperLoading), MethodType.Normal), HarmonyPatch("LoadingEnd2")]
+        public class LoadGameLiverySetsApplyPatch {
+            public static void Postfix() {
+                try {
+                    LiverySetsDB.InitializeSaveGameLiverySetsAfterEntityLoad();
+                }
+                catch (Exception ex) {
+                    Debug.LogError($"[LiveryGUI] Error initializing save-game livery sets after load: {ex}");
+                    CIViewOverworldLog.AddMessage($"Error initializing livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]");
+                }
+            }
+        }
+
         // Handle PB's CIViewBaseLoadout switching between parts-editing mode and livery-selection mode.
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("SetLiveryMode")]
-        public class OnSetLiveryModePatch
-        {
-            public static void Postfix(bool value)
-            {
+        public class OnSetLiveryModePatch {
+            public static void Postfix(bool value) {
                 _ = value;
-                try
-                {
+                try {
                     int mechId = CIViewBaseLoadout.selectedUnitID;
                     GUI.ReapplyLiverySet(mechId);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in OnSetLiveryModePatch: {ex}");
                 }
             }
@@ -94,12 +132,10 @@ namespace LiveryGUIMod
         // We'll notify our in-memory DB about the change so callers can update stored sets.
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnLiveryAttachAttempt")]
         public class OnLiveryAttachAttemptPatch {
-            public static void Postfix(CIViewBaseLoadout __instance, object liveryKeyArg)
-            {
+            public static void Postfix(CIViewBaseLoadout __instance, object liveryKeyArg) {
                 _ = __instance;
                 _ = liveryKeyArg;
-                try
-                {
+                try {
                     int mechId = CIViewBaseLoadout.selectedUnitID;
                     if (GUI.IsLiverySlotRecordingSuppressed())
                         return;
@@ -113,8 +149,7 @@ namespace LiveryGUIMod
                     LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, key);
                     GUI.ReapplyLiverySet(mechId);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in OnLiveryAttachAttemptPatch: {ex}");
                 }
             }
@@ -126,12 +161,9 @@ namespace LiveryGUIMod
         // We need to hook all three cases, but distinguish these from e.g. "remove the actual part", since that routes through these same functions.
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnUnitRemoved")]
         public class OnUnitRemovedPatch {
-            public static void Postfix()
-            {
-                try
-                {
-                    if (CIViewBaseLoadout.liveryMode)
-                    {
+            public static void Postfix() {
+                try {
+                    if (CIViewBaseLoadout.liveryMode) {
                         int mechId = CIViewBaseLoadout.selectedUnitID;
                         string partKey = LiverySetsDB.PartKey(null, null);
                         string liveryKey = LiverySetsDB.PILOT_TRANSPARENT;
@@ -140,20 +172,16 @@ namespace LiveryGUIMod
                         GUI.ReapplyLiverySet(mechId);
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in OnUnitRemovedPatch: {ex}");
                 }
             }
         }
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnSocketRemoved")]
         public class OnSocketRemovedPatch {
-            public static void Postfix(object socketArg)
-            {
-                try
-                {
-                    if (CIViewBaseLoadout.liveryMode)
-                    {
+            public static void Postfix(object socketArg) {
+                try {
+                    if (CIViewBaseLoadout.liveryMode) {
                         string socket = socketArg as string;
                         int mechId = CIViewBaseLoadout.selectedUnitID;
                         string partKey = LiverySetsDB.PartKey(socket, null);
@@ -163,20 +191,16 @@ namespace LiveryGUIMod
                         GUI.ReapplyLiverySet(mechId);
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in OnSocketRemovedPatch: {ex}");
                 }
             }
         }
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("OnHardpointRemoved")]
         public class OnHardpointRemovedPatch {
-            public static void Postfix(object hardpointArg)
-            {
-                try
-                {
-                    if (CIViewBaseLoadout.liveryMode)
-                    {
+            public static void Postfix(object hardpointArg) {
+                try {
+                    if (CIViewBaseLoadout.liveryMode) {
                         string socket = CIViewBaseLoadout.selectedUnitSocket;
                         string hardpoint = hardpointArg as string;
                         int mechId = CIViewBaseLoadout.selectedUnitID;
@@ -187,8 +211,7 @@ namespace LiveryGUIMod
                         GUI.ReapplyLiverySet(mechId);
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in OnHardpointRemovedPatch: {ex}");
                 }
             }
@@ -212,13 +235,11 @@ namespace LiveryGUIMod
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("EnterWithUnit")]
         public class EnterWithUnitPatch {
             public static void Postfix(PersistentEntity unitPersistent) {
-                try
-                {
+                try {
                     if (unitPersistent != null && unitPersistent.hasId)
                         GUI.ReapplyLiverySet(unitPersistent.id.id);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in EnterWithUnitPatch: {ex}");
                 }
             }
@@ -227,12 +248,10 @@ namespace LiveryGUIMod
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("TryExit")]
         public class LoadoutTryExitPatch {
             public static void Postfix() {
-                try
-                {
+                try {
                     GUI.ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in LoadoutTryExitPatch: {ex}");
                 }
             }
@@ -241,24 +260,20 @@ namespace LiveryGUIMod
         [HarmonyPatch(typeof(CIViewBaseBriefingV2), MethodType.Normal), HarmonyPatch("RebuildUnit")]
         public class BriefingRebuildUnitPatch {
             public static void Prefix(int index) {
-                try
-                {
+                try {
                     LiverySetsDB.ApplyBriefingLiverySetToUnitInSlot(index);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in BriefingRebuildUnitPatch.Prefix: {ex}");
                 }
             }
 
             public static void Postfix(int index, bool animationOnly) {
-                try
-                {
+                try {
                     if (animationOnly)
                         LiverySetsDB.RefreshBriefingUnitVisual(index);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in BriefingRebuildUnitPatch.Postfix: {ex}");
                 }
             }
@@ -267,12 +282,10 @@ namespace LiveryGUIMod
         [HarmonyPatch(typeof(CIViewBaseBriefingV2), MethodType.Normal), HarmonyPatch("RebuildAllUnits")]
         public class BriefingRebuildAllUnitsPatch {
             public static void Prefix() {
-                try
-                {
+                try {
                     LiverySetsDB.ApplyBriefingLiverySetsToAllUnits();
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in BriefingRebuildAllUnitsPatch: {ex}");
                 }
             }

@@ -1,4 +1,5 @@
 using PhantomBrigade;
+using PhantomBrigade.Data;
 using PhantomBrigade.Game;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,8 @@ using UnityEngine;
 //                       which either calls DataHelperLoading.LoadingEnd() if it was the final stage, or continues on with DataHelperLoading.ContinueLoadingCombat();
 //                          which does its thing then queues up Co.DelayFrames(10, new Action(DataHelperLoading.LoadingEnd));
 
-namespace LiveryGUIMod
-{
+namespace LiveryGUIMod {
+
     public static class LiverySetsDB {
         // sentinel value meaning "transparent / do not override the mech's current livery for this part"
         public const string PILOT_TRANSPARENT = "__PILOT_TRANSPARENT__";
@@ -27,6 +28,7 @@ namespace LiveryGUIMod
 
         // Mech instance id (int) -> assignment set (used to store/restore original mech liveries while a pilot is re/assigned)
         static readonly Dictionary<int, LiveryAssignmentSet> _mechOriginalLiveries = new Dictionary<int, LiveryAssignmentSet>();
+        static readonly Dictionary<string, LiveryAssignmentSet> _pendingMechOriginalLiveriesByName = new Dictionary<string, LiveryAssignmentSet>(StringComparer.Ordinal);
 
         static readonly HashSet<EquipmentEntity> emptyEquipmentList = new HashSet<EquipmentEntity>();
 
@@ -40,8 +42,7 @@ namespace LiveryGUIMod
 
         // Apply the desired livery-set to the mech in the game world. If includePilotOverlay is true,
         // try to overlay any pilot-specific assignments on top of the mech-original set.
-        public static void ApplyLiverySetToMech(int mechInstanceId, bool includeMechLiverySet, bool includePilotOverlay, string pilotIdOverride = null, bool updateLoadoutPreview = true)
-        {
+        public static void ApplyLiverySetToMech(int mechInstanceId, bool includeMechLiverySet, bool includePilotOverlay, string pilotIdOverride = null, bool updateLoadoutPreview = true) {
             if (mechInstanceId < 0) return;
 
             PersistentEntity unit = IDUtility.GetPersistentEntity(mechInstanceId);
@@ -50,8 +51,7 @@ namespace LiveryGUIMod
 
             // ensure we have a base mech-original set; capture if missing
             // 3todo.later consider if this might be dead code
-            if (!TryGetMechOriginalSet(mechInstanceId, out var baseSet))
-            {
+            if (!TryGetMechOriginalSet(mechInstanceId, out var baseSet)) {
                 CaptureEntireMechLiverySet(mechInstanceId);
                 baseSet = GetOrCreateMechOriginalSet(mechInstanceId);
             }
@@ -61,19 +61,15 @@ namespace LiveryGUIMod
             if (includeMechLiverySet) {
                 MergeInto(finalSet, baseSet);
             }
-            else
-            {
+            else {
                 AddTransparentAssignmentsForCurrentMechParts(finalSet, unit);
             }
 
-            if (includePilotOverlay)
-            {
+            if (includePilotOverlay) {
                 string pilotId = string.IsNullOrEmpty(pilotIdOverride) ? ResolvePilotIdForMech(mechInstanceId) : pilotIdOverride;
-                if (!string.IsNullOrEmpty(pilotId) && TryGetPilotSet(pilotId, out var pilotSet))
-                {
+                if (!string.IsNullOrEmpty(pilotId) && TryGetPilotSet(pilotId, out var pilotSet)) {
                     // overlay: only apply pilot entries that are not the transparent sentinel
-                    foreach (var kv in pilotSet.Assignments)
-                    {
+                    foreach (var kv in pilotSet.Assignments) {
                         if (kv.Value == null) continue;
                         if (string.Equals(kv.Value, PILOT_TRANSPARENT, StringComparison.Ordinal)) continue;
                         finalSet.SetForPart(kv.Key, kv.Value);
@@ -83,8 +79,7 @@ namespace LiveryGUIMod
 
             // Apply finalSet to existing entities on the mech. Only touch parts/subsystems that are present.
             // top-level
-            if (finalSet.Assignments.TryGetValue(PartKey(null, null), out var topLivery))
-            {
+            if (finalSet.Assignments.TryGetValue(PartKey(null, null), out var topLivery)) {
                 if (string.IsNullOrEmpty(topLivery) || string.Equals(topLivery, PILOT_TRANSPARENT, StringComparison.Ordinal)) {
                     if (unit.hasDataKeyEquipmentLivery) unit.RemoveDataKeyEquipmentLivery();
                 } 
@@ -95,13 +90,11 @@ namespace LiveryGUIMod
             }
 
             var parts = EquipmentUtility.GetPartsInUnit(unit) ?? emptyEquipmentList;
-            foreach (var part in parts)
-            {
+            foreach (var part in parts) {
                 if (part == null) continue;
                 string socket = part.partParentUnit.socket;
                 string partKey = PartKey(socket, null);
-                if (finalSet.Assignments.TryGetValue(partKey, out var pLivery))
-                {
+                if (finalSet.Assignments.TryGetValue(partKey, out var pLivery)) {
                     if (string.IsNullOrEmpty(pLivery) || string.Equals(pLivery, PILOT_TRANSPARENT, StringComparison.Ordinal)) {
                         if (part.hasDataKeyEquipmentLivery) part.RemoveDataKeyEquipmentLivery();
                     }
@@ -112,13 +105,11 @@ namespace LiveryGUIMod
                 }
 
                 var subs = EquipmentUtility.GetSubsystemsInPart(part) ?? emptyEquipmentList;
-                foreach (var sub in subs)
-                {
+                foreach (var sub in subs) {
                     if (sub == null) continue;
                     string hardpoint = sub.hasSubsystemParentPart ? sub.subsystemParentPart.hardpoint : null;
                     string subKey = PartKey(socket, hardpoint);
-                    if (finalSet.Assignments.TryGetValue(subKey, out var sLivery))
-                    {
+                    if (finalSet.Assignments.TryGetValue(subKey, out var sLivery)) {
                         if (string.IsNullOrEmpty(sLivery) || string.Equals(sLivery, PILOT_TRANSPARENT, StringComparison.Ordinal)) {
                             if (sub.hasDataKeyEquipmentLivery) sub.RemoveDataKeyEquipmentLivery();
                         }
@@ -131,16 +122,14 @@ namespace LiveryGUIMod
             }
         }
 
-        static void AddTransparentAssignmentsForCurrentMechParts(LiveryAssignmentSet set, PersistentEntity unit)
-        {
+        static void AddTransparentAssignmentsForCurrentMechParts(LiveryAssignmentSet set, PersistentEntity unit) {
             if (set == null || unit == null)
                 return;
 
             set.SetForPart(PartKey(null, null), PILOT_TRANSPARENT);
 
             var parts = EquipmentUtility.GetPartsInUnit(unit) ?? emptyEquipmentList;
-            foreach (EquipmentEntity part in parts)
-            {
+            foreach (EquipmentEntity part in parts) {
                 if (part == null)
                     continue;
 
@@ -148,8 +137,7 @@ namespace LiveryGUIMod
                 set.SetForPart(PartKey(socket, null), PILOT_TRANSPARENT);
 
                 var subsystems = EquipmentUtility.GetSubsystemsInPart(part) ?? emptyEquipmentList;
-                foreach (EquipmentEntity subsystem in subsystems)
-                {
+                foreach (EquipmentEntity subsystem in subsystems) {
                     if (subsystem == null)
                         continue;
 
@@ -160,10 +148,8 @@ namespace LiveryGUIMod
         }
 
         // Capture the entire current livery assignment map for a mech and store as the mech-original set.
-        static void CaptureEntireMechLiverySet(int mechId)
-        {
-            try
-            {
+        static void CaptureEntireMechLiverySet(int mechId) {
+            try {
                 PersistentEntity unit = IDUtility.GetPersistentEntity(mechId);
                 if (unit == null) return;
 
@@ -175,8 +161,7 @@ namespace LiveryGUIMod
 
                 // Per-part (sockets)
                 var parts = EquipmentUtility.GetPartsInUnit(unit) ?? emptyEquipmentList;
-                foreach (var part in parts)
-                {
+                foreach (var part in parts) {
                     if (part == null) continue;
                     string socket = part.partParentUnit.socket;
                     string partLivery = part.hasDataKeyEquipmentLivery ? part.dataKeyEquipmentLivery.s : null;
@@ -184,8 +169,7 @@ namespace LiveryGUIMod
 
                     // Subsystems (hardpoints)
                     var subsystems = EquipmentUtility.GetSubsystemsInPart(part) ?? emptyEquipmentList;
-                    foreach (var sub in subsystems)
-                    {
+                    foreach (var sub in subsystems) {
                         if (sub == null) continue;
                         string hardpoint = sub.hasSubsystemParentPart ? sub.subsystemParentPart.hardpoint : null;
                         string subLivery = sub.hasDataKeyEquipmentLivery ? sub.dataKeyEquipmentLivery.s : null;
@@ -196,22 +180,19 @@ namespace LiveryGUIMod
                 Debug.Log($"[LiveryGUI] Dev-Spam: Captured full mech livery set for mech={mechId}, entries={set.Assignments.Count}");
                 DebugLogLiverySetDictionaries();
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.LogError($"[LiveryGUI] CaptureEntireMechLiverySet failed: {ex}");
             }
         }
 
         // Retrieve existing set for pilot or create a new empty one.
         public static LiveryAssignmentSet GetOrCreatePilotSet(string pilotId) {
-            if (string.IsNullOrEmpty(pilotId))
-            {
+            if (string.IsNullOrEmpty(pilotId)) {
                 Debug.LogWarning("[PilotLiveryStore] GetOrCreatePilotSet called with null/empty pilotId");
                 return null;
             }
 
-            if (!_pilotLiveries.TryGetValue(pilotId, out var set))
-            {
+            if (!_pilotLiveries.TryGetValue(pilotId, out var set)) {
                 set = new LiveryAssignmentSet();
                 _pilotLiveries[pilotId] = set;
             }
@@ -228,8 +209,7 @@ namespace LiveryGUIMod
 
         // Set a single part assignment for a pilot. Creates the set if necessary.
         public static void SetPilotLivery(string pilotId, string partKey, string liveryKey) {
-            if (string.IsNullOrEmpty(pilotId))
-            {
+            if (string.IsNullOrEmpty(pilotId)) {
                 Debug.LogWarning("[PilotLiveryStore] SetPilotLivery called with null/empty pilotId");
                 return;
             }
@@ -257,8 +237,7 @@ namespace LiveryGUIMod
 
         // --- mech original livery helpers ---
         public static LiveryAssignmentSet GetOrCreateMechOriginalSet(int mechInstanceId) {
-            if (!_mechOriginalLiveries.TryGetValue(mechInstanceId, out var set))
-            {
+            if (!_mechOriginalLiveries.TryGetValue(mechInstanceId, out var set)) {
                 set = new LiveryAssignmentSet();
                 _mechOriginalLiveries[mechInstanceId] = set;
             }
@@ -284,6 +263,77 @@ namespace LiveryGUIMod
 
         public static IEnumerable<int> GetAllMechIds() {
             return _mechOriginalLiveries.Keys;
+        }
+
+        public static Dictionary<string, LiveryAssignmentSet> ExportMechOriginalSetsByUnitName() {
+            EnsureMechOriginalSetsForCurrentUnits();
+
+            var result = new Dictionary<string, LiveryAssignmentSet>(StringComparer.Ordinal);
+            foreach (var kv in _mechOriginalLiveries) {
+                PersistentEntity unit = IDUtility.GetPersistentEntity(kv.Key);
+                if (unit == null || !unit.hasNameInternal || string.IsNullOrEmpty(unit.nameInternal.s) || kv.Value == null)
+                    continue;
+
+                result[unit.nameInternal.s] = SanitizeForSave(kv.Value);
+            }
+            return result;
+        }
+
+        public static Dictionary<string, LiveryAssignmentSet> ExportPilotSetsByPilotName() {
+            EnsurePilotSetsForCurrentPilots();
+
+            var result = new Dictionary<string, LiveryAssignmentSet>(StringComparer.Ordinal);
+            foreach (PersistentEntity pilot in GetCurrentPilots()) {
+                string pilotName = pilot.nameInternal.s;
+                if (!TryGetPilotSet(pilotName, out var set))
+                    set = new LiveryAssignmentSet();
+
+                result[pilotName] = SanitizeForSave(set);
+            }
+            return result;
+        }
+
+        public static void ImportSaveGameLiverySets(Dictionary<string, LiveryAssignmentSet> unitSetsByName, Dictionary<string, LiveryAssignmentSet> pilotSetsByName) {
+            _mechOriginalLiveries.Clear();
+            _pilotLiveries.Clear();
+            _pendingMechOriginalLiveriesByName.Clear();
+
+            if (unitSetsByName != null) {
+                foreach (var kv in unitSetsByName) {
+                    if (string.IsNullOrEmpty(kv.Key) || kv.Value == null)
+                        continue;
+
+                    _pendingMechOriginalLiveriesByName[kv.Key] = SanitizeLoadedSet(kv.Value);
+                }
+            }
+
+            if (pilotSetsByName != null) {
+                foreach (var kv in pilotSetsByName) {
+                    if (string.IsNullOrEmpty(kv.Key) || kv.Value == null)
+                        continue;
+
+                    _pilotLiveries[kv.Key] = SanitizeLoadedSet(kv.Value);
+                }
+            }
+        }
+
+        public static void InitializeSaveGameLiverySetsAfterEntityLoad() {
+            int loadedUnitCount = 0;
+            foreach (var kv in _pendingMechOriginalLiveriesByName) {
+                PersistentEntity unit = IDUtility.GetPersistentEntity(kv.Key);
+                if (unit == null || !unit.hasId || kv.Value == null)
+                    continue;
+
+                _mechOriginalLiveries[unit.id.id] = kv.Value.Clone();
+                loadedUnitCount++;
+            }
+            _pendingMechOriginalLiveriesByName.Clear();
+
+            EnsureMechOriginalSetsForCurrentUnits();
+            EnsurePilotSetsForCurrentPilots();
+            ApplyAllCurrentUnitLiverySets();
+
+            Debug.Log($"[LiveryGUI] Initialized save-game livery sets after entity load: loadedUnits={loadedUnitCount}, runtimeUnits={_mechOriginalLiveries.Count}, pilots={_pilotLiveries.Count}");
         }
 
         // Utility: merge (copy) a source set into a destination set, overwriting per-part keys.
@@ -331,8 +381,7 @@ namespace LiveryGUIMod
             if (mechId < 0) mechId = CIViewBaseLoadout.selectedUnitID;
             if (mechId < 0) return;
 
-            if (!TryGetMechOriginalSet(mechId, out _))
-            {
+            if (!TryGetMechOriginalSet(mechId, out _)) {
                 CaptureEntireMechLiverySet(mechId);
                 Debug.Log($"[LiveryGUI] Captured full mech livery on ReassertMechLiverySet() for mech={mechId}");
             }
@@ -353,18 +402,15 @@ namespace LiveryGUIMod
 
         // handle a livery slot being assigned via the UI. mechId may be -1 if unknown.
         public static void OnLiverySlotAssigned(int mechId, string partKey, string liveryKey) {
-            if (GUI.IsPilotModeActive())
-            {
+            if (GUI.IsPilotModeActive()) {
                 string pilotId = GUI.GetPilotModePilotId(mechId);
-                if (!string.IsNullOrEmpty(pilotId))
-                {
+                if (!string.IsNullOrEmpty(pilotId)) {
                     SetPilotLivery(pilotId, partKey, liveryKey);
                     Debug.Log($"[LiveryGUI] Recorded pilot livery: pilot={pilotId}, from mech={mechId}, part={partKey}, livery={liveryKey}");
                     return;
                 }
             }
-            else
-            {
+            else {
                 SetMechOriginalLivery(mechId, partKey, liveryKey ?? PILOT_TRANSPARENT);
                 Debug.Log($"[LiveryGUI] Recorded mech livery: mech={mechId}, part={partKey}, livery={liveryKey}");
             }
@@ -373,8 +419,7 @@ namespace LiveryGUIMod
         }
 
         // Find name of pilot assigned to the given mech ID using the saved squad composition.
-        public static string ResolvePilotIdForMech(int mechInstanceId)
-        {
+        public static string ResolvePilotIdForMech(int mechInstanceId) {
             PersistentEntity unit = IDUtility.GetPersistentEntity(mechInstanceId);
             string unitName = unit?.nameInternal.s;
 
@@ -392,8 +437,7 @@ namespace LiveryGUIMod
             return null;
         }
 
-        public static void ApplyBriefingLiverySetToUnitInSlot(int slotIndex)
-        {
+        public static void ApplyBriefingLiverySetToUnitInSlot(int slotIndex) {
             if (!TryGetSquadSlot(slotIndex, out var squadSlot))
                 return;
 
@@ -407,8 +451,7 @@ namespace LiveryGUIMod
             ApplyLiverySetToMech(unit.id.id, true, true, squadSlot.pilotNameInternal, false);
         }
 
-        public static void ApplyBriefingLiverySetsToAllUnits()
-        {
+        public static void ApplyBriefingLiverySetsToAllUnits() {
             var persistent = Contexts.sharedInstance.persistent;
             if (!persistent.hasSquadComposition || persistent.squadComposition?.slots == null)
                 return;
@@ -417,8 +460,7 @@ namespace LiveryGUIMod
                 ApplyBriefingLiverySetToUnitInSlot(i);
         }
 
-        public static void RefreshBriefingUnitVisual(int slotIndex)
-        {
+        public static void RefreshBriefingUnitVisual(int slotIndex) {
             if (!TryGetSquadSlot(slotIndex, out var squadSlot))
                 return;
 
@@ -430,8 +472,7 @@ namespace LiveryGUIMod
             HQHelperRoot.ins.helperUnitVisualBriefing.ApplyUnitToLink(slotIndex, unit, pilot, false);
         }
 
-        static bool TryGetSquadSlot(int slotIndex, out SquadSlot squadSlot)
-        {
+        static bool TryGetSquadSlot(int slotIndex, out SquadSlot squadSlot) {
             squadSlot = null;
             var persistent = Contexts.sharedInstance.persistent;
             if (!persistent.hasSquadComposition || persistent.squadComposition?.slots == null)
@@ -445,44 +486,106 @@ namespace LiveryGUIMod
             return squadSlot != null;
         }
 
-        static void DebugLogLiverySetDictionaries()
-        {
-            try
-            {
+        static void EnsureMechOriginalSetsForCurrentUnits() {
+            foreach (PersistentEntity unit in GetCurrentUnits()) {
+                if (unit.hasId && !_mechOriginalLiveries.ContainsKey(unit.id.id))
+                    CaptureEntireMechLiverySet(unit.id.id);
+            }
+        }
+
+        static void EnsurePilotSetsForCurrentPilots() {
+            foreach (PersistentEntity pilot in GetCurrentPilots()) {
+                if (pilot.hasNameInternal && !string.IsNullOrEmpty(pilot.nameInternal.s) && !_pilotLiveries.ContainsKey(pilot.nameInternal.s))
+                    _pilotLiveries[pilot.nameInternal.s] = new LiveryAssignmentSet();
+            }
+        }
+
+        static void ApplyAllCurrentUnitLiverySets() {
+            foreach (PersistentEntity unit in GetCurrentUnits()) {
+                if (unit.hasId)
+                    ApplyLiverySetToMech(unit.id.id, true, true, null, false);
+            }
+        }
+
+        static List<PersistentEntity> GetCurrentUnits() {
+            var result = new List<PersistentEntity>();
+            PersistentContext persistent = Contexts.sharedInstance.persistent;
+            foreach (PersistentEntity unit in persistent.GetGroup(PersistentMatcher.UnitTag)) {
+                if (unit == null || !unit.isUnitTag || unit.isDestroyed || !unit.hasId || !unit.hasNameInternal || string.IsNullOrEmpty(unit.nameInternal.s))
+                    continue;
+
+                result.Add(unit);
+            }
+            return result;
+        }
+
+        static List<PersistentEntity> GetCurrentPilots() {
+            var result = new List<PersistentEntity>();
+            PersistentContext persistent = Contexts.sharedInstance.persistent;
+            foreach (PersistentEntity pilot in persistent.GetGroup(PersistentMatcher.PilotTag)) {
+                if (pilot == null || !pilot.isPilotTag || !pilot.hasNameInternal || string.IsNullOrEmpty(pilot.nameInternal.s))
+                    continue;
+
+                result.Add(pilot);
+            }
+            return result;
+        }
+
+        static LiveryAssignmentSet SanitizeForSave(LiveryAssignmentSet set) {
+            return SanitizeLoadedSet(set);
+        }
+
+        static LiveryAssignmentSet SanitizeLoadedSet(LiveryAssignmentSet set) {
+            var sanitized = new LiveryAssignmentSet();
+            if (set == null)
+                return sanitized;
+
+            set.NormalizeAfterDeserialization();
+            foreach (var kv in set.Assignments) {
+                if (string.IsNullOrEmpty(kv.Key))
+                    continue;
+
+                sanitized.SetForPart(kv.Key, IsLiveryKeyAvailable(kv.Value) ? kv.Value : PILOT_TRANSPARENT);
+            }
+            return sanitized;
+        }
+
+        static bool IsLiveryKeyAvailable(string liveryKey) {
+            if (string.IsNullOrEmpty(liveryKey) || string.Equals(liveryKey, PILOT_TRANSPARENT, StringComparison.Ordinal))
+                return true;
+
+            return DataMultiLinkerEquipmentLivery.data != null && DataMultiLinkerEquipmentLivery.data.ContainsKey(liveryKey);
+        }
+
+        static void DebugLogLiverySetDictionaries() {
+            try {
                 Debug.Log($"[LiveryGUI] Dev-Spam: Pilot livery sets ({_pilotLiveries.Count}):");
-                foreach (var kv in _pilotLiveries)
-                {
+                foreach (var kv in _pilotLiveries) {
                     string pilotId = kv.Key ?? "<null>";
                     var set = kv.Value;
-                    if (set == null || set.Assignments == null || set.Assignments.Count == 0)
-                    {
+                    if (set == null || set.Assignments == null || set.Assignments.Count == 0) {
                         Debug.Log($"[LiveryGUI]  Dev-Spam: Pilot '{pilotId}': <empty>");
                         continue;
                     }
-                    foreach (var a in set.Assignments)
-                    {
+                    foreach (var a in set.Assignments) {
                         Debug.Log($"[LiveryGUI]  Dev-Spam: Pilot '{pilotId}' -> {a.Key} = {a.Value}");
                     }
                 }
 
                 Debug.Log($"[LiveryGUI] Mech original livery sets ({_mechOriginalLiveries.Count}):");
-                foreach (var kv in _mechOriginalLiveries)
-                {
+                foreach (var kv in _mechOriginalLiveries) {
                     int mechId = kv.Key;
                     var set = kv.Value;
-                    if (set == null || set.Assignments == null || set.Assignments.Count == 0)
-                    {
+                    if (set == null || set.Assignments == null || set.Assignments.Count == 0) {
                         Debug.Log($"[LiveryGUI]  Dev-Spam: Mech {mechId}: <empty>");
                         continue;
                     }
-                    foreach (var a in set.Assignments)
-                    {
+                    foreach (var a in set.Assignments) {
                         Debug.Log($"[LiveryGUI]  Dev-Spam: Mech {mechId} -> {a.Key} = {a.Value}");
                     }
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Debug.LogError($"[LiveryGUI] DebugLogLiverySetDictionaries error: {ex}");
             }
         }
