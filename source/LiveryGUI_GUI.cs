@@ -62,6 +62,9 @@ namespace LiveryGUIMod {
         public static Dictionary<string, SliderConfig> sliderConfigs = null; // key = livery's key
         public static CIButton toggleLiveryGUIButton;
         public static CIButton pilotModeToggleButton;
+        public static CIButton pilotModePrevButton;
+        public static CIButton pilotModeNextButton;
+        public static CIButton pilotModeBaseToggleButton;
         public static CIButton resetLiveryButton;
         public static CIButton saveLiveryButton;
         public static CIButton cloneLiveryButton;
@@ -78,6 +81,19 @@ namespace LiveryGUIMod {
         static readonly string spriteNameStarFilled = "s_icon_l32_star_filled";
         static readonly string spriteNameStarOutline = "s_icon_l32_star_outline";
 
+        public static bool modPrevPilotModeActive = false; // persists whether pilot-edit-mode is active, including when mod-gui is off.
+        static bool reapplyLiverySetInProgress = false;
+        static bool suppressLiverySlotRecording = false;
+        static bool pilotModeMechBaseVisible = true;
+        static string pilotModePilotId = null;
+        static int pilotModePilotMechId = -99;
+        static readonly List<string> pilotModePilotIds = new List<string>();
+        public static bool IsPBLiveryViewActive() { return CIViewBaseLoadout.ins != null && CIViewBaseLoadout.ins.isActiveAndEnabled && CIViewBaseLoadout.liveryMode; }
+        public static bool IsModPaneActive() { return paneGO != null && paneGO.activeSelf; }
+        public static bool IsPilotModeActive() { return IsModPaneActive() && modPrevPilotModeActive; }
+        public static bool IsPilotModeMechBaseVisible() { return pilotModeMechBaseVisible; }
+        public static bool IsLiverySlotRecordingSuppressed() { return suppressLiverySlotRecording; }
+
         // widget positions
         class Positions {
             public static readonly float topRowY = +72f;
@@ -90,6 +106,9 @@ namespace LiveryGUIMod {
 
             public static readonly Vector3 favoriteButton = new Vector3(645f, topRowY, 0f); // top-left corner of the mech-preview region (just to the right of the liveryGuiToggle)
             public static readonly Vector3 pilotToggle = favoriteButton + posStep;
+            public static readonly Vector3 pilotPreviousButton = pilotToggle + new Vector3(-48f, -48f, 0f);  //3todo.later: adjust positioning of pilotPrevious/NextButton
+            public static readonly Vector3 pilotNextButton = pilotToggle + new Vector3(0f, -48f, 0f);
+            public static readonly Vector3 pilotBaseToggleButton = pilotToggle + new Vector3(+48f, -48f, 0f);
             public static readonly Vector3 resetButton = pilotToggle + posStep;
             public static readonly Vector3 liveryName = resetButton + new Vector3(55f, 0f, 0f); // (when not moved off-screen)
             public static readonly Vector3 liveryName_hiddenOffscreen = new Vector3(20000f, 20000f, 0f);
@@ -269,19 +288,17 @@ namespace LiveryGUIMod {
             {
                 bool newState = !paneGO.activeSelf;
                 paneGO.SetActive(newState);
-                if (newState)
-                    LiverySetsDB.OnViewEntered();
-                else
-                    LiverySetsDB.OnViewExited();
 
                 // first time wasn't updating the text-input-field with the livery-name. i don't know why.
                 // INVOKE ALL THE REFRESH. MULTIPLY. STILL DOESN'T WORK FIRST TIME. ONLY SECOND TIME. ONLY SECOND TIME.
                 string origLiveryKey = CIViewBaseLoadout.selectedUnitLivery;
+                suppressLiverySlotRecording = true;
                 if (origLiveryKey == null && DataMultiLinkerEquipmentLivery.data.Count > 0)
                     SelectLivery(DataMultiLinkerEquipmentLivery.data.First().Key);
                 else
                     SelectLivery(null);
                 SelectLivery(origLiveryKey);
+                suppressLiverySlotRecording = false;
                 liveryNameInput.ForceSelection(true);
                 liveryNameInput.ForceSelection(false);
                 liveryNameInput.label.MarkAsChanged();
@@ -289,6 +306,8 @@ namespace LiveryGUIMod {
                 UpdateWidgetPositioning(__instance);
                 ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
                 RefreshSphereAndMechPreviews();
+                UpdatePilotModeButtonVisuals();
+                ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
 
                 // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder). have a good enough workaround for the text-input field now, ie resolved elsewhere. clean this up.
             });
@@ -304,14 +323,63 @@ namespace LiveryGUIMod {
             pilotModeToggleButton = pilotModeToggleGO.GetComponent<CIButton>();
             pilotModeToggleButton.callbackOnClick = new UICallback(() =>
             {
-                bool newState = !LiverySetsDB.IsPilotModeActive;
-                LiverySetsDB.SetPilotModeActive(newState);
+                modPrevPilotModeActive = !modPrevPilotModeActive;
+                EnsurePilotModePilot(CIViewBaseLoadout.selectedUnitID);
+                Debug.Log($"[LiveryGUI] PilotModeActive={modPrevPilotModeActive}");
                 UpdatePilotModeButtonVisuals();
-                ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
-                RefreshSphereAndMechPreviews();
+                ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
             });
 
             pilotModeToggleGO.SetActive(true);
+            UpdatePilotModeButtonVisuals();
+
+            GameObject pilotModePrevGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            pilotModePrevGO.name = "pilotModePrevGO";
+            pilotModePrevGO.transform.localPosition = Positions.pilotPreviousButton;
+            pilotModePrevGO.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+            var pilotPrevIcon = pilotModePrevGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (pilotPrevIcon != null) { pilotPrevIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotPrevIcon.spriteName = "icon_arrow_back"; } //3todo.later: clean up visuals
+            pilotModePrevButton = pilotModePrevGO.GetComponent<CIButton>();
+            pilotModePrevButton.callbackOnClick = new UICallback(() =>
+            {
+                CyclePilotModePilot(-1);
+            });
+            pilotModePrevButton.tooltipUsed = true;
+            pilotModePrevButton.AddTooltip(null, "Previous pilot livery target");
+            pilotModePrevButton.tooltipDelay = false;
+
+            GameObject pilotModeNextGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            pilotModeNextGO.name = "pilotModeNextGO";
+            pilotModeNextGO.transform.localPosition = Positions.pilotNextButton;
+            pilotModeNextGO.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+            var pilotNextIcon = pilotModeNextGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (pilotNextIcon != null) { pilotNextIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotNextIcon.spriteName = "icon_arrow_forward"; }
+            pilotModeNextButton = pilotModeNextGO.GetComponent<CIButton>();
+            pilotModeNextButton.callbackOnClick = new UICallback(() =>
+            {
+                CyclePilotModePilot(+1);
+            });
+            pilotModeNextButton.tooltipUsed = true;
+            pilotModeNextButton.AddTooltip(null, "Next pilot livery target");
+            pilotModeNextButton.tooltipDelay = false;
+
+            GameObject pilotModeBaseToggleGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            pilotModeBaseToggleGO.name = "pilotModeBaseToggleGO";
+            pilotModeBaseToggleGO.transform.localPosition = Positions.pilotBaseToggleButton;
+            pilotModeBaseToggleGO.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+            var pilotBaseIcon = pilotModeBaseToggleGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (pilotBaseIcon != null) { pilotBaseIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotBaseIcon.spriteName = "icon_mech2"; } //3todo.later check/cleanup visuals
+            pilotModeBaseToggleButton = pilotModeBaseToggleGO.GetComponent<CIButton>();
+            pilotModeBaseToggleButton.callbackOnClick = new UICallback(() =>
+            {
+                pilotModeMechBaseVisible = !pilotModeMechBaseVisible;
+                Debug.Log($"[LiveryGUI] PilotModeMechBaseVisible={pilotModeMechBaseVisible}");
+                UpdatePilotModeButtonVisuals();
+                ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
+            });
+            pilotModeBaseToggleButton.tooltipUsed = true;
+            pilotModeBaseToggleButton.AddTooltip(null, "Show mech base livery under pilot livery");
+            pilotModeBaseToggleButton.tooltipDelay = false;
             UpdatePilotModeButtonVisuals();
 
             ////////////////////////////////////////////////////////////////////////////////
@@ -441,6 +509,118 @@ namespace LiveryGUIMod {
             // Livery GUI initial visibility
             paneGO.SetActive(false);
         }//Initialize()
+
+        //==============================================================================
+        static public void ReapplyLiverySet(int mechId) {
+            if (reapplyLiverySetInProgress)
+                return;
+
+            if (mechId < 0)
+                mechId = CIViewBaseLoadout.selectedUnitID;
+            if (mechId < 0)
+                return;
+
+            EnsurePilotModePilot(mechId);
+
+            reapplyLiverySetInProgress = true;
+            LiverySetsDB.ReassertMechLiverySet(mechId);
+
+            if (CIViewBaseLoadout.ins != null && CIViewBaseLoadout.liveryMode)
+                CIViewBaseLoadout.ins.Redraw(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint, false);
+
+            reapplyLiverySetInProgress = false;
+            UpdatePilotModeButtonVisuals();
+        }
+
+        //==============================================================================
+        public static string GetPilotModePilotId(int mechId) {
+            EnsurePilotModePilot(mechId);
+            return pilotModePilotId;
+        }
+
+        //==============================================================================
+        static void EnsurePilotModePilot(int mechId) {
+            RefreshPilotModePilotIds();
+            if (pilotModePilotIds.Count == 0)
+            {
+                pilotModePilotId = null;
+                pilotModePilotMechId = mechId;
+                return;
+            }
+
+            bool mechChanged = mechId >= 0 && mechId != pilotModePilotMechId;
+            if (!mechChanged && !string.IsNullOrEmpty(pilotModePilotId) && pilotModePilotIds.Contains(pilotModePilotId))
+                return;
+
+            string assignedPilotId = LiverySetsDB.ResolvePilotIdForMech(mechId);
+            if (!string.IsNullOrEmpty(assignedPilotId) && pilotModePilotIds.Contains(assignedPilotId))
+            {
+                pilotModePilotId = assignedPilotId;
+                pilotModePilotMechId = mechId;
+                return;
+            }
+
+            pilotModePilotId = pilotModePilotIds[0];
+            pilotModePilotMechId = mechId;
+        }
+
+        //==============================================================================
+        static void RefreshPilotModePilotIds() {
+            pilotModePilotIds.Clear();
+
+            List<PersistentEntity> pilots = PilotUtility.GetPilotsAtBase();
+            if (pilots == null)
+                return;
+
+            foreach (PersistentEntity pilot in pilots)
+            {
+                if (pilot == null || !pilot.isPilotTag || pilot.isDestroyed || !pilot.hasNameInternal)
+                    continue;
+
+                pilotModePilotIds.Add(pilot.nameInternal.s);
+            }
+
+            pilotModePilotIds.Sort(StringComparer.Ordinal);
+        }
+
+        //==============================================================================
+        static void CyclePilotModePilot(int direction) {
+            int mechId = CIViewBaseLoadout.selectedUnitID;
+            RefreshPilotModePilotIds();
+            if (pilotModePilotIds.Count == 0)
+            {
+                pilotModePilotId = null;
+                UpdatePilotModeButtonVisuals();
+                return;
+            }
+
+            EnsurePilotModePilot(mechId);
+            int pilotIndex = pilotModePilotIds.IndexOf(pilotModePilotId);
+            if (pilotIndex < 0)
+                pilotIndex = 0;
+
+            pilotIndex = (pilotIndex + direction) % pilotModePilotIds.Count;
+            if (pilotIndex < 0)
+                pilotIndex += pilotModePilotIds.Count;
+
+            pilotModePilotId = pilotModePilotIds[pilotIndex];
+            pilotModePilotMechId = mechId;
+            Debug.Log($"[LiveryGUI] Pilot livery edit target: {pilotModePilotId}");
+            CIViewOverworldLog.AddMessage($"Pilot livery target: {GetPilotDisplayName(pilotModePilotId)} [sp=s_icon_l32_user]");
+            ReapplyLiverySet(mechId);
+        }
+
+        //==============================================================================
+        static string GetPilotDisplayName(string pilotId) {
+            PersistentEntity pilot = IDUtility.GetPersistentEntity(pilotId);
+            if (pilot == null)
+                return pilotId ?? "<none>";
+
+            string namePrimary;
+            string nameSecondary;
+            TextUtility.GetPilotIdentificationText(pilot, out namePrimary, out nameSecondary);
+            return string.IsNullOrEmpty(nameSecondary) ? pilotId : nameSecondary;
+        }
 
         //==============================================================================
         static void OnLiveryNameInput() {
@@ -814,12 +994,40 @@ namespace LiveryGUIMod {
 
         //==============================================================================
         static void UpdatePilotModeButtonVisuals() {
+            if (pilotModeToggleButton == null)
+                return;
+
             var go = pilotModeToggleButton.gameObject;
             var pilotFillIdle = go.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
             var pilotIcon = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
 
-            if (pilotFillIdle != null) { pilotFillIdle.color = LiverySetsDB.IsPilotModeActive ? activeButtonFGColor : grayedOutButtonFGColor; } //todo.pilot-mode: fix color, or change to a toggle-slider or something.
-            if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //todo.pilot-mode choose a sprite. (maybe add that select-clicked-on-sprite to the ~"ui.view-enter uitools". and maybe also a search.)
+            if (pilotFillIdle != null) { pilotFillIdle.color = IsPilotModeActive() ? activeButtonFGColor : grayedOutButtonFGColor; } //todo.pilot-mode: fix color, or change to a toggle-slider or something. maybe two immediately-adjacent buttons, and shrink+gray the inactive one? click on either is a toggle of collective state?
+            if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //todo.pilot-mode choose a sprite.
+
+            bool pilotModeActive = IsPilotModeActive();
+            bool canCyclePilots = pilotModePilotIds.Count > 1;
+            if (pilotModePrevButton != null)
+            {
+                pilotModePrevButton.gameObject.SetActive(pilotModeActive);
+                pilotModePrevButton.available = canCyclePilots;
+            }
+            if (pilotModeNextButton != null)
+            {
+                pilotModeNextButton.gameObject.SetActive(pilotModeActive);
+                pilotModeNextButton.available = canCyclePilots;
+            }
+            if (pilotModeBaseToggleButton != null)
+            {
+                pilotModeBaseToggleButton.gameObject.SetActive(pilotModeActive);
+                pilotModeBaseToggleButton.available = true;
+
+                var baseIcon = pilotModeBaseToggleButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                var baseFillIdle = pilotModeBaseToggleButton.gameObject.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+                if (baseIcon != null)
+                    baseIcon.color = pilotModeMechBaseVisible ? activeButtonFGColor : grayedOutButtonFGColor;
+                if (baseFillIdle != null)
+                    baseFillIdle.color = pilotModeMechBaseVisible ? activeButtonBGColor : grayedOutButtonBGColor;
+            }
         }
 
         //==============================================================================

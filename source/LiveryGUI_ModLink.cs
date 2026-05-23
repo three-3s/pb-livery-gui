@@ -57,12 +57,36 @@ namespace LiveryGUIMod
         public class OnInit {
             static bool loadedYet = false;
             public static void Prefix() {
-                if (loadedYet)
-                    return;
-                loadedYet = true;
+                try {
+                    if (loadedYet)
+                        return;
+                    loadedYet = true;
 
-                LiverySnapshotDB.SnapshotInitialLiveries();
-                LoadAndSave.LoadUserSavedLiveries();
+                    LiverySnapshotDB.SnapshotInitialLiveries();
+                    LoadAndSave.LoadUserSavedLiveries();
+                }
+                catch (Exception ex) {
+                    Debug.LogError($"[LiveryGUI] Error in OnInit: {ex}");
+                }
+            }
+        }
+
+        // Handle PB's CIViewBaseLoadout switching between parts-editing mode and livery-selection mode.
+        [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("SetLiveryMode")]
+        public class OnSetLiveryModePatch
+        {
+            public static void Postfix(bool value)
+            {
+                _ = value;
+                try
+                {
+                    int mechId = CIViewBaseLoadout.selectedUnitID;
+                    GUI.ReapplyLiverySet(mechId);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in OnSetLiveryModePatch: {ex}");
+                }
             }
         }
 
@@ -72,15 +96,22 @@ namespace LiveryGUIMod
         public class OnLiveryAttachAttemptPatch {
             public static void Postfix(CIViewBaseLoadout __instance, object liveryKeyArg)
             {
+                _ = __instance;
+                _ = liveryKeyArg;
                 try
                 {
-                    string liveryKey = liveryKeyArg as string;
                     int mechId = CIViewBaseLoadout.selectedUnitID;
-                    string partKey = LiverySetsDB.PartKey(CIViewBaseLoadout.selectedUnitSocket, CIViewBaseLoadout.selectedUnitHardpoint);
+                    if (GUI.IsLiverySlotRecordingSuppressed())
+                        return;
+
+                    string socket = CIViewBaseLoadout.selectedUnitSocket;
+                    string hardpoint = CIViewBaseLoadout.selectedUnitHardpoint;
+                    string partKey = LiverySetsDB.PartKey(socket, hardpoint);
                     // 3todo.later: need to test how the null-or-empty works, with respect to PB's use of some sort of 'default'/null pseudo-livery.
-                    string key = string.IsNullOrEmpty(liveryKey) ? LiverySetsDB.PILOT_TRANSPARENT : liveryKey;
+                    string key = LiverySetsDB.NormalizeLiveryKey(LiverySetsDB.GetCurrentLiveryKeyForSlot(mechId, socket, hardpoint));
                     Debug.Log($"[LiveryGUI] OnLiveryAttachAttempt: mech={mechId}, part={partKey}, livery={key}");
                     LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, key);
+                    GUI.ReapplyLiverySet(mechId);
                 }
                 catch (Exception ex)
                 {
@@ -106,6 +137,7 @@ namespace LiveryGUIMod
                         string liveryKey = LiverySetsDB.PILOT_TRANSPARENT;
                         Debug.Log($"[LiveryGUI] OnUnitRemovedPatch: mech={mechId}, livery={liveryKey}");
                         LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, liveryKey);
+                        GUI.ReapplyLiverySet(mechId);
                     }
                 }
                 catch (Exception ex)
@@ -128,6 +160,7 @@ namespace LiveryGUIMod
                         string liveryKey = LiverySetsDB.PILOT_TRANSPARENT;
                         Debug.Log($"[LiveryGUI] OnSocketRemovedPatch: mech={mechId}, part={partKey}, livery={liveryKey}");
                         LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, liveryKey);
+                        GUI.ReapplyLiverySet(mechId);
                     }
                 }
                 catch (Exception ex)
@@ -151,6 +184,7 @@ namespace LiveryGUIMod
                         string liveryKey = LiverySetsDB.PILOT_TRANSPARENT;
                         Debug.Log($"[LiveryGUI] OnHardpointRemovedPatch: mech={mechId}, part={partKey}, livery={liveryKey}");
                         LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, liveryKey);
+                        GUI.ReapplyLiverySet(mechId);
                     }
                 }
                 catch (Exception ex)
@@ -174,5 +208,90 @@ namespace LiveryGUIMod
                 GUI.RedrawLiveryGUI(__instance);
             }//Postfix()
         }//class RedrawLiveryGUI
+
+        [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("EnterWithUnit")]
+        public class EnterWithUnitPatch {
+            public static void Postfix(PersistentEntity unitPersistent) {
+                try
+                {
+                    if (unitPersistent != null && unitPersistent.hasId)
+                        GUI.ReapplyLiverySet(unitPersistent.id.id);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in EnterWithUnitPatch: {ex}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("TryExit")]
+        public class LoadoutTryExitPatch {
+            public static void Postfix() {
+                try
+                {
+                    GUI.ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in LoadoutTryExitPatch: {ex}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CIViewBaseBriefingV2), MethodType.Normal), HarmonyPatch("RebuildUnit")]
+        public class BriefingRebuildUnitPatch {
+            public static void Prefix(int index) {
+                try
+                {
+                    LiverySetsDB.ApplyBriefingLiverySetToUnitInSlot(index);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in BriefingRebuildUnitPatch.Prefix: {ex}");
+                }
+            }
+
+            public static void Postfix(int index, bool animationOnly) {
+                try
+                {
+                    if (animationOnly)
+                        LiverySetsDB.RefreshBriefingUnitVisual(index);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in BriefingRebuildUnitPatch.Postfix: {ex}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CIViewBaseBriefingV2), MethodType.Normal), HarmonyPatch("RebuildAllUnits")]
+        public class BriefingRebuildAllUnitsPatch {
+            public static void Prefix() {
+                try
+                {
+                    LiverySetsDB.ApplyBriefingLiverySetsToAllUnits();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[LiveryGUI] Error in BriefingRebuildAllUnitsPatch: {ex}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(HQHelperUnitCustomization), MethodType.Normal), HarmonyPatch("UpdateUnitModel"), HarmonyPatch(new Type[] { typeof(PersistentEntity) })]
+        public class UnitsTabUpdateUnitModelPatch {
+            public static void Prefix(PersistentEntity unit) {
+                if (unit == null || !unit.hasId)
+                    return;
+
+                if (CIViewBaseUnits.ins == null || !CIViewBaseUnits.ins.IsEntered())
+                    return;
+
+                if (CIViewBaseCustomizationRoot.ins != null && CIViewBaseCustomizationRoot.ins.IsEntered())
+                    return;
+
+                LiverySetsDB.ApplyLiverySetToMech(unit.id.id, true, true, null, false);
+            }
+        }
     }//class Patches
 }//namespace
