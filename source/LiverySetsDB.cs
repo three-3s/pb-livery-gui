@@ -412,6 +412,25 @@ namespace LiveryGUIMod {
             return string.IsNullOrEmpty(liveryKey) ? PILOT_TRANSPARENT : liveryKey;
         }
 
+        public static bool IsPilotLiveryResponsibleForPart(int mechInstanceId, string partKey, string pilotIdOverride = null) {
+            if (mechInstanceId < 0 || string.IsNullOrEmpty(partKey))
+                return false;
+
+            string pilotId = string.IsNullOrEmpty(pilotIdOverride) ? ResolvePilotIdForMech(mechInstanceId) : pilotIdOverride;
+            if (string.IsNullOrEmpty(pilotId) || !TryGetPilotSet(pilotId, out var pilotSet))
+                return false;
+
+            foreach (var kv in pilotSet.Assignments) {
+                if (!IsConcreteLiveryKey(kv.Value))
+                    continue;
+
+                if (string.Equals(kv.Key, partKey, StringComparison.Ordinal) || IsDescendantPartKey(kv.Key, partKey))
+                    return true;
+            }
+
+            return false;
+        }
+
         public static string GetCurrentLiveryKeyForSlot(int mechId, string socket, string hardpoint) {
             PersistentEntity unit = IDUtility.GetPersistentEntity(mechId);
             if (unit == null)

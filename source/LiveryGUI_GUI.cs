@@ -4,6 +4,7 @@ using PhantomBrigade.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -63,6 +64,7 @@ namespace LiveryGUIMod {
         public static CIButton toggleLiveryGUIButton;
         public static CIButton pilotModeToggleButton;
         public static CIButton pilotModePrevButton;
+        public static CIButton pilotModeCurrentButton;
         public static CIButton pilotModeNextButton;
         public static CIButton pilotModeBaseToggleButton;
         public static CIButton resetLiveryButton;
@@ -76,10 +78,28 @@ namespace LiveryGUIMod {
         static readonly Color grayedOutButtonBGColor = new Color(0.0f, 0.0f, 0.0f, 0.7f);
         static readonly Color activeRedButtonFGColor = new Color(1f, 0.38f, 0.38f, 1f);
         static readonly Color activeRedButtonBGColor = new Color(0.61f, 0.22f, 0.22f, 1f);
+        static readonly Color pilotLiverySlotMarkerColor = new Color(0.32f, 0.58f, 1f, 0.95f);
+        static readonly Color mechLiverySlotMarkerColor = new Color(0.72f, 0.72f, 0.72f, 0.85f);
         static SliderRightClickHandler sliderRightClickHandler = null;
 
         static readonly string spriteNameStarFilled = "s_icon_l32_star_filled";
         static readonly string spriteNameStarOutline = "s_icon_l32_star_outline";
+        static readonly string liverySlotLayerMarkerName = "LiveryGUI_LayerMarker";
+        static readonly string pilotSymbolSpriteName = "s_icon_l32_pilot1";
+        static readonly string mechLiverySlotMarkerSpriteName = "icon_mech2";
+        static readonly string liverySlotChildMarkerName = "LiveryGUI_ChildMarker";
+        static readonly string liverySlotHierarchyLineNamePrefix = "LiveryGUI_HierarchyLine";
+        static readonly string liverySlotChildMarkerSpriteName = "s_icon_sm_plus";
+        static readonly string liverySlotHierarchyLineSpriteName = "line_vertical_4px";
+        static readonly Vector3 liverySlotLayerMarkerOffset = new Vector3(180f, 0f, 0f);
+        static readonly string pilotLiverySlotMarkerTooltipHeader = "Pilot livery";
+        static readonly string pilotLiverySlotMarkerTooltipContent = "Pilot livery controls this slot.";
+        static readonly string mechLiverySlotMarkerTooltipHeader = "Mech base livery";
+        static readonly string mechLiverySlotMarkerTooltipContent = "Mech base livery controls this slot.";
+        static readonly Color liverySlotChildMarkerColor = new Color(0.5f, 0.5f, 0.5f, 0.95f);
+        static readonly Color liverySlotHierarchyLineColor = new Color(0.78f, 0.78f, 0.78f, 0.75f);
+        static readonly FieldInfo liveryHelpersPerSocketField = AccessTools.Field(typeof(CIViewBaseLoadout), "liveryHelpersPerSocket");
+        static readonly FieldInfo liveryHelpersPerHardpointField = AccessTools.Field(typeof(CIViewBaseLoadout), "liveryHelpersPerHardpoint");
 
         public static bool modPrevPilotModeActive = false; // persists whether pilot-edit-mode is active, including when mod-gui is off.
         static bool reapplyLiverySetInProgress = false;
@@ -106,10 +126,8 @@ namespace LiveryGUIMod {
 
             public static readonly Vector3 favoriteButton = new Vector3(645f, topRowY, 0f); // top-left corner of the mech-preview region (just to the right of the liveryGuiToggle)
             public static readonly Vector3 pilotToggle = favoriteButton + posStep;
-            public static readonly Vector3 pilotPreviousButton = pilotToggle + new Vector3(-48f, -48f, 0f);  //3todo.later: adjust positioning of pilotPrevious/NextButton
-            public static readonly Vector3 pilotNextButton = pilotToggle + new Vector3(0f, -48f, 0f);
-            public static readonly Vector3 pilotBaseToggleButton = pilotToggle + new Vector3(+48f, -48f, 0f);
-            public static readonly Vector3 resetButton = pilotToggle + posStep;
+            public static readonly Vector3 pilotBaseToggleButton = pilotToggle + minimalPosStep;
+            public static readonly Vector3 resetButton = pilotBaseToggleButton + posStep;
             public static readonly Vector3 liveryName = resetButton + new Vector3(55f, 0f, 0f); // (when not moved off-screen)
             public static readonly Vector3 liveryName_hiddenOffscreen = new Vector3(20000f, 20000f, 0f);
             public static readonly Vector3 saveButton = resetButton + posStepOverNameInputField;
@@ -118,6 +136,8 @@ namespace LiveryGUIMod {
             public static readonly Vector3 legendGroup1Item1 = cloneButton + 1f * posStep;
             public static readonly Vector3 legendGroup2Item1 = cloneButton + 2f * posStep;
             public static readonly Vector3 legendGroup2Item2 = cloneButton + 2f * posStep + 1f * minimalPosStep;
+
+            public static readonly float pilotButtonsLeft = favoriteButton[0];
         }
 
         //==============================================================================
@@ -126,6 +146,7 @@ namespace LiveryGUIMod {
 
             UpdateWidgetPositioning(__instance);
             ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
+            UpdateLiverySlotLayerMarkers(__instance);
         }
 
         //==============================================================================
@@ -333,36 +354,8 @@ namespace LiveryGUIMod {
             pilotModeToggleGO.SetActive(true);
             UpdatePilotModeButtonVisuals();
 
-            GameObject pilotModePrevGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
-            pilotModePrevGO.name = "pilotModePrevGO";
-            pilotModePrevGO.transform.localPosition = Positions.pilotPreviousButton;
-            pilotModePrevGO.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
-            var pilotPrevIcon = pilotModePrevGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-            if (pilotPrevIcon != null) { pilotPrevIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotPrevIcon.spriteName = "icon_arrow_back"; } //3todo.later: clean up visuals
-            pilotModePrevButton = pilotModePrevGO.GetComponent<CIButton>();
-            pilotModePrevButton.callbackOnClick = new UICallback(() =>
-            {
-                CyclePilotModePilot(-1);
-            });
-            pilotModePrevButton.tooltipUsed = true;
-            pilotModePrevButton.AddTooltip(null, "Previous pilot livery target");
-            pilotModePrevButton.tooltipDelay = false;
-
-            GameObject pilotModeNextGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
-            pilotModeNextGO.name = "pilotModeNextGO";
-            pilotModeNextGO.transform.localPosition = Positions.pilotNextButton;
-            pilotModeNextGO.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
-            var pilotNextIcon = pilotModeNextGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-            if (pilotNextIcon != null) { pilotNextIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotNextIcon.spriteName = "icon_arrow_forward"; }
-            pilotModeNextButton = pilotModeNextGO.GetComponent<CIButton>();
-            pilotModeNextButton.callbackOnClick = new UICallback(() =>
-            {
-                CyclePilotModePilot(+1);
-            });
-            pilotModeNextButton.tooltipUsed = true;
-            pilotModeNextButton.AddTooltip(null, "Next pilot livery target");
-            pilotModeNextButton.tooltipDelay = false;
-
+            ////////////////////////////////////////////////////////////////////////////////
+            // Pilot mode: toggle-button for showing/hiding mech base livery
             GameObject pilotModeBaseToggleGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
             pilotModeBaseToggleGO.name = "pilotModeBaseToggleGO";
             pilotModeBaseToggleGO.transform.localPosition = Positions.pilotBaseToggleButton;
@@ -381,6 +374,44 @@ namespace LiveryGUIMod {
             pilotModeBaseToggleButton.AddTooltip(null, "Show mech base livery under pilot livery");
             pilotModeBaseToggleButton.tooltipDelay = false;
             UpdatePilotModeButtonVisuals();
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // pilot: previous-button, current-info, next-button
+            GameObject pilotModePrevGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            pilotModePrevGO.name = "pilotModePrevGO";
+            var pilotPrevIcon = pilotModePrevGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (pilotPrevIcon != null) { pilotPrevIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotPrevIcon.spriteName = "icon_arrow_forward"; }
+            pilotModePrevButton = pilotModePrevGO.GetComponent<CIButton>();
+            pilotModePrevButton.callbackOnClick = new UICallback(() =>
+            {
+                CyclePilotModePilot(-1);
+            });
+            pilotModePrevButton.tooltipUsed = true;
+            pilotModePrevButton.AddTooltip(null, "Previous pilot livery target");
+            pilotModePrevButton.tooltipDelay = false;
+
+            GameObject pilotModeCurrentGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            pilotModeCurrentGO.name = "pilotModeCurrentGO";
+            var pilotCurrentIcon = pilotModeCurrentGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (pilotCurrentIcon != null) { pilotCurrentIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotCurrentIcon.spriteName = pilotSymbolSpriteName; }
+            pilotModeCurrentButton = pilotModeCurrentGO.GetComponent<CIButton>();
+            pilotModeCurrentButton.callbackOnClick = null;
+            pilotModeCurrentButton.tooltipUsed = true;
+            pilotModeCurrentButton.AddTooltip(null, "Pilot livery target");
+            pilotModeCurrentButton.tooltipDelay = false;
+
+            GameObject pilotModeNextGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
+            pilotModeNextGO.name = "pilotModeNextGO";
+            var pilotNextIcon = pilotModeNextGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+            if (pilotNextIcon != null) { pilotNextIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotNextIcon.spriteName = "icon_arrow_back"; } //3todo.0 change arrow symbols to something consistent-sized?
+            pilotModeNextButton = pilotModeNextGO.GetComponent<CIButton>();
+            pilotModeNextButton.callbackOnClick = new UICallback(() =>
+            {
+                CyclePilotModePilot(+1);
+            });
+            pilotModeNextButton.tooltipUsed = true;
+            pilotModeNextButton.AddTooltip(null, "Next pilot livery target");
+            pilotModeNextButton.tooltipDelay = false;
 
             ////////////////////////////////////////////////////////////////////////////////
             // Livery GUI buttons: 'revert changes', 'clone livery', 'save livery to disk'
@@ -463,7 +494,6 @@ namespace LiveryGUIMod {
 
             ////////////////////////////////////////////////////////////////////////////////
             // row of no-op buttons, as a crude legend/hint about usable controls.
-            Vector3 smallPosStep = new Vector3(50f, 0f, 0f);
             LegendConfig[] legendConfigs = {
                 // note: the button icons seem to get left/right mirror'd
                 new LegendConfig("mouse_right_outline", Positions.legendGroup1Item1),
@@ -530,6 +560,276 @@ namespace LiveryGUIMod {
 
             reapplyLiverySetInProgress = false;
             UpdatePilotModeButtonVisuals();
+        }
+
+        //==============================================================================
+        static void UpdateLiverySlotLayerMarkers(CIViewBaseLoadout loadoutView) {
+            if (loadoutView == null)
+                return;
+
+            bool showMarkers = IsPilotModeActive() && CIViewBaseLoadout.liveryMode;
+            bool showHierarchyDecorations = CIViewBaseLoadout.liveryMode;
+            int mechId = CIViewBaseLoadout.selectedUnitID;
+            if (mechId < 0) {
+                PersistentEntity selectedUnit = IDUtility.GetPersistentEntity(CIViewBaseLoadout.selectedUnitName);
+                mechId = selectedUnit != null && selectedUnit.hasId ? selectedUnit.id.id : -1;
+            }
+            PersistentEntity unit = mechId >= 0 ? IDUtility.GetPersistentEntity(mechId) : null;
+
+            string pilotId = showMarkers ? GetPilotModePilotId(mechId) : null;
+
+            var socketHelpers = GetLiverySlotHelpers(loadoutView, liveryHelpersPerSocketField);
+            var hardpointHelpers = GetLiverySlotHelpers(loadoutView, liveryHelpersPerHardpointField);
+            bool rootHasChildren = HasVisibleLiverySlot(socketHelpers);
+
+            UpdateLiverySlotDecorations(loadoutView.liveryHelperRoot, LiverySetsDB.PartKey(null, null), showMarkers && mechId >= 0, mechId, pilotId, showHierarchyDecorations && IsLiverySlotVisible(loadoutView.liveryHelperRoot), 0, rootHasChildren, loadoutView.liverySlotHeight);
+
+            if (socketHelpers != null) {
+                foreach (var kv in socketHelpers) {
+                    CIHelperLoadoutLiverySlot slot = kv.Value;
+                    bool slotVisible = IsLiverySlotVisible(slot);
+                    bool hasSubparts = DoesSocketHaveVisibleLiverySubparts(unit, kv.Key);
+                    UpdateLiverySlotDecorations(slot, LiverySetsDB.PartKey(kv.Key, null), showMarkers && slotVisible && mechId >= 0, mechId, pilotId, showHierarchyDecorations && slotVisible, 1, hasSubparts, loadoutView.liverySlotHeight);
+                }
+            }
+
+            if (hardpointHelpers != null) {
+                string socket = CIViewBaseLoadout.selectedUnitSocket;
+                foreach (var kv in hardpointHelpers) {
+                    CIHelperLoadoutLiverySlot slot = kv.Value;
+                    bool slotVisible = !string.IsNullOrEmpty(socket) && IsLiverySlotVisible(slot);
+                    UpdateLiverySlotDecorations(slot, LiverySetsDB.PartKey(socket, kv.Key), showMarkers && slotVisible && mechId >= 0, mechId, pilotId, showHierarchyDecorations && slotVisible, 2, false, loadoutView.liverySlotHeight);
+                }
+            }
+        }
+
+        //==============================================================================
+        static Dictionary<string, CIHelperLoadoutLiverySlot> GetLiverySlotHelpers(CIViewBaseLoadout loadoutView, FieldInfo field) {
+            if (loadoutView == null || field == null)
+                return null;
+
+            return field.GetValue(loadoutView) as Dictionary<string, CIHelperLoadoutLiverySlot>;
+        }
+
+        //==============================================================================
+        static bool IsLiverySlotVisible(CIHelperLoadoutLiverySlot slot) {
+            return slot != null && slot.gameObject.activeSelf && slot.targetAlpha > 0.01f;
+        }
+
+        //==============================================================================
+        static bool HasVisibleLiverySlot(Dictionary<string, CIHelperLoadoutLiverySlot> slots) {
+            if (slots == null)
+                return false;
+
+            foreach (var kv in slots)
+                if (IsLiverySlotVisible(kv.Value))
+                    return true;
+
+            return false;
+        }
+
+        //==============================================================================
+        static bool DoesSocketHaveVisibleLiverySubparts(PersistentEntity unit, string socket) {
+            if (unit == null || string.IsNullOrEmpty(socket))
+                return false;
+
+            EquipmentEntity part = EquipmentUtility.GetPartInUnit(unit, socket, false, null);
+            if (part == null || part.partBlueprint == null || part.partBlueprint.hardpoints == null)
+                return false;
+
+            HashSet<EquipmentEntity> subsystemsInPart = EquipmentUtility.GetSubsystemsInPart(part);
+            foreach (string hardpoint in part.partBlueprint.hardpoints) {
+                EquipmentEntity subsystem = EquipmentUtility.GetSubsystemInPart(part, hardpoint, false, subsystemsInPart);
+                if (subsystem == null)
+                    continue;
+
+                DataContainerSubsystemHardpoint hardpointData = DataMultiLinker<DataContainerSubsystemHardpoint>.GetEntry(hardpoint, true);
+                if (hardpointData != null && !hardpointData.isInternal && !string.IsNullOrEmpty(hardpointData.visualGroup))
+                    return true;
+            }
+
+            return false;
+        }
+
+        //==============================================================================
+        static void UpdateLiverySlotDecorations(CIHelperLoadoutLiverySlot slot, string partKey, bool layerMarkerVisible, int mechId, string pilotId, bool hierarchyVisible, int hierarchyDepth, bool hasSubparts, int slotHeight) {
+            UpdateLiverySlotLayerMarker(slot, partKey, layerMarkerVisible, mechId, pilotId);
+            UpdateLiverySlotChildMarker(slot, hierarchyVisible && hasSubparts);
+            UpdateLiverySlotHierarchyLine(slot, hierarchyVisible, hierarchyDepth, slotHeight);
+        }
+
+        //==============================================================================
+        static void UpdateLiverySlotLayerMarker(CIHelperLoadoutLiverySlot slot, string partKey, bool visible, int mechId, string pilotId) {
+            UISprite marker = GetOrCreateLiverySlotLayerMarker(slot, visible);
+            if (marker == null)
+                return;
+
+            marker.gameObject.SetActive(visible);
+            if (!visible)
+                return;
+
+            bool pilotControlled = LiverySetsDB.IsPilotLiveryResponsibleForPart(mechId, partKey, pilotId);
+            marker.spriteName = pilotControlled ? pilotSymbolSpriteName : mechLiverySlotMarkerSpriteName;
+            marker.color = pilotControlled ? pilotLiverySlotMarkerColor : mechLiverySlotMarkerColor;
+            marker.alpha = Mathf.Clamp01(slot.targetAlpha);
+            ConfigureLiverySlotLayerMarkerTooltip(slot, marker, pilotControlled);
+            marker.MarkAsChanged();
+        }
+
+        //==============================================================================
+        static UISprite GetOrCreateLiverySlotLayerMarker(CIHelperLoadoutLiverySlot slot, bool createIfMissing) {
+            if (slot == null)
+                return null;
+
+            Transform existing = slot.transform.Find(liverySlotLayerMarkerName);
+            if (existing != null)
+                return existing.GetComponent<UISprite>();
+
+            if (!createIfMissing || slot.spriteIcon == null)
+                return null;
+
+            GameObject markerGO = GameObject.Instantiate(slot.spriteIcon.gameObject, slot.transform, false);
+            markerGO.name = liverySlotLayerMarkerName;
+            markerGO.transform.localScale = Vector3.one;
+            markerGO.transform.localPosition = slot.spriteIcon.transform.localPosition + liverySlotLayerMarkerOffset;
+
+            UISprite marker = markerGO.GetComponent<UISprite>();
+            if (marker != null) {
+                marker.width = 30;
+                marker.height = 30;
+                marker.depth = slot.spriteIcon.depth + 12;
+            }
+            return marker;
+        }
+
+        //==============================================================================
+        static void ConfigureLiverySlotLayerMarkerTooltip(CIHelperLoadoutLiverySlot slot, UISprite marker, bool pilotControlled) {
+            if (slot == null || marker == null)
+                return;
+
+            Collider collider = marker.gameObject.GetComponent<Collider>() ?? marker.gameObject.AddComponent<BoxCollider>();
+
+            Bounds bounds = marker.CalculateBounds();
+            BoxCollider boxCollider = collider as BoxCollider;
+            if (boxCollider != null) {
+                boxCollider.center = bounds.center;
+                boxCollider.size = bounds.size;
+            }
+
+            CIButton button = marker.gameObject.GetComponent<CIButton>() ?? marker.gameObject.AddComponent<CIButton>();
+
+            button.audio = new PhantomBrigade.Game.DataBlockAudioEventsInButton { enabled = false };
+            button.tooltipFromLibrary = false;
+            button.tooltipDelay = false;
+            button.tooltipPivot = UIWidget.Pivot.BottomLeft;
+            button.tooltipOffset = Vector3.zero;
+            button.tooltipWidth = 280;
+            button.AddTooltip(
+                pilotControlled ? pilotLiverySlotMarkerTooltipHeader : mechLiverySlotMarkerTooltipHeader,
+                pilotControlled ? pilotLiverySlotMarkerTooltipContent : mechLiverySlotMarkerTooltipContent);
+
+            if (slot.button != null) {
+                button.callbackOnClick = slot.button.callbackOnClick;
+                button.callbackOnClickSecondary = slot.button.callbackOnClickSecondary;
+                button.callbackOnClickLong = slot.button.callbackOnClickLong;
+            }
+        }
+
+        //==============================================================================
+        static void UpdateLiverySlotChildMarker(CIHelperLoadoutLiverySlot slot, bool visible) {
+            UISprite marker = GetOrCreateLiverySlotSprite(slot, liverySlotChildMarkerName, visible, slot?.spriteIcon);
+            if (marker == null)
+                return;
+
+            marker.gameObject.SetActive(visible);
+            if (!visible)
+                return;
+
+            if (!TryGetLiverySlotBackgroundBounds(slot, out Vector3 bottomLeft, out Vector3 topRight)) {
+                marker.gameObject.SetActive(false);
+                return;
+            }
+
+            marker.spriteName = liverySlotChildMarkerSpriteName;
+            marker.width = 18;
+            marker.height = 18;
+            marker.depth = slot.spriteBackground.depth + 8;
+            marker.color = liverySlotChildMarkerColor;
+            marker.alpha = Mathf.Clamp01(slot.targetAlpha);
+            marker.transform.localScale = Vector3.one;
+            marker.transform.localPosition = new Vector3(bottomLeft.x + 6f, (bottomLeft.y + topRight.y) * 0.5f, 0f);
+            marker.MarkAsChanged();
+        }
+
+        //==============================================================================
+        static void UpdateLiverySlotHierarchyLine(CIHelperLoadoutLiverySlot slot, bool visible, int hierarchyDepth, int slotHeight) {
+            HideLiverySlotSprite(slot, liverySlotHierarchyLineNamePrefix + "1");
+
+            bool lineVisible = visible && hierarchyDepth >= 2;
+            UISprite line = GetOrCreateLiverySlotSprite(slot, liverySlotHierarchyLineNamePrefix + "0", lineVisible, slot?.spriteIcon);
+            if (line == null)
+                return;
+
+            line.gameObject.SetActive(lineVisible);
+            if (!lineVisible)
+                return;
+
+            if (!TryGetLiverySlotBackgroundBounds(slot, out Vector3 bottomLeft, out Vector3 topRight)) {
+                line.gameObject.SetActive(false);
+                return;
+            }
+
+            int height = Mathf.Max(1, Mathf.RoundToInt(Mathf.Max(slotHeight, topRight.y - bottomLeft.y)));
+            line.spriteName = liverySlotHierarchyLineSpriteName;
+            line.width = 4;
+            line.height = height;
+            line.depth = slot.spriteBackground.depth + 8;
+            line.color = liverySlotHierarchyLineColor;
+            line.alpha = Mathf.Clamp01(slot.targetAlpha);
+            line.transform.localScale = Vector3.one;
+            line.transform.localPosition = new Vector3(bottomLeft.x + 6f, (bottomLeft.y + topRight.y) * 0.5f, 0f);
+            line.MarkAsChanged();
+        }
+
+        //==============================================================================
+        static void HideLiverySlotSprite(CIHelperLoadoutLiverySlot slot, string name) {
+            if (slot == null || string.IsNullOrEmpty(name))
+                return;
+
+            Transform existing = slot.transform.Find(name);
+            if (existing != null)
+                existing.gameObject.SetActive(false);
+        }
+
+        //==============================================================================
+        static UISprite GetOrCreateLiverySlotSprite(CIHelperLoadoutLiverySlot slot, string name, bool createIfMissing, UISprite template) {
+            if (slot == null || string.IsNullOrEmpty(name))
+                return null;
+
+            Transform existing = slot.transform.Find(name);
+            if (existing != null)
+                return existing.GetComponent<UISprite>();
+
+            if (!createIfMissing || template == null)
+                return null;
+
+            GameObject spriteGO = GameObject.Instantiate(template.gameObject, slot.transform, false);
+            spriteGO.name = name;
+            spriteGO.transform.localScale = Vector3.one;
+            return spriteGO.GetComponent<UISprite>();
+        }
+
+        //==============================================================================
+        static bool TryGetLiverySlotBackgroundBounds(CIHelperLoadoutLiverySlot slot, out Vector3 bottomLeft, out Vector3 topRight) {
+            bottomLeft = Vector3.zero;
+            topRight = Vector3.zero;
+            if (slot == null || slot.spriteBackground == null)
+                return false;
+
+            Vector3[] corners = slot.spriteBackground.localCorners;
+            bottomLeft = slot.transform.InverseTransformPoint(slot.spriteBackground.transform.TransformPoint(corners[0]));
+            topRight = slot.transform.InverseTransformPoint(slot.spriteBackground.transform.TransformPoint(corners[2]));
+            return true;
         }
 
         //==============================================================================
@@ -606,7 +906,7 @@ namespace LiveryGUIMod {
             pilotModePilotId = pilotModePilotIds[pilotIndex];
             pilotModePilotMechId = mechId;
             Debug.Log($"[LiveryGUI] Pilot livery edit target: {pilotModePilotId}");
-            CIViewOverworldLog.AddMessage($"Pilot livery target: {GetPilotDisplayName(pilotModePilotId)} [sp=s_icon_l32_user]");
+            CIViewOverworldLog.AddMessage($"Pilot livery target: {GetPilotDisplayName(pilotModePilotId)} [sp={pilotSymbolSpriteName}]");
             ReapplyLiverySet(mechId);
         }
 
@@ -708,6 +1008,15 @@ namespace LiveryGUIMod {
             sliderHelpers["EffectY"].gameObject.transform.localPosition = new Vector3(x[1], y[13]);
             sliderHelpers["EffectZ"].gameObject.transform.localPosition = new Vector3(x[1], y[14]);
             sliderHelpers["EffectW"].gameObject.transform.localPosition = new Vector3(x[1], y[15]);
+
+            float pilotCyclerCenterX = Positions.pilotButtonsLeft;
+            float pilotCyclerBottomY = -(Screen.height * pixelSizeAdj) + 74f;
+            float pilotCyclerVisibleBottomY = y[15] - 56f;
+            float pilotCyclerY = Mathf.Max(pilotCyclerBottomY, pilotCyclerVisibleBottomY);
+            Vector3 pilotCyclerCenter = new Vector3(pilotCyclerCenterX, pilotCyclerY, 0f);
+            pilotModePrevButton.gameObject.transform.localPosition    = pilotCyclerCenter;
+            pilotModeCurrentButton.gameObject.transform.localPosition = pilotCyclerCenter + Positions.smallPosStep;
+            pilotModeNextButton.gameObject.transform.localPosition    = pilotCyclerCenter + 2 * Positions.smallPosStep;
 
             liveryNameInput.gameObject.transform.localPosition = paneGO.activeSelf ? Positions.liveryName : Positions.liveryName_hiddenOffscreen;
         }
@@ -1002,7 +1311,7 @@ namespace LiveryGUIMod {
             var pilotIcon = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
 
             if (pilotFillIdle != null) { pilotFillIdle.color = IsPilotModeActive() ? activeButtonFGColor : grayedOutButtonFGColor; } //todo.pilot-mode: fix color, or change to a toggle-slider or something. maybe two immediately-adjacent buttons, and shrink+gray the inactive one? click on either is a toggle of collective state?
-            if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = "s_icon_l32_user"; } //todo.pilot-mode choose a sprite.
+            if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = pilotSymbolSpriteName; }
 
             bool pilotModeActive = IsPilotModeActive();
             bool canCyclePilots = pilotModePilotIds.Count > 1;
@@ -1015,6 +1324,17 @@ namespace LiveryGUIMod {
             {
                 pilotModeNextButton.gameObject.SetActive(pilotModeActive);
                 pilotModeNextButton.available = canCyclePilots;
+            }
+            if (pilotModeCurrentButton != null)
+            {
+                pilotModeCurrentButton.gameObject.SetActive(pilotModeActive);
+                pilotModeCurrentButton.available = true;
+                pilotModeCurrentButton.tooltipContent = string.IsNullOrEmpty(pilotModePilotId) ? "Pilot livery target" : $"Pilot livery target: {GetPilotDisplayName(pilotModePilotId)}";
+
+                var currentIcon = pilotModeCurrentButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                var currentFillIdle = pilotModeCurrentButton.gameObject.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+                if (currentIcon     != null) currentIcon.color     = activeButtonFGColor;
+                if (currentFillIdle != null) currentFillIdle.color = activeButtonBGColor;
             }
             if (pilotModeBaseToggleButton != null)
             {
