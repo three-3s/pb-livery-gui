@@ -22,6 +22,7 @@ namespace LiveryGUIMod {
     public static class LiverySetsDB {
         // sentinel value meaning "transparent / do not override the mech's current livery for this part"
         public const string PILOT_TRANSPARENT = "__PILOT_TRANSPARENT__";
+        public const string PILOT_BASE_PULSE_LIVERY = "__LIVERY_GUI_PILOT_BASE_PULSE__";
 
         // Pilot unique id (string) -> assignment set
         static readonly Dictionary<string, LiveryAssignmentSet> _pilotLiveries = new Dictionary<string, LiveryAssignmentSet>(StringComparer.Ordinal);
@@ -62,7 +63,7 @@ namespace LiveryGUIMod {
                 MergeInto(finalSet, baseSet);
             }
             else {
-                AddTransparentAssignmentsForCurrentMechParts(finalSet, unit);
+                AddTransparentAssignmentsForCurrentMechParts(finalSet, unit, GUI.GetPilotModeBasePulseLiveryKey());
             }
 
             if (includePilotOverlay) {
@@ -187,11 +188,13 @@ namespace LiveryGUIMod {
             return !string.IsNullOrEmpty(liveryKey) && !string.Equals(liveryKey, PILOT_TRANSPARENT, StringComparison.Ordinal);
         }
 
-        static void AddTransparentAssignmentsForCurrentMechParts(LiveryAssignmentSet set, PersistentEntity unit) {
+        static void AddTransparentAssignmentsForCurrentMechParts(LiveryAssignmentSet set, PersistentEntity unit, string liveryKey = PILOT_TRANSPARENT) {
             if (set == null || unit == null)
                 return;
 
-            set.SetForPart(PartKey(null, null), PILOT_TRANSPARENT);
+            liveryKey = string.IsNullOrEmpty(liveryKey) ? PILOT_TRANSPARENT : liveryKey;
+
+            set.SetForPart(PartKey(null, null), liveryKey);
 
             var parts = EquipmentUtility.GetPartsInUnit(unit) ?? emptyEquipmentList;
             foreach (EquipmentEntity part in parts) {
@@ -199,7 +202,7 @@ namespace LiveryGUIMod {
                     continue;
 
                 string socket = part.partParentUnit.socket;
-                set.SetForPart(PartKey(socket, null), PILOT_TRANSPARENT);
+                set.SetForPart(PartKey(socket, null), liveryKey);
 
                 var subsystems = EquipmentUtility.GetSubsystemsInPart(part) ?? emptyEquipmentList;
                 foreach (EquipmentEntity subsystem in subsystems) {
@@ -207,7 +210,7 @@ namespace LiveryGUIMod {
                         continue;
 
                     string hardpoint = subsystem.hasSubsystemParentPart ? subsystem.subsystemParentPart.hardpoint : null;
-                    set.SetForPart(PartKey(socket, hardpoint), PILOT_TRANSPARENT);
+                    set.SetForPart(PartKey(socket, hardpoint), liveryKey);
                 }
             }
         }

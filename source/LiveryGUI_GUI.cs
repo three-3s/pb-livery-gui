@@ -61,6 +61,7 @@ namespace LiveryGUIMod {
 
     public class PilotModePortraitVisibilityTicker : MonoBehaviour {
         void Update() {
+            LiveryGUIMod.GUI.UpdatePilotModeBasePulseLivery();
             LiveryGUIMod.GUI.UpdatePilotModePortraitVisibility();
         }
     }
@@ -88,7 +89,7 @@ namespace LiveryGUIMod {
         static readonly Color activeRedButtonFGColor = new Color(1f, 0.38f, 0.38f, 1f);
         static readonly Color activeRedButtonBGColor = new Color(0.61f, 0.22f, 0.22f, 1f);
         static readonly Color pilotLiverySlotMarkerColor = new Color(0.32f, 0.58f, 1f, 0.95f);
-        static readonly Color mechLiverySlotMarkerColor = new Color(0.3f, 0.3f, 0.3f, 0.8f);
+        static readonly Color mechLiverySlotMarkerColor = new Color(0.25f, 0.25f, 0.25f, 0.8f);
         static SliderRightClickHandler sliderRightClickHandler = null;
 
         static readonly string spriteNameStarFilled = "s_icon_l32_star_filled";
@@ -109,6 +110,9 @@ namespace LiveryGUIMod {
         static readonly Color liverySlotChildMarkerColor = new Color(0.45f, 0.45f, 0.45f, 0.95f);
         static readonly Color liverySlotChildMarkerAssignedColor = new Color(1f, 1f, 1f, 1f);
         static readonly Color liverySlotHierarchyLineColor = new Color(0.7f, 0.7f, 0.7f, 0.75f);
+        const float pilotModeBasePulsePeriod = 2.5f;
+        const float pilotModeBasePulseMin = 0.5f;
+        const float pilotModeBasePulseMax = 0.8f;
         static readonly FieldInfo liveryHelpersPerSocketField = AccessTools.Field(typeof(CIViewBaseLoadout), "liveryHelpersPerSocket");
         static readonly FieldInfo liveryHelpersPerHardpointField = AccessTools.Field(typeof(CIViewBaseLoadout), "liveryHelpersPerHardpoint");
 
@@ -744,7 +748,9 @@ namespace LiveryGUIMod {
                     continue;
 
                 string liveryKey = LiverySetsDB.GetCurrentLiveryKeyForSlot(mechId, socket, hardpoint);
-                if (!string.IsNullOrEmpty(liveryKey) && !string.Equals(liveryKey, LiverySetsDB.PILOT_TRANSPARENT, StringComparison.Ordinal))
+                if (!string.IsNullOrEmpty(liveryKey) &&
+                    !string.Equals(liveryKey, LiverySetsDB.PILOT_TRANSPARENT, StringComparison.Ordinal) &&
+                    !string.Equals(liveryKey, LiverySetsDB.PILOT_BASE_PULSE_LIVERY, StringComparison.Ordinal))
                     return true;
             }
 
@@ -1022,6 +1028,92 @@ namespace LiveryGUIMod {
                 return pilotId ?? "<none>";
             TextUtility.GetPilotIdentificationText(pilot, out _, out string nameSecondary);
             return string.IsNullOrEmpty(nameSecondary) ? pilotId : nameSecondary;
+        }
+
+        //==============================================================================
+        public static string GetPilotModeBasePulseLiveryKey() {
+            if (!IsPilotModeActive() || pilotModeMechBaseVisible)
+                return LiverySetsDB.PILOT_TRANSPARENT;
+
+            DataContainerEquipmentLivery livery = EnsurePilotModeBasePulseLivery();
+            if (livery == null)
+                return LiverySetsDB.PILOT_TRANSPARENT;
+
+            UpdatePilotModeBasePulseLiveryData(livery);
+            return LiverySetsDB.PILOT_BASE_PULSE_LIVERY;
+        }
+
+        //==============================================================================
+        public static void UpdatePilotModeBasePulseLivery() {
+            if (!IsPilotModeActive() || pilotModeMechBaseVisible)
+                return;
+
+            DataContainerEquipmentLivery livery = EnsurePilotModeBasePulseLivery();
+            if (livery == null)
+                return;
+
+            UpdatePilotModeBasePulseLiveryData(livery);
+
+            int mechId = CIViewBaseLoadout.selectedUnitID;
+            if (mechId >= 0)
+                LiverySetsDB.ApplyLiverySetToMech(mechId, false, true, GetPilotModePilotId(mechId));
+        }
+
+        //==============================================================================
+        static DataContainerEquipmentLivery EnsurePilotModeBasePulseLivery() {
+            var liveryDict = DataMultiLinkerEquipmentLivery.data;
+            if (liveryDict == null)
+                return null;
+
+            if (liveryDict.TryGetValue(LiverySetsDB.PILOT_BASE_PULSE_LIVERY, out DataContainerEquipmentLivery livery) && livery != null)
+                return livery;
+
+            livery = new DataContainerEquipmentLivery {
+                key = LiverySetsDB.PILOT_BASE_PULSE_LIVERY,
+                hidden = true,
+                priority = int.MaxValue,
+                textName = "LiveryGUI Pilot Base Pulse",
+                source = "LiveryGUI",
+                rating = 0,
+                pattern = null,
+                contentSource = null,
+                materialPrimary = new Vector4(0f, 0.5f, 0.8f, 0f),
+                materialSecondary = new Vector4(0f, 0.5f, 0.8f, 0f),
+                materialTertiary = new Vector4(0f, 0.5f, 0.8f, 0f),
+                effect = Vector4.zero,
+                contentParameters = Vector4.zero
+            };
+
+            liveryDict[LiverySetsDB.PILOT_BASE_PULSE_LIVERY] = livery;
+            DataMultiLinkerEquipmentLivery.OnAfterDeserialization();
+            return livery;
+        }
+
+        //==============================================================================
+        static void UpdatePilotModeBasePulseLiveryData(DataContainerEquipmentLivery livery) {
+            float primary   = GetPilotModeBasePulseIntensity(0f);
+            float secondary = GetPilotModeBasePulseIntensity(0.05f);
+            float tertiary  = GetPilotModeBasePulseIntensity(0.08f);
+            Color tertiary_color = GetPilotModeBasePulseHueColor(0f);
+
+            livery.colorPrimary   = new Color(primary, primary, primary, 0f);
+            livery.colorSecondary = new Color(secondary, secondary, secondary, 0f) * 0.8f;
+            livery.colorTertiary  = tertiary_color * tertiary * 0.8f;
+        }
+
+        //==============================================================================
+        static float GetPilotModeBasePulseIntensity(float lagInPeriods) {
+            float phase = (Time.unscaledTime / pilotModeBasePulsePeriod - lagInPeriods) * Mathf.PI * 2f;
+            float normalized = (Mathf.Sin(phase) + 1f) * 0.5f;
+            return Mathf.Lerp(pilotModeBasePulseMin, pilotModeBasePulseMax, normalized);
+        }
+
+        //==============================================================================
+        static Color GetPilotModeBasePulseHueColor(float lagInPeriods) {
+            float hue = Mathf.Repeat((Time.unscaledTime / (pilotModeBasePulsePeriod * 1.87f)) - lagInPeriods, 1f);
+            Color color = Color.HSVToRGB(hue, 0.4f, 1f);
+            color.a = 0f;
+            return color;
         }
 
         //==============================================================================
@@ -1384,9 +1476,14 @@ namespace LiveryGUIMod {
         }
 
         //==============================================================================
+        static bool IsInternalDisplayLiveryKey(string key) {
+            return string.Equals(key, LiverySetsDB.PILOT_BASE_PULSE_LIVERY, StringComparison.Ordinal);
+        }
+
+        //==============================================================================
         static DataContainerEquipmentLivery GetSelectedLivery() {
             string key = CIViewBaseLoadout.selectedUnitLivery;
-            if (key.IsNullOrEmpty())
+            if (key.IsNullOrEmpty() || IsInternalDisplayLiveryKey(key))
                 return null;
 
             return DataMultiLinker<DataContainerEquipmentLivery>.GetEntry(key, false);
@@ -1394,7 +1491,7 @@ namespace LiveryGUIMod {
 
         //==============================================================================
         static bool SelectedLiveryIsFavorited() {
-            if (CIViewBaseLoadout.selectedUnitLivery.IsNullOrEmpty())
+            if (CIViewBaseLoadout.selectedUnitLivery.IsNullOrEmpty() || IsInternalDisplayLiveryKey(CIViewBaseLoadout.selectedUnitLivery))
                 return false;
             return (CIViewBaseLoadout.liveryKeysFavorite.Contains(CIViewBaseLoadout.selectedUnitLivery));
         }
@@ -1404,7 +1501,7 @@ namespace LiveryGUIMod {
             LiverySetsDB.OnMaybeMechSelectionChanged();
 
             //Dev.Log($"[LiveryGUI] DEBUG-SPAM: ResetLiveryGUIWidgetsToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");
-            if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
+            if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery) || IsInternalDisplayLiveryKey(CIViewBaseLoadout.selectedUnitLivery))
             {
                 liveryNameInput.Set("null");
             }

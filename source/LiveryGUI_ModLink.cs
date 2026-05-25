@@ -241,6 +241,14 @@ namespace LiveryGUIMod {
             }//Postfix()
         }//class RedrawLiveryGUI
 
+        [HarmonyPatch(typeof(CIHelperLoadoutLiverySlot), MethodType.Normal), HarmonyPatch("RedrawForKey")]
+        public class HideInternalPulseLiveryInSlotPatch {
+            public static void Prefix(ref string liveryKey) {
+                if (string.Equals(liveryKey, LiverySetsDB.PILOT_BASE_PULSE_LIVERY, StringComparison.Ordinal))
+                    liveryKey = null;
+            }
+        }
+
         [HarmonyPatch(typeof(CIViewBaseLoadout), MethodType.Normal), HarmonyPatch("EnterWithUnit")]
         public class EnterWithUnitPatch {
             public static void Postfix(PersistentEntity unitPersistent) {

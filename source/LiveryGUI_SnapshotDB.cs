@@ -125,7 +125,9 @@ namespace LiveryGUIMod
 
             if (!originalLiveries.ContainsKey(key))
             {
-                Debug.LogWarning($"[LiveryGUI] BUG: IsCurrentLiveryModified(): originalLiveries DB doesn't contain key={key}");
+                if (key != LiverySetsDB.PILOT_BASE_PULSE_LIVERY) {
+                    Debug.LogWarning($"[LiveryGUI] BUG: IsCurrentLiveryModified(): originalLiveries DB doesn't contain key={key}");
+                }
                 return false;
             }
 
