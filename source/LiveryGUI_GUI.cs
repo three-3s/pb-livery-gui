@@ -292,14 +292,17 @@ namespace LiveryGUIMod {
                     //helper.sharedSpriteGradient.gameObject.SetActive(true);
                     helper.levelButtonLeft.callbackOnClick = new UICallback(() => {
                         ContentW.idx = (ContentW.idx - 1 + ContentW.names.Length) % ContentW.names.Length;
+                        UpdateContentWLevelWidget();
                         UpdateLiveryFromSliders();
                         RefreshSphereAndMechPreviews();
                     });
                     helper.levelButtonRight.callbackOnClick = new UICallback(() => {
                         ContentW.idx = (ContentW.idx + 1) % ContentW.names.Length;
+                        UpdateContentWLevelWidget();
                         UpdateLiveryFromSliders();
                         RefreshSphereAndMechPreviews();
                     });
+                    UpdateDiscreteLevelWidget(helper, ContentW.idx, ContentW.names.Length, ContentW.GetLevelName());
                 }
 
                 sliderHelpers.Add(key, helper);
@@ -567,6 +570,43 @@ namespace LiveryGUIMod {
                 liveryNameInput.label.modifier = UILabel.Modifier.None;
                 liveryNameInput.label.MarkAsChanged();
             }
+        }
+
+        //==============================================================================
+        static void UpdateContentWLevelWidget() {
+            if (sliderHelpers == null || !sliderHelpers.TryGetValue("ContentW", out CIHelperSetting helper))
+                return;
+
+            UpdateDiscreteLevelWidget(helper, ContentW.idx, ContentW.names.Length, ContentW.GetLevelName());
+        }
+
+        //==============================================================================
+        static void UpdateDiscreteLevelWidget(CIHelperSetting helper, int selectedIndex, int optionCount, string labelText) {
+            if (helper == null)
+                return;
+
+            if (helper.levelLabel != null) {
+                helper.levelLabel.text = labelText;
+                helper.levelLabel.MarkAsChanged();
+            }
+
+            if (helper.levelSpriteBackground != null) {
+                helper.levelSpriteBackground.width = 8 * Math.Min(21, Math.Max(0, optionCount));
+                helper.levelSpriteBackground.MarkAsChanged();
+            }
+
+            if (helper.levelSpriteIndex == null)
+                return;
+
+            if (helper.levelSpriteBackground == null || optionCount <= 0) {
+                helper.levelSpriteIndex.enabled = false;
+                return;
+            }
+
+            int clampedIndex = Math.Min(Math.Max(0, selectedIndex), optionCount - 1);
+            helper.levelSpriteIndex.enabled = true;
+            helper.levelSpriteIndex.transform.localPosition = helper.levelSpriteBackground.transform.localPosition + new Vector3(8f * clampedIndex - helper.levelSpriteBackground.width * 0.5f, 0f, 0f);
+            helper.levelSpriteIndex.MarkAsChanged();
         }
 
         //==============================================================================
@@ -1513,8 +1553,7 @@ namespace LiveryGUIMod {
                 sliderHelpers["EffectW"   ].sliderBar.valueRaw = livery.effect.w;
 
                 ContentW.SetLevel(livery.contentParameters.w);
-                sliderHelpers["ContentW"].levelLabel.text = ContentW.GetLevelName();
-                sliderHelpers["ContentW"].levelLabel.MarkAsChanged();
+                UpdateContentWLevelWidget();
             }
 
             UpdateButtonColors();
