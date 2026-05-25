@@ -36,9 +36,11 @@ namespace LiveryGUIMod {
     public class LegendConfig {
         public string spriteName;
         public Vector3 localPosition;
-        public LegendConfig(string spriteName, Vector3 localPosition) {
+        public string tooltipText;
+        public LegendConfig(string spriteName, Vector3 localPosition, string tooltipText) {
             this.spriteName = spriteName;
             this.localPosition = localPosition;
+            this.tooltipText = tooltipText;
         }
     }
 
@@ -79,7 +81,7 @@ namespace LiveryGUIMod {
         static readonly Color activeRedButtonFGColor = new Color(1f, 0.38f, 0.38f, 1f);
         static readonly Color activeRedButtonBGColor = new Color(0.61f, 0.22f, 0.22f, 1f);
         static readonly Color pilotLiverySlotMarkerColor = new Color(0.32f, 0.58f, 1f, 0.95f);
-        static readonly Color mechLiverySlotMarkerColor = new Color(0.72f, 0.72f, 0.72f, 0.85f);
+        static readonly Color mechLiverySlotMarkerColor = new Color(0.45f, 0.45f, 0.45f, 0.8f);
         static SliderRightClickHandler sliderRightClickHandler = null;
 
         static readonly string spriteNameStarFilled = "s_icon_l32_star_filled";
@@ -93,11 +95,11 @@ namespace LiveryGUIMod {
         static readonly string liverySlotHierarchyLineSpriteName = "line_vertical_4px";
         static readonly Vector3 liverySlotLayerMarkerOffset = new Vector3(180f, 0f, 0f);
         static readonly string pilotLiverySlotMarkerTooltipHeader = "Pilot livery";
-        static readonly string pilotLiverySlotMarkerTooltipContent = "Pilot livery controls this slot.";
+        static readonly string pilotLiverySlotMarkerTooltipContent = "The pilot's own livery-set is applied to this slot. This livery will be applied to this slot of any mech that is piloted by this pilot. Note: Any slot marked with a '+' has child slots, which will be affected by the parent slot.";
         static readonly string mechLiverySlotMarkerTooltipHeader = "Mech base livery";
-        static readonly string mechLiverySlotMarkerTooltipContent = "Mech base livery controls this slot.";
-        static readonly Color liverySlotChildMarkerColor = new Color(0.5f, 0.5f, 0.5f, 0.95f);
-        static readonly Color liverySlotHierarchyLineColor = new Color(0.78f, 0.78f, 0.78f, 0.75f);
+        static readonly string mechLiverySlotMarkerTooltipContent = "No pilot livery has been assigned to this slot. The mech's own base livery will control this slot. Assigning a livery to this slot will assign the livery to the pilot's livery-set.";
+        static readonly Color liverySlotChildMarkerColor = new Color(0.45f, 0.45f, 0.45f, 0.95f);
+        static readonly Color liverySlotHierarchyLineColor = new Color(0.7f, 0.7f, 0.7f, 0.75f);
         static readonly FieldInfo liveryHelpersPerSocketField = AccessTools.Field(typeof(CIViewBaseLoadout), "liveryHelpersPerSocket");
         static readonly FieldInfo liveryHelpersPerHardpointField = AccessTools.Field(typeof(CIViewBaseLoadout), "liveryHelpersPerHardpoint");
 
@@ -116,6 +118,8 @@ namespace LiveryGUIMod {
 
         // widget positions
         class Positions {
+            public static readonly float pxGapAbovePaneGO = 81f;
+
             public static readonly float topRowY = +72f;
             public static readonly Vector3 posStep = new Vector3(80f, 0f, 0f);
             public static readonly Vector3 smallPosStep = new Vector3(55f, 0f, 0f);
@@ -305,6 +309,11 @@ namespace LiveryGUIMod {
             if (toggleFillHover != null) toggleFillHover.color = new Color(0.7f, 0.7f, 0.7f, 0.4f);
 
             toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
+            toggleLiveryGUIButton.tooltipUsed = true;
+            toggleLiveryGUIButton.AddTooltip("Livery GUI", "Show/hide advanced livery customization options");
+            toggleLiveryGUIButton.tooltipDelay = false;
+            toggleLiveryGUIButton.tooltipPivot = UIWidget.Pivot.TopLeft;
+            toggleLiveryGUIButton.tooltipOffset = new Vector3(44f, -62f, 0f);
             toggleLiveryGUIButton.callbackOnClick = new UICallback(() =>
             {
                 bool newState = !paneGO.activeSelf;
@@ -342,6 +351,10 @@ namespace LiveryGUIMod {
             pilotModeToggleGO.transform.localPosition = Positions.pilotToggle;
 
             pilotModeToggleButton = pilotModeToggleGO.GetComponent<CIButton>();
+            pilotModeToggleButton.AddTooltip("Toggle Pilot Livery-Set Editing Mode", "In that mode, the selected PILOT's livery-set is edited by assigning liveries to the mech's parts. Mech parts that have no pilot-livery are transparent and will show the mech's livery. For example, it is possible to paint a mech gray in MECH edit mode, and then enable PILOT edit mode and assign a red livery to the upper body. Then, whenever that pilot is piloting that mech, the mech will be gray with a red upper body. Any mech this pilot is assigned to will have a red upper body.");
+            pilotModeToggleButton.tooltipDelay = false;
+            pilotModeToggleButton.tooltipPivot = UIWidget.Pivot.TopLeft;
+            pilotModeToggleButton.tooltipOffset = new Vector3(44f, -62f, 0f);
             pilotModeToggleButton.callbackOnClick = new UICallback(() =>
             {
                 modPrevPilotModeActive = !modPrevPilotModeActive;
@@ -359,7 +372,7 @@ namespace LiveryGUIMod {
             GameObject pilotModeBaseToggleGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
             pilotModeBaseToggleGO.name = "pilotModeBaseToggleGO";
             pilotModeBaseToggleGO.transform.localPosition = Positions.pilotBaseToggleButton;
-            pilotModeBaseToggleGO.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+            pilotModeBaseToggleGO.transform.localScale = new Vector3(0.85f, 0.85f, 1f);
             var pilotBaseIcon = pilotModeBaseToggleGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
             if (pilotBaseIcon != null) { pilotBaseIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotBaseIcon.spriteName = "icon_mech2"; } //3todo.later check/cleanup visuals
             pilotModeBaseToggleButton = pilotModeBaseToggleGO.GetComponent<CIButton>();
@@ -371,8 +384,10 @@ namespace LiveryGUIMod {
                 ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
             });
             pilotModeBaseToggleButton.tooltipUsed = true;
-            pilotModeBaseToggleButton.AddTooltip(null, "Show mech base livery under pilot livery");
+            pilotModeBaseToggleButton.AddTooltip("Show/Hide Mech Livery", "Shows or hides the mech's base livery underneath the pilot's livery. Only the view in this editor is affected. Right click on livery slots to unassign pilot's livery from that slot. Note: Assigning a livery to a slot with a '+' also affects all parts contained within that slot.");
             pilotModeBaseToggleButton.tooltipDelay = false;
+            pilotModeBaseToggleButton.tooltipPivot = UIWidget.Pivot.TopLeft;
+            pilotModeBaseToggleButton.tooltipOffset = new Vector3(44f, -62f, 0f);
             UpdatePilotModeButtonVisuals();
 
             ////////////////////////////////////////////////////////////////////////////////
@@ -380,15 +395,17 @@ namespace LiveryGUIMod {
             GameObject pilotModePrevGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
             pilotModePrevGO.name = "pilotModePrevGO";
             var pilotPrevIcon = pilotModePrevGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-            if (pilotPrevIcon != null) { pilotPrevIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotPrevIcon.spriteName = "icon_arrow_forward"; }
+            if (pilotPrevIcon != null) { pilotPrevIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotPrevIcon.spriteName = "icon_arrow_back_2x"; pilotPrevIcon.flip = UIBasicSprite.Flip.Nothing; }
             pilotModePrevButton = pilotModePrevGO.GetComponent<CIButton>();
             pilotModePrevButton.callbackOnClick = new UICallback(() =>
             {
                 CyclePilotModePilot(-1);
             });
             pilotModePrevButton.tooltipUsed = true;
-            pilotModePrevButton.AddTooltip(null, "Previous pilot livery target");
+            pilotModePrevButton.AddTooltip("Previous Pilot", "Select the previous pilot. This controls which pilot's livery-set is being edited in 'pilot livery-set editing mode'. (This does not assign the pilot to the mech. Assigning a pilot to a mech is done in mission briefing.)");
             pilotModePrevButton.tooltipDelay = false;
+            pilotModePrevButton.tooltipOffset = new Vector3(45f, 0f, 0f);
+            pilotModePrevButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
 
             GameObject pilotModeCurrentGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
             pilotModeCurrentGO.name = "pilotModeCurrentGO";
@@ -397,21 +414,25 @@ namespace LiveryGUIMod {
             pilotModeCurrentButton = pilotModeCurrentGO.GetComponent<CIButton>();
             pilotModeCurrentButton.callbackOnClick = null;
             pilotModeCurrentButton.tooltipUsed = true;
-            pilotModeCurrentButton.AddTooltip(null, "Pilot livery target");
+            pilotModeCurrentButton.AddTooltip("Pilot Being Edited", "Editing pilot \"[none]\". This is the pilot whose livery-set is being edited while in 'pilot livery-set editing mode'. (This does not assign the pilot to the mech. Assigning a pilot to a mech is done in mission briefing.)");
             pilotModeCurrentButton.tooltipDelay = false;
+            pilotModeCurrentButton.tooltipOffset = new Vector3(45f, 0f, 0f);
+            pilotModeCurrentButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
 
             GameObject pilotModeNextGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
             pilotModeNextGO.name = "pilotModeNextGO";
             var pilotNextIcon = pilotModeNextGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-            if (pilotNextIcon != null) { pilotNextIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotNextIcon.spriteName = "icon_arrow_back"; } //3todo.0 change arrow symbols to something consistent-sized?
+            if (pilotNextIcon != null) { pilotNextIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotNextIcon.spriteName = "icon_arrow_back_2x"; pilotNextIcon.flip = UIBasicSprite.Flip.Horizontally; }
             pilotModeNextButton = pilotModeNextGO.GetComponent<CIButton>();
             pilotModeNextButton.callbackOnClick = new UICallback(() =>
             {
                 CyclePilotModePilot(+1);
             });
             pilotModeNextButton.tooltipUsed = true;
-            pilotModeNextButton.AddTooltip(null, "Next pilot livery target");
+            pilotModeNextButton.AddTooltip("Next Pilot", "Select the next pilot. This controls which pilot's livery-set is being edited in 'pilot livery-set editing mode'. (This does not assign the pilot to the mech. Assigning a pilot to a mech is done in mission briefing.)");
             pilotModeNextButton.tooltipDelay = false;
+            pilotModeNextButton.tooltipOffset = new Vector3(45f, 0f, 0f);
+            pilotModeNextButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
 
             ////////////////////////////////////////////////////////////////////////////////
             // Livery GUI buttons: 'revert changes', 'clone livery', 'save livery to disk'
@@ -434,12 +455,20 @@ namespace LiveryGUIMod {
             if (cloneIcon != null) { cloneIcon.color = new Color(0.5f, 0.8f, 0.6f, 0.8f); cloneIcon.spriteName = "s_icon_l32_lc_grid_plus"; }
 
             resetLiveryButton = resetLiveryButtonGO.GetComponent<CIButton>();
+            resetLiveryButton.AddTooltip("Revert Changes", "Reset this livery to its last saved values.");
+            resetLiveryButton.tooltipDelay = false;
+            resetLiveryButton.tooltipPivot = UIWidget.Pivot.TopLeft;
+            resetLiveryButton.tooltipOffset = new Vector3(44f, -62f, 0f);
             resetLiveryButton.callbackOnClick = new UICallback(() =>
             {
                 OnResetLiveryClicked();
             });
 
             saveLiveryButton = saveLiveryButtonGO.GetComponent<CIButton>();
+            saveLiveryButton.AddTooltip("Save Livery", "Save this livery, using the given name. The name used must not match any built-in livery, nor any livery provided by a mod. Using a name that does not exist yet will save to a new livery with that name.");
+            saveLiveryButton.tooltipDelay = false;
+            saveLiveryButton.tooltipPivot = UIWidget.Pivot.TopLeft;
+            saveLiveryButton.tooltipOffset = new Vector3(44f, -62f, 0f);
             saveLiveryButton.callbackOnClick = new UICallback(() =>
             {
                 if (CIViewBaseLoadout.selectedUnitLivery != liveryNameInput.value)
@@ -452,6 +481,10 @@ namespace LiveryGUIMod {
             });
 
             cloneLiveryButton = cloneLiveryButtonGO.GetComponent<CIButton>();
+            cloneLiveryButton.AddTooltip("Clone Livery", "Creates a copy of the current livery, using the given name. There must not already be a livery with that name. Remember to also save the livery.");
+            cloneLiveryButton.tooltipDelay = false;
+            cloneLiveryButton.tooltipPivot = UIWidget.Pivot.TopLeft;
+            cloneLiveryButton.tooltipOffset = new Vector3(44f, -62f, 0f);
             cloneLiveryButton.callbackOnClick = new UICallback(() =>
             {
                 OnCloneLiveryClicked();
@@ -484,6 +517,10 @@ namespace LiveryGUIMod {
             if (favoriteIcon != null) { favoriteIcon.color = new Color(1f, 1f, 0.2f, 0.8f); favoriteIcon.spriteName = spriteNameStarOutline; } // (we'll toggle between Outline & Filled)
 
             favoriteLiveryButton = favoriteLiveryButtonGO.GetComponent<CIButton>();
+            favoriteLiveryButton.AddTooltip("Toggle as Favorite", "Marks this livery as a favorite. (Favorites are kept at the front of the list of liveries.)");
+            favoriteLiveryButton.tooltipDelay = false;
+            favoriteLiveryButton.tooltipPivot = UIWidget.Pivot.TopLeft;
+            favoriteLiveryButton.tooltipOffset = new Vector3(44f, -62f, 0f);
             favoriteLiveryButton.callbackOnClick = new UICallback(() =>
             {
                 object[] args = { CIViewBaseLoadout.selectedUnitLivery };
@@ -494,11 +531,13 @@ namespace LiveryGUIMod {
 
             ////////////////////////////////////////////////////////////////////////////////
             // row of no-op buttons, as a crude legend/hint about usable controls.
+            const string tooltip1 = "Click on sliders or click-and-drag to set.\n\nRemember to save.\nNormal values for sliders are between 0 and 1. Other values might work, but they might cause problems.";
+            const string tooltip2 = "For precise adjustments:\nRight-click-and-hold, and move mouse <--->\nChange speed: Hold SHIFT, ALT, or CTRL.";
             LegendConfig[] legendConfigs = {
                 // note: the button icons seem to get left/right mirror'd
-                new LegendConfig("mouse_right_outline", Positions.legendGroup1Item1),
-                new LegendConfig("mouse_left_outline",  Positions.legendGroup2Item1),
-                new LegendConfig("mouse_horizontal",    Positions.legendGroup2Item2),
+                new LegendConfig("mouse_right_outline", Positions.legendGroup1Item1, tooltip1),
+                new LegendConfig("mouse_left_outline",  Positions.legendGroup2Item1, tooltip2),
+                new LegendConfig("mouse_horizontal",    Positions.legendGroup2Item2, tooltip2),
             };
             Color legendColor = new Color(1f, 0f, 0f, 0.2f);
 
@@ -522,7 +561,7 @@ namespace LiveryGUIMod {
                 // 3todo.later update this with better description. ideally would support translations (and for any other tooltips/text).
                 button.tooltipUsed = true;
                 button.tooltipKey = null;
-                button.AddTooltip(null, "Click on sliders or click-and-drag to set.\n\nPrecise:\nRight-click-and-hold, and move mouse <--->\nSpeed: SHIFT, ALT, CTRL");
+                button.AddTooltip("Hints", legendConfig.tooltipText);
                 button.tooltipDelay = false;
                 button.tooltipPivot = UIWidget.Pivot.TopRight;
                 button.tooltipOffset = new Vector3(-77f + 100f -29f, -132f +84f -19f);
@@ -718,11 +757,15 @@ namespace LiveryGUIMod {
 
             CIButton button = marker.gameObject.GetComponent<CIButton>() ?? marker.gameObject.AddComponent<CIButton>();
 
+            if (button.elements          == null) button.elements          = new List<CIElement>();
+            if (button.panels            == null) button.panels            = new List<CIPanel>();
+            if (button.longPressElements == null) button.longPressElements = new List<CIButtonFill>();
+
             button.audio = new PhantomBrigade.Game.DataBlockAudioEventsInButton { enabled = false };
             button.tooltipFromLibrary = false;
             button.tooltipDelay = false;
             button.tooltipPivot = UIWidget.Pivot.BottomLeft;
-            button.tooltipOffset = Vector3.zero;
+            button.tooltipOffset = new Vector3(30f, 21f, 0f);
             button.tooltipWidth = 280;
             button.AddTooltip(
                 pilotControlled ? pilotLiverySlotMarkerTooltipHeader : mechLiverySlotMarkerTooltipHeader,
@@ -1010,10 +1053,8 @@ namespace LiveryGUIMod {
             sliderHelpers["EffectW"].gameObject.transform.localPosition = new Vector3(x[1], y[15]);
 
             float pilotCyclerCenterX = Positions.pilotButtonsLeft;
-            float pilotCyclerBottomY = -(Screen.height * pixelSizeAdj) + 74f;
-            float pilotCyclerVisibleBottomY = y[15] - 56f;
-            float pilotCyclerY = Mathf.Max(pilotCyclerBottomY, pilotCyclerVisibleBottomY);
-            Vector3 pilotCyclerCenter = new Vector3(pilotCyclerCenterX, pilotCyclerY, 0f);
+            float pilotCyclerBottomY = -(Screen.height * pixelSizeAdj) + Positions.pxGapAbovePaneGO + 66f;
+            Vector3 pilotCyclerCenter = new Vector3(pilotCyclerCenterX, pilotCyclerBottomY, 0f);
             pilotModePrevButton.gameObject.transform.localPosition    = pilotCyclerCenter;
             pilotModeCurrentButton.gameObject.transform.localPosition = pilotCyclerCenter + Positions.smallPosStep;
             pilotModeNextButton.gameObject.transform.localPosition    = pilotCyclerCenter + 2 * Positions.smallPosStep;
@@ -1329,7 +1370,7 @@ namespace LiveryGUIMod {
             {
                 pilotModeCurrentButton.gameObject.SetActive(pilotModeActive);
                 pilotModeCurrentButton.available = true;
-                pilotModeCurrentButton.tooltipContent = string.IsNullOrEmpty(pilotModePilotId) ? "Pilot livery target" : $"Pilot livery target: {GetPilotDisplayName(pilotModePilotId)}";
+                pilotModeCurrentButton.tooltipContent = $"Editing pilot \"{(string.IsNullOrEmpty(pilotModePilotId) ? "[none]" : GetPilotDisplayName(pilotModePilotId))}\". This is the pilot whose livery-set is being edited while in 'pilot livery-set editing mode'. (This does not assign the pilot to the mech. Assigning a pilot to a mech is done in mission briefing.)";
 
                 var currentIcon = pilotModeCurrentButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
                 var currentFillIdle = pilotModeCurrentButton.gameObject.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
