@@ -25,6 +25,14 @@ using Debug = UnityEngine.Debug;
 
 namespace LiveryGUIMod {
 
+    public class Dev {
+        public static readonly bool EXTRA_LOG_SPAM = false;
+        public static void Log(string s) {
+            if (EXTRA_LOG_SPAM) Debug.Log(s);
+        }
+    }
+
+
     //==================================================================================================
     // (Having a class derived from ModLink might (?) be necessary, but the overrides are probably just
     //  leftover 'hello world' stuff at this point.)
@@ -34,12 +42,12 @@ namespace LiveryGUIMod {
 
         public override void OnLoadStart() {
             ins = this;
-            //Debug.Log($"OnLoadStart");
+            Dev.Log($"OnLoadStart");
         }
 
         public override void OnLoad(Harmony harmonyInstance) {
             base.OnLoad(harmonyInstance);
-            //Debug.Log($"OnLoad | Mod: {modID} | Index: {modIndexPreload} | Path: {modPath}");
+            Debug.Log($"OnLoad | Mod: {modID} | Index: {modIndexPreload} | Path: {modPath}");
         }
 #endif
     }//class
@@ -227,7 +235,7 @@ namespace LiveryGUIMod {
                 _ = hardpointTarget;
                 _ = closeOnRepeat;
 
-                //Debug.Log($"RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
+                //Dev.Log($"RedrawLiveryGUI(socketTarget={socketTarget},hardpointTarget={hardpointTarget},closeOnRepeat={closeOnRepeat})");
 
                 GUI.RedrawLiveryGUI(__instance);
             }//Postfix()

@@ -872,8 +872,7 @@ namespace LiveryGUIMod {
                 return;
 
             Transform existing = slot.transform.Find(name);
-            if (existing != null)
-                existing.gameObject.SetActive(false);
+            existing?.gameObject.SetActive(false);
         }
 
         //==============================================================================
@@ -990,10 +989,7 @@ namespace LiveryGUIMod {
             PersistentEntity pilot = IDUtility.GetPersistentEntity(pilotId);
             if (pilot == null)
                 return pilotId ?? "<none>";
-
-            string namePrimary;
-            string nameSecondary;
-            TextUtility.GetPilotIdentificationText(pilot, out namePrimary, out nameSecondary);
+            TextUtility.GetPilotIdentificationText(pilot, out _, out string nameSecondary);
             return string.IsNullOrEmpty(nameSecondary) ? pilotId : nameSecondary;
         }
 
@@ -1104,17 +1100,14 @@ namespace LiveryGUIMod {
             bool pilotModeActive = IsPilotModeActive();
             if (!pilotModeActive)
             {
-                if (pilotModeNameLabel != null)
-                    pilotModeNameLabel.gameObject.SetActive(false);
-                if (pilotModePortraitGO != null)
-                    pilotModePortraitGO.SetActive(false);
+                pilotModeNameLabel?.gameObject.SetActive(false);
+                pilotModePortraitGO?.SetActive(false);
                 DeactivatePilotModeLivePortrait();
                 return;
             }
 
             UpdatePilotModeReadout();
-            if (pilotModePortraitGO != null)
-                pilotModePortraitGO.SetActive(false);
+            pilotModePortraitGO?.SetActive(false);
             UpdatePilotModeLivePortrait();
         }
 
@@ -1152,7 +1145,7 @@ namespace LiveryGUIMod {
                     // -271 and multiply by my current pixelSizeAdj (which is related to UI-scale factor from Display
                     // options menu). So the actual number to add here is -271 realPx * 0.75 codePx/realPx = -203 codePx.
                 };
-            //Debug.Log($"gui-scale-stuff Screen.width={Screen.width}, uiScale={uiScale}, x= {x[0]}, {x[1]}, activeHeight={activeHeight}, pixelSizeAdj={pixelSizeAdj}");
+            Dev.Log($"[Livery-GUI] gui-scale-stuff Screen.width={Screen.width}, uiScale={uiScale}, x= {x[0]}, {x[1]}, activeHeight={activeHeight}, pixelSizeAdj={pixelSizeAdj}");
             // Example: gui-scale-stuff Screen.width=2560, uiScale=0.001851852, x= 613, 1586, activeHeight=1080, pixelSizeAdj=0.75
             float[] y = {
                     -yStep *  0.0f,
@@ -1217,7 +1210,6 @@ namespace LiveryGUIMod {
 
         //==============================================================================
         static void OnClickSecondary(CIHelperSetting helper) {
-            //Debug.Log($"[LiveryGUI] OnClickSecondary {helper?.name ?? "{none}"}");
             sliderRightClickHandler?.CaptureRightClickFor(helper.sliderBar);
         }
 
@@ -1380,7 +1372,7 @@ namespace LiveryGUIMod {
         static void ResetLiveryGUIWidgetsToMatchLivery(DataContainerEquipmentLivery livery) {
             LiverySetsDB.OnMaybeMechSelectionChanged();
 
-            //Debug.Log($"[LiveryGUI] DEBUG-SPAM: ResetLiveryGUIWidgetsToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");
+            //Dev.Log($"[LiveryGUI] DEBUG-SPAM: ResetLiveryGUIWidgetsToMatchLivery CIViewBaseLoadout.selectedUnitLivery={CIViewBaseLoadout.selectedUnitLivery}");
             if (string.IsNullOrEmpty(CIViewBaseLoadout.selectedUnitLivery))
             {
                 liveryNameInput.Set("null");

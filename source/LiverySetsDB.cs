@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 3todo.notes: DataHelperLoading.cs has LoadingStart(string key, string saveLocation); calls DataManagerSave.LoadData(saveLocation).
+// notes: DataHelperLoading.cs has LoadingStart(string key, string saveLocation); calls DataManagerSave.LoadData(saveLocation).
 //   DataHelperLoading.cs: TryLoading(string key, SaveLocation saveLocation, Action callbackOnEnd = null, bool keepScreenAfterLoading = false, bool isScheduleOverworldAudio = true)
 //     calls its private helper: DataHelperLoading.LoadingStart(key, saveLocation);
 //        which calls (into DataManagerSave.cs): DataManagerSave.SetSaveName(key); DataManagerSave.LoadData(saveLocation);
@@ -242,7 +242,7 @@ namespace LiveryGUIMod {
                     }
                 }
 
-                Debug.Log($"[LiveryGUI] Dev-Spam: Captured full mech livery set for mech={mechId}, entries={set.Assignments.Count}");
+                Dev.Log($"[LiveryGUI] Dev-Spam: Captured full mech livery set for mech={mechId}, entries={set.Assignments.Count}");
                 DebugLogLiverySetDictionaries();
             }
             catch (Exception ex) {
@@ -398,7 +398,7 @@ namespace LiveryGUIMod {
             EnsurePilotSetsForCurrentPilots();
             ApplyAllCurrentUnitLiverySets();
 
-            Debug.Log($"[LiveryGUI] Initialized save-game livery sets after entity load: loadedUnits={loadedUnitCount}, runtimeUnits={_mechOriginalLiveries.Count}, pilots={_pilotLiveries.Count}");
+            Debug.Log($"[LiveryGUI] Initialized save-game livery sets after entity load: loadedUnits={loadedUnitCount}, runtimeUnits={_mechOriginalLiveries.Count}, pilots={_pilotLiveries.Count} (some of which may not be owned by player)");
         }
 
         // Utility: merge (copy) a source set into a destination set, overwriting per-part keys.
@@ -490,7 +490,7 @@ namespace LiveryGUIMod {
                 string pilotId = GUI.GetPilotModePilotId(mechId);
                 if (!string.IsNullOrEmpty(pilotId)) {
                     SetPilotLivery(pilotId, partKey, liveryKey);
-                    Debug.Log($"[LiveryGUI] Recorded pilot livery: pilot={pilotId}, from mech={mechId}, part={partKey}, livery={liveryKey}");
+                    Dev.Log($"[LiveryGUI] Recorded pilot livery: pilot={pilotId}, from mech={mechId}, part={partKey}, livery={liveryKey}");
                     return;
                 }
             }
@@ -517,7 +517,7 @@ namespace LiveryGUIMod {
                 if (!string.IsNullOrEmpty(slot?.unitNameInternal) && slot.unitNameInternal == unitName)
                     return slot.pilotNameInternal;
 
-            Debug.LogError($"[LiveryGUI] Failed to find pilot for mech {unitName} in the {squadComp.slots.Count} entries of squad-slots");
+            Dev.Log($"[LiveryGUI] Found no pilot for mech {unitName} in the {squadComp.slots.Count} entries of squad-slots");
             return null;
         }
 
@@ -642,6 +642,9 @@ namespace LiveryGUIMod {
         }
 
         static void DebugLogLiverySetDictionaries() {
+            if (!Dev.EXTRA_LOG_SPAM) {
+                return;
+            }
             try {
                 Debug.Log($"[LiveryGUI] Dev-Spam: Pilot livery sets ({_pilotLiveries.Count}):");
                 foreach (var kv in _pilotLiveries) {
@@ -656,7 +659,7 @@ namespace LiveryGUIMod {
                     }
                 }
 
-                Debug.Log($"[LiveryGUI] Mech original livery sets ({_mechOriginalLiveries.Count}):");
+                Debug.Log($"[LiveryGUI] Dev-Spam: Mech original livery sets ({_mechOriginalLiveries.Count}):");
                 foreach (var kv in _mechOriginalLiveries) {
                     int mechId = kv.Key;
                     var set = kv.Value;
