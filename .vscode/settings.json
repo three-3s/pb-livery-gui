@@ -1,11 +1,18 @@
 {
     "dotnet.preferCSharpExtension": true,
+    "search.exclude": {
+        "source/.vs/": true,
+    },
     "cSpell.words": [
         "Behaviour",
         "Entitas",
         "Hardpoint",
+        "hardpoints",
+        "Lerp",
         "Mathf",
         "mechs",
+        "nohardpoint",
+        "nosocket",
         "olist",
         "Overworld",
         "steamapps",

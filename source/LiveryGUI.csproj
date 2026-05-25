@@ -54,6 +54,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Phantom Brigade\PhantomBrigade_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Phantom Brigade\PhantomBrigade_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Phantom Brigade\PhantomBrigade_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
@@ -91,6 +95,8 @@
     <Compile Include="LiveryGUI_RightClick.cs" />
     <Compile Include="LiveryGUI_SnapshotDB.cs" />
     <Compile Include="LiveryGUI_UIToolsSpriteLookup.cs" />
+    <Compile Include="LiveryAssignmentSet.cs" />
+    <Compile Include="LiverySetsDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

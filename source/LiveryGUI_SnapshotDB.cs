@@ -1,26 +1,17 @@
-﻿using Entitas;
-using HarmonyLib;
-using PhantomBrigade;
-using PhantomBrigade.Data;
-using PhantomBrigade.Mods;
-using System;
+﻿using PhantomBrigade.Data;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace LiveryGUIMod
 {
     // database of snapshots of initial/last-saved-to-disk state for each livery
-    public class LiverySnapshotDB
-    {
+    public class LiverySnapshotDB {
         public static Dictionary<string, LiveryOriginalState> originalLiveries = new Dictionary<string, LiveryOriginalState>(); // key = livery's key
         public readonly static LiveryOriginalState defaultLivery = new LiveryOriginalState(false, new DataContainerEquipmentLivery()); // for null livery
 
         //==============================================================================
-        public class LiveryOriginalState
-        {
+        public class LiveryOriginalState {
             public bool ownedByLiveryGUI; // (as opposed to being built-in or provided by a basic liveries mod)
             public DataContainerEquipmentLivery onDiskDat; // (initial/unmodified, OR last-saved state. for 'revert' & 'is modified')
 
@@ -45,20 +36,17 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        public static DataContainerEquipmentLivery DeepCopyLiveryDat(DataContainerEquipmentLivery original)
-        {
+        public static DataContainerEquipmentLivery DeepCopyLiveryDat(DataContainerEquipmentLivery original) {
             return JsonUtility.FromJson<DataContainerEquipmentLivery>(JsonUtility.ToJson(original)); // (well. i guess it works.)
         }
 
         //==============================================================================
-        public static bool LiveryDatsMatch(DataContainerEquipmentLivery a, DataContainerEquipmentLivery b)
-        {
+        public static bool LiveryDatsMatch(DataContainerEquipmentLivery a, DataContainerEquipmentLivery b) {
             return (JsonUtility.ToJson(a) == JsonUtility.ToJson(b)); // (may as well commit to the bit.)
         }
 
         //==============================================================================
-        public static void AddLiveryDataSnapshot(string key, DataContainerEquipmentLivery liveryDat, bool liveryOwnedByLiveryGUI)
-        {
+        public static void AddLiveryDataSnapshot(string key, DataContainerEquipmentLivery liveryDat, bool liveryOwnedByLiveryGUI) {
             DoInitIfNecessary();
             if (string.IsNullOrEmpty(key) || liveryDat == null)
             {
@@ -76,8 +64,7 @@ namespace LiveryGUIMod
 
         //==============================================================================
         // Record info about the liveries that are initially present (the built-in ones, and ones provided by basic livery mods)
-        public static void SnapshotInitialLiveries()
-        {
+        public static void SnapshotInitialLiveries() {
             var liveryDict = DataMultiLinkerEquipmentLivery.data;
             if (liveryDict == null)
             {
@@ -106,8 +93,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        public static void AddOrUpdateSnapshot(string key, DataContainerEquipmentLivery liveryDat)
-        {
+        public static void AddOrUpdateSnapshot(string key, DataContainerEquipmentLivery liveryDat) {
             if (!originalLiveries.ContainsKey(key))
             {
                 AddLiveryDataSnapshot(key, liveryDat, true);
@@ -124,8 +110,7 @@ namespace LiveryGUIMod
         }
 
         //==============================================================================
-        public static bool IsCurrentLiveryModified()
-        {
+        public static bool IsCurrentLiveryModified() {
             string key = CIViewBaseLoadout.selectedUnitLivery;
 
             if (string.IsNullOrEmpty(key))
@@ -140,7 +125,9 @@ namespace LiveryGUIMod
 
             if (!originalLiveries.ContainsKey(key))
             {
-                Debug.LogWarning($"[LiveryGUI] BUG: IsCurrentLiveryModified(): originalLiveries DB doesn't contain key={key}");
+                if (key != LiverySetsDB.PILOT_BASE_PULSE_LIVERY) {
+                    Debug.LogWarning($"[LiveryGUI] BUG: IsCurrentLiveryModified(): originalLiveries DB doesn't contain key={key}");
+                }
                 return false;
             }
 
