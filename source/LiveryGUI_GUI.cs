@@ -59,6 +59,12 @@ namespace LiveryGUIMod {
         }
     }
 
+    public class PilotModePortraitVisibilityTicker : MonoBehaviour {
+        void Update() {
+            LiveryGUIMod.GUI.UpdatePilotModePortraitVisibility();
+        }
+    }
+
     public class GUI {
         public static GameObject paneGO = null;
         public static Dictionary<string, CIHelperSetting> sliderHelpers = null; // key = livery's key
@@ -66,9 +72,10 @@ namespace LiveryGUIMod {
         public static CIButton toggleLiveryGUIButton;
         public static CIButton pilotModeToggleButton;
         public static CIButton pilotModePrevButton;
-        public static CIButton pilotModeCurrentButton;
         public static CIButton pilotModeNextButton;
         public static CIButton pilotModeBaseToggleButton;
+        public static UILabel pilotModeNameLabel;
+        public static GameObject pilotModePortraitGO;
         public static CIButton resetLiveryButton;
         public static CIButton saveLiveryButton;
         public static CIButton cloneLiveryButton;
@@ -88,6 +95,7 @@ namespace LiveryGUIMod {
         static readonly string spriteNameStarOutline = "s_icon_l32_star_outline";
         static readonly string liverySlotLayerMarkerName = "LiveryGUI_LayerMarker";
         static readonly string pilotSymbolSpriteName = "s_icon_l32_pilot1";
+        static readonly string pilotModeLivePortraitViewId = "combatTarget";
         static readonly string mechLiverySlotMarkerSpriteName = "icon_mech2";
         static readonly string liverySlotChildMarkerName = "LiveryGUI_ChildMarker";
         static readonly string liverySlotHierarchyLineNamePrefix = "LiveryGUI_HierarchyLine";
@@ -110,9 +118,12 @@ namespace LiveryGUIMod {
         static string pilotModePilotId = null;
         static int pilotModePilotMechId = -99;
         static readonly List<string> pilotModePilotIds = new List<string>();
-        public static bool IsPBLiveryViewActive() { return CIViewBaseLoadout.ins != null && CIViewBaseLoadout.ins.isActiveAndEnabled && CIViewBaseLoadout.liveryMode; }
+        static bool pilotModeLivePortraitActive = false;
+        static string pilotModeLivePortraitPilotIdLast = null;
+        static readonly Dictionary<Animator, AnimatorUpdateMode> pilotModeLivePortraitAnimatorUpdateModes = new Dictionary<Animator, AnimatorUpdateMode>();
+        public static bool IsPBLiveryViewActive() { return CIViewBaseLoadout.ins != null && CIViewBaseLoadout.ins.IsEntered() && CIViewBaseLoadout.liveryMode; }
         public static bool IsModPaneActive() { return paneGO != null && paneGO.activeSelf; }
-        public static bool IsPilotModeActive() { return IsModPaneActive() && modPrevPilotModeActive; }
+        public static bool IsPilotModeActive() { return IsPBLiveryViewActive() && IsModPaneActive() && modPrevPilotModeActive; }
         public static bool IsPilotModeMechBaseVisible() { return pilotModeMechBaseVisible; }
         public static bool IsLiverySlotRecordingSuppressed() { return suppressLiverySlotRecording; }
 
@@ -141,7 +152,11 @@ namespace LiveryGUIMod {
             public static readonly Vector3 legendGroup2Item1 = cloneButton + 2f * posStep;
             public static readonly Vector3 legendGroup2Item2 = cloneButton + 2f * posStep + 1f * minimalPosStep;
 
-            public static readonly float pilotButtonsLeft = favoriteButton[0];
+            public static readonly float pilotPanelLeft = favoriteButton[0] - 23f;
+            public static readonly int pilotPortraitDim = 100;
+            public static readonly Vector3 pilotPrevButtonOffset = new Vector3(pilotPortraitDim + 4f, 0f, 0f);
+            public static readonly Vector3 pilotNextButtonOffset = pilotPrevButtonOffset + smallPosStep;
+            public static readonly Vector3 pilotNameOffset = pilotNextButtonOffset + smallPosStep + new Vector3(-3f, -35f, 0f);
         }
 
         //==============================================================================
@@ -149,6 +164,7 @@ namespace LiveryGUIMod {
             Initialize(__instance);
 
             UpdateWidgetPositioning(__instance);
+            UpdatePilotModeButtonVisuals();
             ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
             UpdateLiverySlotLayerMarkers(__instance);
         }
@@ -169,6 +185,7 @@ namespace LiveryGUIMod {
             paneGO = new GameObject("LiveryAdvancedPane");
             paneGO.transform.SetParent(uiRoot, false);
             paneGO.transform.localPosition = new Vector3(0f, 0f, 0f);
+            paneGO.AddComponent<PilotModePortraitVisibilityTicker>();
 
             ////////////////////////////////////////////////////////////////////////////////
             // slider-bars for customizing the current livery
@@ -407,18 +424,6 @@ namespace LiveryGUIMod {
             pilotModePrevButton.tooltipOffset = new Vector3(45f, 0f, 0f);
             pilotModePrevButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
 
-            GameObject pilotModeCurrentGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
-            pilotModeCurrentGO.name = "pilotModeCurrentGO";
-            var pilotCurrentIcon = pilotModeCurrentGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-            if (pilotCurrentIcon != null) { pilotCurrentIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotCurrentIcon.spriteName = pilotSymbolSpriteName; }
-            pilotModeCurrentButton = pilotModeCurrentGO.GetComponent<CIButton>();
-            pilotModeCurrentButton.callbackOnClick = null;
-            pilotModeCurrentButton.tooltipUsed = true;
-            pilotModeCurrentButton.AddTooltip("Pilot Being Edited", "Editing pilot \"[none]\". This is the pilot whose livery-set is being edited while in 'pilot livery-set editing mode'. (This does not assign the pilot to the mech. Assigning a pilot to a mech is done in mission briefing.)");
-            pilotModeCurrentButton.tooltipDelay = false;
-            pilotModeCurrentButton.tooltipOffset = new Vector3(45f, 0f, 0f);
-            pilotModeCurrentButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
-
             GameObject pilotModeNextGO = GameObject.Instantiate(toggleLiveryGUIButtonGO, paneGO.transform, false);
             pilotModeNextGO.name = "pilotModeNextGO";
             var pilotNextIcon = pilotModeNextGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
@@ -433,6 +438,8 @@ namespace LiveryGUIMod {
             pilotModeNextButton.tooltipDelay = false;
             pilotModeNextButton.tooltipOffset = new Vector3(45f, 0f, 0f);
             pilotModeNextButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
+
+            CreatePilotModeReadoutWidgets(helperPrefab.sharedLabelName);
 
             ////////////////////////////////////////////////////////////////////////////////
             // Livery GUI buttons: 'revert changes', 'clone livery', 'save livery to disk'
@@ -578,6 +585,31 @@ namespace LiveryGUIMod {
             // Livery GUI initial visibility
             paneGO.SetActive(false);
         }//Initialize()
+
+        //==============================================================================
+        static void CreatePilotModeReadoutWidgets(UILabel labelTemplate) {
+            if (labelTemplate != null)
+            {
+                GameObject labelGO = GameObject.Instantiate(labelTemplate.gameObject, paneGO.transform, false);
+                labelGO.name = "pilotModeNameLabelGO";
+                labelGO.transform.localScale = Vector3.one;
+                pilotModeNameLabel = labelGO.GetComponent<UILabel>();
+                pilotModeNameLabel.text = "[none]";
+                pilotModeNameLabel.fontSize += 10;
+                pilotModeNameLabel.width = 500;
+                pilotModeNameLabel.height = 60;
+                pilotModeNameLabel.depth = 1200;
+                pilotModeNameLabel.pivot = UIWidget.Pivot.Left;
+                pilotModeNameLabel.color = new Color(0.9f, 0.9f, 0.9f, 0.95f);
+                pilotModeNameLabel.overflowMethod = UILabel.Overflow.ShrinkContent;
+                pilotModeNameLabel.gameObject.SetActive(false);
+            }
+
+            pilotModePortraitGO = new GameObject("pilotModePortraitGO");
+            pilotModePortraitGO.transform.SetParent(paneGO.transform, false);
+            pilotModePortraitGO.transform.localScale = Vector3.one;
+            pilotModePortraitGO.SetActive(false);
+        }
 
         //==============================================================================
         static public void ReapplyLiverySet(int mechId) {
@@ -966,6 +998,127 @@ namespace LiveryGUIMod {
         }
 
         //==============================================================================
+        static void UpdatePilotModeReadout() {
+            bool pilotModeActive = IsPilotModeActive();
+            string pilotName = string.IsNullOrEmpty(pilotModePilotId) ? "[none]" : GetPilotDisplayName(pilotModePilotId);
+            if (pilotModeNameLabel != null)
+            {
+                pilotModeNameLabel.text = pilotName;
+                pilotModeNameLabel.gameObject.SetActive(pilotModeActive);
+            }
+        }
+
+        //==============================================================================
+        static Rect GetPilotModeLivePortraitRect() {
+            UIRoot root = CIViewBaseLoadout.ins.gameObject.GetComponentInParent<UIRoot>();
+            Vector2Int uiResolution = UIHelper.GetUIResolution(root, false);
+            Vector2 localSize = new Vector2(Positions.pilotPortraitDim, Positions.pilotPortraitDim);
+            Transform rootTransform = root.transform;
+            Vector3 center = rootTransform.InverseTransformPoint(pilotModePortraitGO.transform.position);
+            Vector3 right = rootTransform.InverseTransformPoint(pilotModePortraitGO.transform.TransformPoint(new Vector3(localSize.x * 0.5f, 0f, 0f)));
+            Vector3 top = rootTransform.InverseTransformPoint(pilotModePortraitGO.transform.TransformPoint(new Vector3(0f, localSize.y * 0.5f, 0f)));
+            float width = Mathf.Abs(right.x - center.x) * 2f;
+            float height = Mathf.Abs(top.y - center.y) * 2f;
+            float left = center.x - width * 0.5f;
+            float bottom = center.y - height * 0.5f;
+            float x = ((float)uiResolution.x * 0.5f + left) / (float)uiResolution.x;
+            float y = ((float)uiResolution.y * 0.5f + bottom) / (float)uiResolution.y;
+            return new Rect(x, y, width / (float)uiResolution.x, height / (float)uiResolution.y);
+        }
+
+        //==============================================================================
+        static void UpdatePilotModeLivePortrait() {
+            if (!IsPBLiveryViewActive() || pilotModePortraitGO == null)
+            {
+                DeactivatePilotModeLivePortrait();
+                return;
+            }
+
+            PersistentEntity pilot = IDUtility.GetPersistentEntity(pilotModePilotId);
+            if (pilot == null || !pilot.isPilotTag || !pilot.hasPilotAppearance)
+            {
+                DeactivatePilotModeLivePortrait();
+                return;
+            }
+
+            PilotView pilotView = PilotView.Get(pilotModeLivePortraitViewId);
+            if (pilotView == null || CIViewBaseEditor.ins == null)
+                return;
+
+            pilotView.SetActive(true);
+            pilotView.OutputDirectly(GetPilotModeLivePortraitRect(), CIViewBaseEditor.ins.cameraDepth);
+            if (!pilotModeLivePortraitActive || !string.Equals(pilotModeLivePortraitPilotIdLast, pilotModePilotId, StringComparison.Ordinal))
+                pilotView.OnPilotChanged(pilot, null, false, false, null, null, 1f);
+            SetPilotModeLivePortraitAnimatorUpdateMode(pilotView, AnimatorUpdateMode.UnscaledTime);
+
+            pilotModeLivePortraitActive = true;
+            pilotModeLivePortraitPilotIdLast = pilotModePilotId;
+        }
+
+        //==============================================================================
+        static void SetPilotModeLivePortraitAnimatorUpdateMode(PilotView pilotView, AnimatorUpdateMode updateMode) {
+            if (pilotView == null || pilotView.models == null)
+                return;
+
+            foreach (PilotViewBase.PilotModel model in pilotView.models)
+            {
+                Animator animator = model?.animator;
+                if (animator == null)
+                    continue;
+
+                if (!pilotModeLivePortraitAnimatorUpdateModes.ContainsKey(animator))
+                    pilotModeLivePortraitAnimatorUpdateModes[animator] = animator.updateMode;
+                animator.updateMode = updateMode;
+            }
+        }
+
+        //==============================================================================
+        static void RestorePilotModeLivePortraitAnimatorUpdateModes() {
+            foreach (KeyValuePair<Animator, AnimatorUpdateMode> item in pilotModeLivePortraitAnimatorUpdateModes)
+            {
+                if (item.Key != null)
+                    item.Key.updateMode = item.Value;
+            }
+            pilotModeLivePortraitAnimatorUpdateModes.Clear();
+        }
+
+        //==============================================================================
+        public static void DeactivatePilotModeLivePortrait(bool force = false) {
+            if (!pilotModeLivePortraitActive && !force)
+                return;
+
+            PilotView pilotView = PilotView.Get(pilotModeLivePortraitViewId);
+            RestorePilotModeLivePortraitAnimatorUpdateModes();
+            if (pilotView != null)
+            {
+                pilotView.OutputToRenderTexture();
+                pilotView.SetActive(false);
+            }
+
+            pilotModeLivePortraitActive = false;
+            pilotModeLivePortraitPilotIdLast = null;
+        }
+
+        //==============================================================================
+        public static void UpdatePilotModePortraitVisibility() {
+            bool pilotModeActive = IsPilotModeActive();
+            if (!pilotModeActive)
+            {
+                if (pilotModeNameLabel != null)
+                    pilotModeNameLabel.gameObject.SetActive(false);
+                if (pilotModePortraitGO != null)
+                    pilotModePortraitGO.SetActive(false);
+                DeactivatePilotModeLivePortrait();
+                return;
+            }
+
+            UpdatePilotModeReadout();
+            if (pilotModePortraitGO != null)
+                pilotModePortraitGO.SetActive(false);
+            UpdatePilotModeLivePortrait();
+        }
+
+        //==============================================================================
         static void OnLiveryNameInput() {
             // It would be possible to do something like (dangerous?) rename the livery, including changing its dictionary key.
             // This could leave dangling references.
@@ -990,11 +1143,11 @@ namespace LiveryGUIMod {
             _ = activeHeight;
 
             // calculate positions
-            const float yStep = 40f;
+            const float yStep = 38f;
             float[] x = {
                     613f,
                     (Screen.width * pixelSizeAdj - 334f)
-                    // wWen adjusting this "pixel offset from edge", eg if I measure 271px that I want to move something,
+                    // When adjusting this "pixel offset from edge", eg if I measure 271px that I want to move something,
                     // manually multiply that number by whatever pixelSizeAdj. So if I want to move 271px left, I take
                     // -271 and multiply by my current pixelSizeAdj (which is related to UI-scale factor from Display
                     // options menu). So the actual number to add here is -271 realPx * 0.75 codePx/realPx = -203 codePx.
@@ -1006,58 +1159,58 @@ namespace LiveryGUIMod {
                     -yStep *  1.0f,
                     -yStep *  2.0f,
                     -yStep *  3.0f,
-                    -yStep *  5.0f, // +1.0 gap
-                    -yStep *  6.0f,
-                    -yStep *  7.0f,
-                    -yStep *  8.0f,
-                    -yStep * 10.0f, // +1.0 gap
-                    -yStep * 11.0f,
-                    -yStep * 12.0f,
-                    -yStep * 13.0f,
-                    -yStep * 15.0f, // +1.0 gap
-                    -yStep * 16.0f,
-                    -yStep * 17.0f,
-                    -yStep * 18.0f,
+                    -yStep *  4.7f, // +0.7 gap
+                    -yStep *  5.7f,
+                    -yStep *  6.7f,
+                    -yStep *  7.7f,
+                    -yStep *  9.4f, // +0.7 gap
+                    -yStep * 10.4f,
+                    -yStep * 11.4f,
+                    -yStep * 12.4f,
+                    -yStep * 14.1f, // +0.7 gap
+                    -yStep * 15.1f,
+                    -yStep * 16.1f,
+                    -yStep * 17.1f,
                 };
-            sliderHelpers["PrimaryR"].gameObject.transform.localPosition = new Vector3(x[0], y[0]);
-            sliderHelpers["PrimaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[1]);
-            sliderHelpers["PrimaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[2]);
-            sliderHelpers["PrimaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[3]);
-            sliderHelpers["SecondaryR"].gameObject.transform.localPosition = new Vector3(x[0], y[4]);
-            sliderHelpers["SecondaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[5]);
-            sliderHelpers["SecondaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[6]);
-            sliderHelpers["SecondaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[7]);
-            sliderHelpers["TertiaryR"].gameObject.transform.localPosition = new Vector3(x[0], y[8]);
-            sliderHelpers["TertiaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[9]);
-            sliderHelpers["TertiaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[10]);
-            sliderHelpers["TertiaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[11]);
-            sliderHelpers["ContentX"].gameObject.transform.localPosition = new Vector3(x[0], y[12]);
-            sliderHelpers["ContentY"].gameObject.transform.localPosition = new Vector3(x[0], y[13]);
-            sliderHelpers["ContentZ"].gameObject.transform.localPosition = new Vector3(x[0], y[14]);
-            sliderHelpers["ContentW"].gameObject.transform.localPosition = new Vector3(x[0], y[15]);
-            sliderHelpers["PrimaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[0]);
-            sliderHelpers["PrimaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[1]);
-            sliderHelpers["PrimaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[2]);
-            sliderHelpers["PrimaryW"].gameObject.transform.localPosition = new Vector3(x[1], y[3]);
-            sliderHelpers["SecondaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[4]);
-            sliderHelpers["SecondaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[5]);
-            sliderHelpers["SecondaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[6]);
-            sliderHelpers["SecondaryW"].gameObject.transform.localPosition = new Vector3(x[1], y[7]);
-            sliderHelpers["TertiaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[8]);
-            sliderHelpers["TertiaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[9]);
-            sliderHelpers["TertiaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[10]);
-            sliderHelpers["TertiaryW"].gameObject.transform.localPosition = new Vector3(x[1], y[11]);
-            sliderHelpers["EffectX"].gameObject.transform.localPosition = new Vector3(x[1], y[12]);
-            sliderHelpers["EffectY"].gameObject.transform.localPosition = new Vector3(x[1], y[13]);
-            sliderHelpers["EffectZ"].gameObject.transform.localPosition = new Vector3(x[1], y[14]);
-            sliderHelpers["EffectW"].gameObject.transform.localPosition = new Vector3(x[1], y[15]);
+            sliderHelpers["PrimaryR"  ].gameObject.transform.localPosition = new Vector3(x[0], y[ 0]);
+            sliderHelpers["PrimaryG"  ].gameObject.transform.localPosition = new Vector3(x[0], y[ 1]);
+            sliderHelpers["PrimaryB"  ].gameObject.transform.localPosition = new Vector3(x[0], y[ 2]);
+            sliderHelpers["PrimaryA"  ].gameObject.transform.localPosition = new Vector3(x[0], y[ 3]);
+            sliderHelpers["SecondaryR"].gameObject.transform.localPosition = new Vector3(x[0], y[ 4]);
+            sliderHelpers["SecondaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[ 5]);
+            sliderHelpers["SecondaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[ 6]);
+            sliderHelpers["SecondaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[ 7]);
+            sliderHelpers["TertiaryR" ].gameObject.transform.localPosition = new Vector3(x[0], y[ 8]);
+            sliderHelpers["TertiaryG" ].gameObject.transform.localPosition = new Vector3(x[0], y[ 9]);
+            sliderHelpers["TertiaryB" ].gameObject.transform.localPosition = new Vector3(x[0], y[10]);
+            sliderHelpers["TertiaryA" ].gameObject.transform.localPosition = new Vector3(x[0], y[11]);
+            sliderHelpers["ContentX"  ].gameObject.transform.localPosition = new Vector3(x[0], y[12]);
+            sliderHelpers["ContentY"  ].gameObject.transform.localPosition = new Vector3(x[0], y[13]);
+            sliderHelpers["ContentZ"  ].gameObject.transform.localPosition = new Vector3(x[0], y[14]);
+            sliderHelpers["ContentW"  ].gameObject.transform.localPosition = new Vector3(x[0], y[15]);
+            sliderHelpers["PrimaryX"  ].gameObject.transform.localPosition = new Vector3(x[1], y[ 0]);
+            sliderHelpers["PrimaryY"  ].gameObject.transform.localPosition = new Vector3(x[1], y[ 1]);
+            sliderHelpers["PrimaryZ"  ].gameObject.transform.localPosition = new Vector3(x[1], y[ 2]);
+            sliderHelpers["PrimaryW"  ].gameObject.transform.localPosition = new Vector3(x[1], y[ 3]);
+            sliderHelpers["SecondaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[ 4]);
+            sliderHelpers["SecondaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[ 5]);
+            sliderHelpers["SecondaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[ 6]);
+            sliderHelpers["SecondaryW"].gameObject.transform.localPosition = new Vector3(x[1], y[ 7]);
+            sliderHelpers["TertiaryX" ].gameObject.transform.localPosition = new Vector3(x[1], y[ 8]);
+            sliderHelpers["TertiaryY" ].gameObject.transform.localPosition = new Vector3(x[1], y[ 9]);
+            sliderHelpers["TertiaryZ" ].gameObject.transform.localPosition = new Vector3(x[1], y[10]);
+            sliderHelpers["TertiaryW" ].gameObject.transform.localPosition = new Vector3(x[1], y[11]);
+            sliderHelpers["EffectX"   ].gameObject.transform.localPosition = new Vector3(x[1], y[12]);
+            sliderHelpers["EffectY"   ].gameObject.transform.localPosition = new Vector3(x[1], y[13]);
+            sliderHelpers["EffectZ"   ].gameObject.transform.localPosition = new Vector3(x[1], y[14]);
+            sliderHelpers["EffectW"   ].gameObject.transform.localPosition = new Vector3(x[1], y[15]);
 
-            float pilotCyclerCenterX = Positions.pilotButtonsLeft;
             float pilotCyclerBottomY = -(Screen.height * pixelSizeAdj) + Positions.pxGapAbovePaneGO + 66f;
-            Vector3 pilotCyclerCenter = new Vector3(pilotCyclerCenterX, pilotCyclerBottomY, 0f);
-            pilotModePrevButton.gameObject.transform.localPosition    = pilotCyclerCenter;
-            pilotModeCurrentButton.gameObject.transform.localPosition = pilotCyclerCenter + Positions.smallPosStep;
-            pilotModeNextButton.gameObject.transform.localPosition    = pilotCyclerCenter + 2 * Positions.smallPosStep;
+            Vector3 pilotCyclerPos = new Vector3(Positions.pilotPanelLeft, pilotCyclerBottomY, 0f);
+            pilotModePortraitGO.transform.localPosition = pilotCyclerPos + new Vector3(Positions.pilotPortraitDim/2f, -12f);
+            pilotModePrevButton.gameObject.transform.localPosition = pilotCyclerPos + Positions.pilotPrevButtonOffset;
+            pilotModeNextButton.gameObject.transform.localPosition = pilotCyclerPos + Positions.pilotNextButtonOffset;
+            pilotModeNameLabel.gameObject.transform.localPosition  = pilotCyclerPos + Positions.pilotNameOffset;
 
             liveryNameInput.gameObject.transform.localPosition = paneGO.activeSelf ? Positions.liveryName : Positions.liveryName_hiddenOffscreen;
         }
@@ -1240,38 +1393,38 @@ namespace LiveryGUIMod {
 
             if (livery != null)
             {
-                sliderHelpers["PrimaryR"].sliderBar.valueRaw = livery.colorPrimary.r;
-                sliderHelpers["PrimaryG"].sliderBar.valueRaw = livery.colorPrimary.g;
-                sliderHelpers["PrimaryB"].sliderBar.valueRaw = livery.colorPrimary.b;
-                sliderHelpers["PrimaryA"].sliderBar.valueRaw = livery.colorPrimary.a;
+                sliderHelpers["PrimaryR"  ].sliderBar.valueRaw = livery.colorPrimary.r;
+                sliderHelpers["PrimaryG"  ].sliderBar.valueRaw = livery.colorPrimary.g;
+                sliderHelpers["PrimaryB"  ].sliderBar.valueRaw = livery.colorPrimary.b;
+                sliderHelpers["PrimaryA"  ].sliderBar.valueRaw = livery.colorPrimary.a;
                 sliderHelpers["SecondaryR"].sliderBar.valueRaw = livery.colorSecondary.r;
                 sliderHelpers["SecondaryG"].sliderBar.valueRaw = livery.colorSecondary.g;
                 sliderHelpers["SecondaryB"].sliderBar.valueRaw = livery.colorSecondary.b;
                 sliderHelpers["SecondaryA"].sliderBar.valueRaw = livery.colorSecondary.a;
-                sliderHelpers["TertiaryR"].sliderBar.valueRaw = livery.colorTertiary.r;
-                sliderHelpers["TertiaryG"].sliderBar.valueRaw = livery.colorTertiary.g;
-                sliderHelpers["TertiaryB"].sliderBar.valueRaw = livery.colorTertiary.b;
-                sliderHelpers["TertiaryA"].sliderBar.valueRaw = livery.colorTertiary.a;
-                sliderHelpers["ContentX"].sliderBar.valueRaw = livery.contentParameters.x;
-                sliderHelpers["ContentY"].sliderBar.valueRaw = livery.contentParameters.y;
-                sliderHelpers["ContentZ"].sliderBar.valueRaw = livery.contentParameters.z;
+                sliderHelpers["TertiaryR" ].sliderBar.valueRaw = livery.colorTertiary.r;
+                sliderHelpers["TertiaryG" ].sliderBar.valueRaw = livery.colorTertiary.g;
+                sliderHelpers["TertiaryB" ].sliderBar.valueRaw = livery.colorTertiary.b;
+                sliderHelpers["TertiaryA" ].sliderBar.valueRaw = livery.colorTertiary.a;
+                sliderHelpers["ContentX"  ].sliderBar.valueRaw = livery.contentParameters.x;
+                sliderHelpers["ContentY"  ].sliderBar.valueRaw = livery.contentParameters.y;
+                sliderHelpers["ContentZ"  ].sliderBar.valueRaw = livery.contentParameters.z;
                 //sliderHelpers["ContentW"].sliderBar.valueRaw = livery.contentParameters.w;
-                sliderHelpers["PrimaryX"].sliderBar.valueRaw = livery.materialPrimary.x;
-                sliderHelpers["PrimaryY"].sliderBar.valueRaw = livery.materialPrimary.y;
-                sliderHelpers["PrimaryZ"].sliderBar.valueRaw = livery.materialPrimary.z;
-                sliderHelpers["PrimaryW"].sliderBar.valueRaw = livery.materialPrimary.w;
+                sliderHelpers["PrimaryX"  ].sliderBar.valueRaw = livery.materialPrimary.x;
+                sliderHelpers["PrimaryY"  ].sliderBar.valueRaw = livery.materialPrimary.y;
+                sliderHelpers["PrimaryZ"  ].sliderBar.valueRaw = livery.materialPrimary.z;
+                sliderHelpers["PrimaryW"  ].sliderBar.valueRaw = livery.materialPrimary.w;
                 sliderHelpers["SecondaryX"].sliderBar.valueRaw = livery.materialSecondary.x;
                 sliderHelpers["SecondaryY"].sliderBar.valueRaw = livery.materialSecondary.y;
                 sliderHelpers["SecondaryZ"].sliderBar.valueRaw = livery.materialSecondary.z;
                 sliderHelpers["SecondaryW"].sliderBar.valueRaw = livery.materialSecondary.w;
-                sliderHelpers["TertiaryX"].sliderBar.valueRaw = livery.materialTertiary.x;
-                sliderHelpers["TertiaryY"].sliderBar.valueRaw = livery.materialTertiary.y;
-                sliderHelpers["TertiaryZ"].sliderBar.valueRaw = livery.materialTertiary.z;
-                sliderHelpers["TertiaryW"].sliderBar.valueRaw = livery.materialTertiary.w;
-                sliderHelpers["EffectX"].sliderBar.valueRaw = livery.effect.x;
-                sliderHelpers["EffectY"].sliderBar.valueRaw = livery.effect.y;
-                sliderHelpers["EffectZ"].sliderBar.valueRaw = livery.effect.z;
-                sliderHelpers["EffectW"].sliderBar.valueRaw = livery.effect.w;
+                sliderHelpers["TertiaryX" ].sliderBar.valueRaw = livery.materialTertiary.x;
+                sliderHelpers["TertiaryY" ].sliderBar.valueRaw = livery.materialTertiary.y;
+                sliderHelpers["TertiaryZ" ].sliderBar.valueRaw = livery.materialTertiary.z;
+                sliderHelpers["TertiaryW" ].sliderBar.valueRaw = livery.materialTertiary.w;
+                sliderHelpers["EffectX"   ].sliderBar.valueRaw = livery.effect.x;
+                sliderHelpers["EffectY"   ].sliderBar.valueRaw = livery.effect.y;
+                sliderHelpers["EffectZ"   ].sliderBar.valueRaw = livery.effect.z;
+                sliderHelpers["EffectW"   ].sliderBar.valueRaw = livery.effect.w;
 
                 ContentW.SetLevel(livery.contentParameters.w);
                 sliderHelpers["ContentW"].levelLabel.text = ContentW.GetLevelName();
@@ -1347,14 +1500,15 @@ namespace LiveryGUIMod {
             if (pilotModeToggleButton == null)
                 return;
 
+            bool pilotModeActive = IsPilotModeActive();
+
             var go = pilotModeToggleButton.gameObject;
             var pilotFillIdle = go.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
             var pilotIcon = go.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
 
-            if (pilotFillIdle != null) { pilotFillIdle.color = IsPilotModeActive() ? activeButtonFGColor : grayedOutButtonFGColor; } //todo.pilot-mode: fix color, or change to a toggle-slider or something. maybe two immediately-adjacent buttons, and shrink+gray the inactive one? click on either is a toggle of collective state?
+            if (pilotFillIdle != null) { pilotFillIdle.color = pilotModeActive ? activeButtonFGColor : grayedOutButtonFGColor; } //todo.pilot-mode: fix color, or change to a toggle-slider or something. maybe two immediately-adjacent buttons, and shrink+gray the inactive one? click on either is a toggle of collective state?
             if (pilotIcon != null) { pilotIcon.color = new Color(0.9f, 0.9f, 0.9f, 0.8f); pilotIcon.spriteName = pilotSymbolSpriteName; }
 
-            bool pilotModeActive = IsPilotModeActive();
             bool canCyclePilots = pilotModePilotIds.Count > 1;
             if (pilotModePrevButton != null)
             {
@@ -1365,17 +1519,6 @@ namespace LiveryGUIMod {
             {
                 pilotModeNextButton.gameObject.SetActive(pilotModeActive);
                 pilotModeNextButton.available = canCyclePilots;
-            }
-            if (pilotModeCurrentButton != null)
-            {
-                pilotModeCurrentButton.gameObject.SetActive(pilotModeActive);
-                pilotModeCurrentButton.available = true;
-                pilotModeCurrentButton.tooltipContent = $"Editing pilot \"{(string.IsNullOrEmpty(pilotModePilotId) ? "[none]" : GetPilotDisplayName(pilotModePilotId))}\". This is the pilot whose livery-set is being edited while in 'pilot livery-set editing mode'. (This does not assign the pilot to the mech. Assigning a pilot to a mech is done in mission briefing.)";
-
-                var currentIcon = pilotModeCurrentButton.gameObject.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
-                var currentFillIdle = pilotModeCurrentButton.gameObject.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
-                if (currentIcon     != null) currentIcon.color     = activeButtonFGColor;
-                if (currentFillIdle != null) currentFillIdle.color = activeButtonBGColor;
             }
             if (pilotModeBaseToggleButton != null)
             {
@@ -1389,6 +1532,7 @@ namespace LiveryGUIMod {
                 if (baseFillIdle != null)
                     baseFillIdle.color = pilotModeMechBaseVisible ? activeButtonBGColor : grayedOutButtonBGColor;
             }
+            UpdatePilotModePortraitVisibility();
         }
 
         //==============================================================================
@@ -1396,38 +1540,38 @@ namespace LiveryGUIMod {
             var livery = GetSelectedLivery();
             if (livery == null)
                 return;
-            livery.colorPrimary.r = sliderHelpers["PrimaryR"].sliderBar.valueRaw;
-            livery.colorPrimary.g = sliderHelpers["PrimaryG"].sliderBar.valueRaw;
-            livery.colorPrimary.b = sliderHelpers["PrimaryB"].sliderBar.valueRaw;
-            livery.colorPrimary.a = sliderHelpers["PrimaryA"].sliderBar.valueRaw;
-            livery.colorSecondary.r = sliderHelpers["SecondaryR"].sliderBar.valueRaw;
-            livery.colorSecondary.g = sliderHelpers["SecondaryG"].sliderBar.valueRaw;
-            livery.colorSecondary.b = sliderHelpers["SecondaryB"].sliderBar.valueRaw;
-            livery.colorSecondary.a = sliderHelpers["SecondaryA"].sliderBar.valueRaw;
-            livery.colorTertiary.r = sliderHelpers["TertiaryR"].sliderBar.valueRaw;
-            livery.colorTertiary.g = sliderHelpers["TertiaryG"].sliderBar.valueRaw;
-            livery.colorTertiary.b = sliderHelpers["TertiaryB"].sliderBar.valueRaw;
-            livery.colorTertiary.a = sliderHelpers["TertiaryA"].sliderBar.valueRaw;
-            livery.contentParameters.x = sliderHelpers["ContentX"].sliderBar.valueRaw;
-            livery.contentParameters.y = sliderHelpers["ContentY"].sliderBar.valueRaw;
-            livery.contentParameters.z = sliderHelpers["ContentZ"].sliderBar.valueRaw;
-            //livery.contentParameters.w = sliderHelpers["ContentW"].sliderBar.valueRaw;
-            livery.materialPrimary.x = sliderHelpers["PrimaryX"].sliderBar.valueRaw;
-            livery.materialPrimary.y = sliderHelpers["PrimaryY"].sliderBar.valueRaw;
-            livery.materialPrimary.z = sliderHelpers["PrimaryZ"].sliderBar.valueRaw;
-            livery.materialPrimary.w = sliderHelpers["PrimaryW"].sliderBar.valueRaw;
-            livery.materialSecondary.x = sliderHelpers["SecondaryX"].sliderBar.valueRaw;
-            livery.materialSecondary.y = sliderHelpers["SecondaryY"].sliderBar.valueRaw;
-            livery.materialSecondary.z = sliderHelpers["SecondaryZ"].sliderBar.valueRaw;
-            livery.materialSecondary.w = sliderHelpers["SecondaryW"].sliderBar.valueRaw;
-            livery.materialTertiary.x = sliderHelpers["TertiaryX"].sliderBar.valueRaw;
-            livery.materialTertiary.y = sliderHelpers["TertiaryY"].sliderBar.valueRaw;
-            livery.materialTertiary.z = sliderHelpers["TertiaryZ"].sliderBar.valueRaw;
-            livery.materialTertiary.w = sliderHelpers["TertiaryW"].sliderBar.valueRaw;
-            livery.effect.x = sliderHelpers["EffectX"].sliderBar.valueRaw;
-            livery.effect.y = sliderHelpers["EffectY"].sliderBar.valueRaw;
-            livery.effect.z = sliderHelpers["EffectZ"].sliderBar.valueRaw;
-            livery.effect.w = sliderHelpers["EffectW"].sliderBar.valueRaw;
+            livery.colorPrimary.r        = sliderHelpers["PrimaryR"  ].sliderBar.valueRaw;
+            livery.colorPrimary.g        = sliderHelpers["PrimaryG"  ].sliderBar.valueRaw;
+            livery.colorPrimary.b        = sliderHelpers["PrimaryB"  ].sliderBar.valueRaw;
+            livery.colorPrimary.a        = sliderHelpers["PrimaryA"  ].sliderBar.valueRaw;
+            livery.colorSecondary.r      = sliderHelpers["SecondaryR"].sliderBar.valueRaw;
+            livery.colorSecondary.g      = sliderHelpers["SecondaryG"].sliderBar.valueRaw;
+            livery.colorSecondary.b      = sliderHelpers["SecondaryB"].sliderBar.valueRaw;
+            livery.colorSecondary.a      = sliderHelpers["SecondaryA"].sliderBar.valueRaw;
+            livery.colorTertiary.r       = sliderHelpers["TertiaryR" ].sliderBar.valueRaw;
+            livery.colorTertiary.g       = sliderHelpers["TertiaryG" ].sliderBar.valueRaw;
+            livery.colorTertiary.b       = sliderHelpers["TertiaryB" ].sliderBar.valueRaw;
+            livery.colorTertiary.a       = sliderHelpers["TertiaryA" ].sliderBar.valueRaw;
+            livery.contentParameters.x   = sliderHelpers["ContentX"  ].sliderBar.valueRaw;
+            livery.contentParameters.y   = sliderHelpers["ContentY"  ].sliderBar.valueRaw;
+            livery.contentParameters.z   = sliderHelpers["ContentZ"  ].sliderBar.valueRaw;
+            //livery.contentParameters.w = sliderHelpers["ContentW"  ].sliderBar.valueRaw;
+            livery.materialPrimary.x     = sliderHelpers["PrimaryX"  ].sliderBar.valueRaw;
+            livery.materialPrimary.y     = sliderHelpers["PrimaryY"  ].sliderBar.valueRaw;
+            livery.materialPrimary.z     = sliderHelpers["PrimaryZ"  ].sliderBar.valueRaw;
+            livery.materialPrimary.w     = sliderHelpers["PrimaryW"  ].sliderBar.valueRaw;
+            livery.materialSecondary.x   = sliderHelpers["SecondaryX"].sliderBar.valueRaw;
+            livery.materialSecondary.y   = sliderHelpers["SecondaryY"].sliderBar.valueRaw;
+            livery.materialSecondary.z   = sliderHelpers["SecondaryZ"].sliderBar.valueRaw;
+            livery.materialSecondary.w   = sliderHelpers["SecondaryW"].sliderBar.valueRaw;
+            livery.materialTertiary.x    = sliderHelpers["TertiaryX" ].sliderBar.valueRaw;
+            livery.materialTertiary.y    = sliderHelpers["TertiaryY" ].sliderBar.valueRaw;
+            livery.materialTertiary.z    = sliderHelpers["TertiaryZ" ].sliderBar.valueRaw;
+            livery.materialTertiary.w    = sliderHelpers["TertiaryW" ].sliderBar.valueRaw;
+            livery.effect.x              = sliderHelpers["EffectX"   ].sliderBar.valueRaw;
+            livery.effect.y              = sliderHelpers["EffectY"   ].sliderBar.valueRaw;
+            livery.effect.z              = sliderHelpers["EffectZ"   ].sliderBar.valueRaw;
+            livery.effect.w              = sliderHelpers["EffectW"   ].sliderBar.valueRaw;
 
             livery.contentParameters.w = ContentW.GetLevelValue();
 

@@ -134,7 +134,6 @@ namespace LiveryGUIMod {
         public class OnLiveryAttachAttemptPatch {
             public static void Postfix(CIViewBaseLoadout __instance, object liveryKeyArg) {
                 _ = __instance;
-                _ = liveryKeyArg;
                 try {
                     int mechId = CIViewBaseLoadout.selectedUnitID;
                     if (GUI.IsLiverySlotRecordingSuppressed())
@@ -144,7 +143,9 @@ namespace LiveryGUIMod {
                     string hardpoint = CIViewBaseLoadout.selectedUnitHardpoint;
                     string partKey = LiverySetsDB.PartKey(socket, hardpoint);
                     // 3todo.later: need to test how the null-or-empty works, with respect to PB's use of some sort of 'default'/null pseudo-livery.
-                    string key = LiverySetsDB.NormalizeLiveryKey(LiverySetsDB.GetCurrentLiveryKeyForSlot(mechId, socket, hardpoint));
+                    string key = GUI.IsPilotModeActive()
+                        ? LiverySetsDB.NormalizeLiveryKey(liveryKeyArg as string)
+                        : LiverySetsDB.NormalizeLiveryKey(LiverySetsDB.GetCurrentLiveryKeyForSlot(mechId, socket, hardpoint));
                     Debug.Log($"[LiveryGUI] OnLiveryAttachAttempt: mech={mechId}, part={partKey}, livery={key}");
                     LiverySetsDB.OnLiverySlotAssigned(mechId, partKey, key);
                     GUI.ReapplyLiverySet(mechId);
@@ -250,9 +251,46 @@ namespace LiveryGUIMod {
             public static void Postfix() {
                 try {
                     GUI.ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
+                    GUI.DeactivatePilotModeLivePortrait(true);
                 }
                 catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error in LoadoutTryExitPatch: {ex}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CIViewBasePilots), MethodType.Normal), HarmonyPatch("TryEntry")]
+        public class BasePilotsTryEntryPatch {
+            public static void Prefix() {
+                try {
+                    GUI.DeactivatePilotModeLivePortrait(true);
+                }
+                catch (Exception ex) {
+                    Debug.LogError($"[LiveryGUI] Error in BasePilotsTryEntryPatch: {ex}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CIViewBaseBriefingV2), MethodType.Normal), HarmonyPatch("TryEntry")]
+        public class BriefingTryEntryPatch {
+            public static void Prefix() {
+                try {
+                    GUI.DeactivatePilotModeLivePortrait(true);
+                }
+                catch (Exception ex) {
+                    Debug.LogError($"[LiveryGUI] Error in BriefingTryEntryPatch: {ex}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CIViewBaseBriefingV2), MethodType.Normal), HarmonyPatch("ConfirmCombat")]
+        public class BriefingConfirmCombatPatch {
+            public static void Prefix() {
+                try {
+                    GUI.DeactivatePilotModeLivePortrait(true);
+                }
+                catch (Exception ex) {
+                    Debug.LogError($"[LiveryGUI] Error in BriefingConfirmCombatPatch: {ex}");
                 }
             }
         }
