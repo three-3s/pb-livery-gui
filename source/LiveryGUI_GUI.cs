@@ -3,7 +3,6 @@ using PhantomBrigade;
 using PhantomBrigade.Data;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -329,30 +328,14 @@ namespace LiveryGUIMod {
             toggleLiveryGUIButton.tooltipPivot = UIWidget.Pivot.TopLeft;
             toggleLiveryGUIButton.tooltipOffset = new Vector3(44f, -62f, 0f);
             toggleLiveryGUIButton.callbackOnClick = new UICallback(() => {
-                bool newState = !paneGO.activeSelf;
-                paneGO.SetActive(newState);
-
-                // first time wasn't updating the text-input-field with the livery-name. i don't know why.
-                // INVOKE ALL THE REFRESH. MULTIPLY. STILL DOESN'T WORK FIRST TIME. ONLY SECOND TIME. ONLY SECOND TIME.
-                string origLiveryKey = CIViewBaseLoadout.selectedUnitLivery;
-                suppressLiverySlotRecording = true;
-                if (origLiveryKey == null && DataMultiLinkerEquipmentLivery.data.Count > 0)
-                    SelectLivery(DataMultiLinkerEquipmentLivery.data.First().Key);
-                else
-                    SelectLivery(null);
-                SelectLivery(origLiveryKey);
-                suppressLiverySlotRecording = false;
-                liveryNameInput.ForceSelection(true);
-                liveryNameInput.ForceSelection(false);
-                liveryNameInput.label.MarkAsChanged();
-                RefreshSphereAndMechPreviews();
-                UpdateWidgetPositioning(__instance);
-                ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
-                RefreshSphereAndMechPreviews();
-                UpdatePilotModeButtonVisuals();
-                ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
-
-                // todo: some of this refresh-spam seems to be causing the audio to play multiple times (ie louder). have a good enough workaround for the text-input field now, ie resolved elsewhere. clean this up.
+                paneGO.SetActive(!paneGO.activeSelf);
+                if (CIViewBaseLoadout.selectedUnitID >= 0)
+                    ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
+                else {
+                    UpdateWidgetPositioning(__instance);
+                    ResetLiveryGUIWidgetsToMatchLivery(GetSelectedLivery());
+                    UpdatePilotModeButtonVisuals();
+                }
             });
 
             toggleLiveryGUIButtonGO.SetActive(true);
@@ -483,13 +466,13 @@ namespace LiveryGUIMod {
             liveryNameInputGO.transform.localScale = Vector3.one;
 
             liveryNameInput = liveryNameInputGO.GetComponent<UIInput>();
+            ConfigureLiveryNameInput(liveryNameInputGO);
             liveryNameInput.onChange = new List<EventDelegate>() { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
             liveryNameInput.onReturnKey = UIInput.OnReturnKey.Submit;
             liveryNameInput.onSubmit = new List<EventDelegate> { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
-            liveryNameInput.label.text = "Livery Name Goes Here";
-            liveryNameInput.label.ProcessText();
+            liveryNameInput.validation = UIInput.Validation.None;
             liveryNameInput.characterLimit += 10;
-            liveryNameInput.defaultText = "default?"; // (ends up unused?)
+            liveryNameInput.defaultText = "Livery Name";
 
             liveryNameInputGO.SetActive(true);
 
@@ -560,6 +543,31 @@ namespace LiveryGUIMod {
             // Livery GUI initial visibility
             paneGO.SetActive(false);
         }//Initialize()
+
+        //==============================================================================
+        static void ConfigureLiveryNameInput(GameObject inputGO) {
+            if (liveryNameInput == null || inputGO == null)
+                return;
+
+            UILabel[] labels = inputGO.GetComponentsInChildren<UILabel>(true);
+            foreach (UILabel label in labels) {
+                if (label == null)
+                    continue;
+
+                label.modifier = UILabel.Modifier.None;
+                if (label == liveryNameInput.label && string.Equals(label.text, "Name", StringComparison.OrdinalIgnoreCase))
+                    label.text = "Livery Name";
+                if (label != liveryNameInput.label && string.Equals(label.text, "Name", StringComparison.OrdinalIgnoreCase)) {
+                    label.text = "Livery Name";
+                    label.MarkAsChanged();
+                }
+            }
+
+            if (liveryNameInput.label != null) {
+                liveryNameInput.label.modifier = UILabel.Modifier.None;
+                liveryNameInput.label.MarkAsChanged();
+            }
+        }
 
         //==============================================================================
         static void CreatePilotModeReadoutWidgets(UILabel labelTemplate) {
