@@ -12,7 +12,7 @@ Basic usage
 [*] Select a Mech, then open the Livery selection page.
 [*] Click the new “Sliders” button to toggle the livery editor UI.
 [*] Select an existing livery to use as a starting point.
-[*] Enter a new name, then click the Clone button (the 2×2 grid with a "+" icon).
+[*] Enter a new name if you want to create a new editable copy.
 [*] Adjust colors and material settings using the sliders.
 [*] Click Save to store the livery.
 [*] The livery is ready to use.

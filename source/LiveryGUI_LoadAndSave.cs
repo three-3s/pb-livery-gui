@@ -72,8 +72,8 @@ namespace LiveryGUIMod {
         //==============================================================================
         public static void SaveLiveryToFile(string key, DataContainerEquipmentLivery liveryDat) {
             if (LiverySnapshotDB.originalLiveries.ContainsKey(key) && !LiverySnapshotDB.originalLiveries[key].ownedByLiveryGUI) {
-                Debug.LogWarning($"[LiveryGUI] USAGE: Refusing to save to this livery key/name because LiveryGUI does not own that livery. You need to clone the livery to a new key/name. key={key}");
-                CIViewOverworldLog.AddMessage($"No. LiveryGUI does not own the livery with that Name. [sp=s_icon_l32_cancel]");
+                Debug.LogWarning($"[LiveryGUI] USAGE: Refusing to save to this livery key/name because LiveryGUI does not own that livery. Save it with a new key/name first. key={key}");
+                CIViewOverworldLog.AddMessage($"No. Change the livery Name. LiveryGUI does not own the current Name. [sp=s_icon_l32_cancel]");
                 return;
             }
 
