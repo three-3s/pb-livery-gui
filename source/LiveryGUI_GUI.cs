@@ -88,7 +88,7 @@ namespace LiveryGUIMod {
         static readonly Color activeRedButtonFGColor = new Color(1f, 0.38f, 0.38f, 1f);
         static readonly Color activeRedButtonBGColor = new Color(0.61f, 0.22f, 0.22f, 1f);
         static readonly Color pilotLiverySlotMarkerColor = new Color(0.32f, 0.58f, 1f, 0.95f);
-        static readonly Color mechLiverySlotMarkerColor = new Color(0.45f, 0.45f, 0.45f, 0.8f);
+        static readonly Color mechLiverySlotMarkerColor = new Color(0.3f, 0.3f, 0.3f, 0.8f);
         static SliderRightClickHandler sliderRightClickHandler = null;
 
         static readonly string spriteNameStarFilled = "s_icon_l32_star_filled";
@@ -107,6 +107,7 @@ namespace LiveryGUIMod {
         static readonly string mechLiverySlotMarkerTooltipHeader = "Mech base livery";
         static readonly string mechLiverySlotMarkerTooltipContent = "No pilot livery has been assigned to this slot. The mech's own base livery will control this slot. Assigning a livery to this slot will assign the livery to the pilot's livery-set.";
         static readonly Color liverySlotChildMarkerColor = new Color(0.45f, 0.45f, 0.45f, 0.95f);
+        static readonly Color liverySlotChildMarkerAssignedColor = new Color(1f, 1f, 1f, 1f);
         static readonly Color liverySlotHierarchyLineColor = new Color(0.7f, 0.7f, 0.7f, 0.75f);
         static readonly FieldInfo liveryHelpersPerSocketField = AccessTools.Field(typeof(CIViewBaseLoadout), "liveryHelpersPerSocket");
         static readonly FieldInfo liveryHelpersPerHardpointField = AccessTools.Field(typeof(CIViewBaseLoadout), "liveryHelpersPerHardpoint");
@@ -653,14 +654,15 @@ namespace LiveryGUIMod {
             var hardpointHelpers = GetLiverySlotHelpers(loadoutView, liveryHelpersPerHardpointField);
             bool rootHasChildren = HasVisibleLiverySlot(socketHelpers);
 
-            UpdateLiverySlotDecorations(loadoutView.liveryHelperRoot, LiverySetsDB.PartKey(null, null), showMarkers && mechId >= 0, mechId, pilotId, showHierarchyDecorations && IsLiverySlotVisible(loadoutView.liveryHelperRoot), 0, rootHasChildren, loadoutView.liverySlotHeight);
+            UpdateLiverySlotDecorations(loadoutView.liveryHelperRoot, LiverySetsDB.PartKey(null, null), showMarkers && mechId >= 0, mechId, pilotId, showHierarchyDecorations && IsLiverySlotVisible(loadoutView.liveryHelperRoot), 0, rootHasChildren, false, loadoutView.liverySlotHeight);
 
             if (socketHelpers != null) {
                 foreach (var kv in socketHelpers) {
                     CIHelperLoadoutLiverySlot slot = kv.Value;
                     bool slotVisible = IsLiverySlotVisible(slot);
                     bool hasSubparts = DoesSocketHaveVisibleLiverySubparts(unit, kv.Key);
-                    UpdateLiverySlotDecorations(slot, LiverySetsDB.PartKey(kv.Key, null), showMarkers && slotVisible && mechId >= 0, mechId, pilotId, showHierarchyDecorations && slotVisible, 1, hasSubparts, loadoutView.liverySlotHeight);
+                    bool hasAssignedSubpartLivery = hasSubparts && DoesSocketHaveVisibleAssignedLiverySubpart(unit, kv.Key, mechId);
+                    UpdateLiverySlotDecorations(slot, LiverySetsDB.PartKey(kv.Key, null), showMarkers && slotVisible && mechId >= 0, mechId, pilotId, showHierarchyDecorations && slotVisible, 1, hasSubparts, hasAssignedSubpartLivery, loadoutView.liverySlotHeight);
                 }
             }
 
@@ -669,7 +671,7 @@ namespace LiveryGUIMod {
                 foreach (var kv in hardpointHelpers) {
                     CIHelperLoadoutLiverySlot slot = kv.Value;
                     bool slotVisible = !string.IsNullOrEmpty(socket) && IsLiverySlotVisible(slot);
-                    UpdateLiverySlotDecorations(slot, LiverySetsDB.PartKey(socket, kv.Key), showMarkers && slotVisible && mechId >= 0, mechId, pilotId, showHierarchyDecorations && slotVisible, 2, false, loadoutView.liverySlotHeight);
+                    UpdateLiverySlotDecorations(slot, LiverySetsDB.PartKey(socket, kv.Key), showMarkers && slotVisible && mechId >= 0, mechId, pilotId, showHierarchyDecorations && slotVisible, 2, false, false, loadoutView.liverySlotHeight);
                 }
             }
         }
@@ -723,9 +725,38 @@ namespace LiveryGUIMod {
         }
 
         //==============================================================================
-        static void UpdateLiverySlotDecorations(CIHelperLoadoutLiverySlot slot, string partKey, bool layerMarkerVisible, int mechId, string pilotId, bool hierarchyVisible, int hierarchyDepth, bool hasSubparts, int slotHeight) {
+        static bool DoesSocketHaveVisibleAssignedLiverySubpart(PersistentEntity unit, string socket, int mechId) {
+            if (unit == null || mechId < 0 || string.IsNullOrEmpty(socket))
+                return false;
+
+            EquipmentEntity part = EquipmentUtility.GetPartInUnit(unit, socket, false, null);
+            if (part == null || part.partBlueprint == null || part.partBlueprint.hardpoints == null)
+                return false;
+
+            HashSet<EquipmentEntity> subsystemsInPart = EquipmentUtility.GetSubsystemsInPart(part);
+            foreach (string hardpoint in part.partBlueprint.hardpoints) {
+                EquipmentEntity subsystem = EquipmentUtility.GetSubsystemInPart(part, hardpoint, false, subsystemsInPart);
+                if (subsystem == null)
+                    continue;
+
+                DataContainerSubsystemHardpoint hardpointData = DataMultiLinker<DataContainerSubsystemHardpoint>.GetEntry(hardpoint, true);
+                if (hardpointData == null || hardpointData.isInternal || string.IsNullOrEmpty(hardpointData.visualGroup))
+                    continue;
+
+                string liveryKey = LiverySetsDB.GetCurrentLiveryKeyForSlot(mechId, socket, hardpoint);
+                if (!string.IsNullOrEmpty(liveryKey) && !string.Equals(liveryKey, LiverySetsDB.PILOT_TRANSPARENT, StringComparison.Ordinal))
+                    return true;
+            }
+
+            return false;
+        }
+
+        //==============================================================================
+        static void UpdateLiverySlotDecorations(CIHelperLoadoutLiverySlot slot, string partKey, bool layerMarkerVisible, int mechId, string pilotId, bool hierarchyVisible, int hierarchyDepth, bool hasSubparts, bool hasAssignedSubpartLivery, int slotHeight) {
             UpdateLiverySlotLayerMarker(slot, partKey, layerMarkerVisible, mechId, pilotId);
-            UpdateLiverySlotChildMarker(slot, hierarchyVisible && hasSubparts);
+            bool childMarkerPilotColored = hierarchyDepth > 0 && layerMarkerVisible && hasSubparts && LiverySetsDB.IsPilotLiveryAssignedToDescendantPart(mechId, partKey, pilotId);
+            bool childMarkerAssignedColored = hierarchyDepth > 0 && hasSubparts && hasAssignedSubpartLivery;
+            UpdateLiverySlotChildMarker(slot, hierarchyVisible && hasSubparts, childMarkerPilotColored, childMarkerAssignedColored);
             UpdateLiverySlotHierarchyLine(slot, hierarchyVisible, hierarchyDepth, slotHeight);
         }
 
@@ -811,7 +842,7 @@ namespace LiveryGUIMod {
         }
 
         //==============================================================================
-        static void UpdateLiverySlotChildMarker(CIHelperLoadoutLiverySlot slot, bool visible) {
+        static void UpdateLiverySlotChildMarker(CIHelperLoadoutLiverySlot slot, bool visible, bool pilotColored, bool assignedColored) {
             UISprite marker = GetOrCreateLiverySlotSprite(slot, liverySlotChildMarkerName, visible, slot?.spriteIcon);
             if (marker == null)
                 return;
@@ -829,7 +860,7 @@ namespace LiveryGUIMod {
             marker.width = 18;
             marker.height = 18;
             marker.depth = slot.spriteBackground.depth + 8;
-            marker.color = liverySlotChildMarkerColor;
+            marker.color = pilotColored ? pilotLiverySlotMarkerColor : (assignedColored ? liverySlotChildMarkerAssignedColor : liverySlotChildMarkerColor);
             marker.alpha = Mathf.Clamp01(slot.targetAlpha);
             marker.transform.localScale = Vector3.one;
             marker.transform.localPosition = new Vector3(bottomLeft.x + 6f, (bottomLeft.y + topRight.y) * 0.5f, 0f);
