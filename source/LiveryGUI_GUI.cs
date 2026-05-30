@@ -206,45 +206,45 @@ namespace LiveryGUIMod {
             const float hiA = +5f;  // max alpha
             const float loNC = -5f; // min non-color-slider
             const float hiNC = +5f; // max non-color-slider
-            Color R = new Color(0.6f, 0.1f, 0.1f, 0.5f);
-            Color G = new Color(0.1f, 0.6f, 0.1f, 0.5f);
-            Color B = new Color(0.1f, 0.1f, 0.8f, 0.5f);
+            Color R = new Color(0.8f, 0.3f, 0.3f, 0.5f);
+            Color G = new Color(0.3f, 0.8f, 0.3f, 0.5f);
+            Color B = new Color(0.3f, 0.3f, 0.8f, 0.6f);
             Color A = new Color(1f, 1f, 1f, 0.37f);
             sliderHelpers = new Dictionary<string, CIHelperSetting>();
             settingTooltipButtons = new Dictionary<string, CIButton>();
             sliderConfigs = new Dictionary<string, SliderConfig>() {
-                    { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",       0,  0, R, loC,  hiC) },
-                    { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",       0,  1, G, loC,  hiC) },
-                    { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",       0,  2, B, loC,  hiC) },
-                    { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",       0,  3, A, loA,  hiA) },
-                    { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R",     0,  4, R, loC,  hiC) },
-                    { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G",     0,  5, G, loC,  hiC) },
-                    { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B",     0,  6, B, loC,  hiC) },
-                    { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A",     0,  7, A, loA,  hiA) },
-                    { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",      0,  8, R, loC,  hiC) },
-                    { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",      0,  9, G, loC,  hiC) },
-                    { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",      0, 10, B, loC,  hiC) },
-                    { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",      0, 11, A, loA,  hiA) },
-                    { "ContentX",   new SliderConfig("ContentX",   "Supporter DLC X", 0, 12, R, loNC, hiNC) },
-                    { "ContentY",   new SliderConfig("ContentY",   "Supporter DLC Y", 0, 13, G, loNC, hiNC) },
-                    { "ContentZ",   new SliderConfig("ContentZ",   "Supporter DLC Z", 0, 14, B, loNC, hiNC) },
-                    { "ContentW",   new SliderConfig("ContentW",   "Supporter DLC W", 0, 15, A, loNC, hiNC, SliderKind.Discrete) },
-                    { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",       1,  0, A, loS,  hiS)  },
-                    { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",       1,  1, A, loS,  hiS)  },
-                    { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",       1,  2, A, loS,  hiS)  },
-                    { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",       1,  3, B, loNC, hiNC) },
-                    { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X",     1,  4, A, loS,  hiS)  },
-                    { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y",     1,  5, A, loS,  hiS)  },
-                    { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z",     1,  6, A, loS,  hiS)  },
-                    { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W",     1,  7, B, loNC, hiNC) },
-                    { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",      1,  8, A, loS,  hiS)  },
-                    { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",      1,  9, A, loS,  hiS)  },
-                    { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",      1, 10, A, loS,  hiS)  },
-                    { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",      1, 11, B, loNC, hiNC) },
-                    { "EffectX",    new SliderConfig("EffectX",    "Effect X",        1, 12, A, loNC, hiNC) },
-                    { "EffectY",    new SliderConfig("EffectY",    "Effect Y",        1, 13, A, loNC, hiNC) },
-                    { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",        1, 14, A, loNC, hiNC) },
-                    { "EffectW",    new SliderConfig("EffectW",    "Effect W",        1, 15, B, loNC, hiNC) },
+                    { "PrimaryR",   new SliderConfig("PrimaryR",   "R              Primary Color",   0,  0, R, loC,  hiC) },
+                    { "PrimaryG",   new SliderConfig("PrimaryG",   "G",                              0,  1, G, loC,  hiC) },
+                    { "PrimaryB",   new SliderConfig("PrimaryB",   "B",                              0,  2, B, loC,  hiC) },
+                    { "PrimaryA",   new SliderConfig("PrimaryA",   "A",                              0,  3, A, loA,  hiA) },
+                    { "SecondaryR", new SliderConfig("SecondaryR", "R              Secondary Color", 0,  4, R, loC,  hiC) },
+                    { "SecondaryG", new SliderConfig("SecondaryG", "G",                              0,  5, G, loC,  hiC) },
+                    { "SecondaryB", new SliderConfig("SecondaryB", "B",                              0,  6, B, loC,  hiC) },
+                    { "SecondaryA", new SliderConfig("SecondaryA", "A",                              0,  7, A, loA,  hiA) },
+                    { "TertiaryR",  new SliderConfig("TertiaryR",  "R              Tertiary Color",  0,  8, R, loC,  hiC) },
+                    { "TertiaryG",  new SliderConfig("TertiaryG",  "G",                              0,  9, G, loC,  hiC) },
+                    { "TertiaryB",  new SliderConfig("TertiaryB",  "B",                              0, 10, B, loC,  hiC) },
+                    { "TertiaryA",  new SliderConfig("TertiaryA",  "A",                              0, 11, A, loA,  hiA) },
+                    { "ContentX",   new SliderConfig("ContentX",   "R         Supporter DLC Color",  0, 12, R, loNC, hiNC) },
+                    { "ContentY",   new SliderConfig("ContentY",   "G",                              0, 13, G, loNC, hiNC) },
+                    { "ContentZ",   new SliderConfig("ContentZ",   "B",                              0, 14, B, loNC, hiNC) },
+                    { "ContentW",   new SliderConfig("ContentW",   "Sup. DLC Pattern",               0, 15, A, loNC, hiNC, SliderKind.Discrete) },
+                    { "PrimaryX",   new SliderConfig("PrimaryX",   "low       Primary Shininess",    1,  0, A, loS,  hiS)  },
+                    { "PrimaryY",   new SliderConfig("PrimaryY",   "mid",                            1,  1, A, loS,  hiS)  },
+                    { "PrimaryZ",   new SliderConfig("PrimaryZ",   "high",                           1,  2, A, loS,  hiS)  },
+                    { "PrimaryW",   new SliderConfig("PrimaryW",   "           Metalness",           1,  3, B, loNC, hiNC) },
+                    { "SecondaryX", new SliderConfig("SecondaryX", "low       Secondary Shininess",  1,  4, A, loS,  hiS)  },
+                    { "SecondaryY", new SliderConfig("SecondaryY", "mid",                            1,  5, A, loS,  hiS)  },
+                    { "SecondaryZ", new SliderConfig("SecondaryZ", "high",                           1,  6, A, loS,  hiS)  },
+                    { "SecondaryW", new SliderConfig("SecondaryW", "           Metalness",           1,  7, B, loNC, hiNC) },
+                    { "TertiaryX",  new SliderConfig("TertiaryX",  "low       Tertiary Shininess",   1,  8, A, loS,  hiS)  },
+                    { "TertiaryY",  new SliderConfig("TertiaryY",  "mid",                            1,  9, A, loS,  hiS)  },
+                    { "TertiaryZ",  new SliderConfig("TertiaryZ",  "high",                           1, 10, A, loS,  hiS)  },
+                    { "TertiaryW",  new SliderConfig("TertiaryW",  "           Metalness",           1, 11, B, loNC, hiNC) },
+                    { "EffectX",    new SliderConfig("EffectX",    "Primary            Iridescence", 1, 12, A, loNC, hiNC) },
+                    { "EffectY",    new SliderConfig("EffectY",    "Secondary",                      1, 13, A, loNC, hiNC) },
+                    { "EffectZ",    new SliderConfig("EffectZ",    "Tertiary",                       1, 14, A, loNC, hiNC) },
+                    { "EffectW",    new SliderConfig("EffectW",    "Unused",                         1, 15, B, loNC, hiNC) },
                 };
 
             // add sliders to pane
@@ -266,12 +266,14 @@ namespace LiveryGUIMod {
 
                 Vector3 sliderLocalPos = helper.sliderHolder.transform.localPosition;
                 sliderLocalPos.x -= 262f; // move the slider-bar left so it's under the label-text
+                sliderLocalPos.y += 1f;
                 helper.sliderHolder.transform.localPosition = sliderLocalPos;
 
                 helper.sliderBar.valueMin = cfg.min;
                 helper.sliderBar.valueLimit = cfg.max;
                 helper.sliderBar.labelFormat = "F3";
                 helper.sliderBar.labelSuffix = "";
+                MoveSliderValueReadout(helper.sliderBar);
                 helper.sliderBar.spriteFill.color = cfg.fillColor;
 
                 helper.sharedSpriteBackground.gameObject.SetActive(false);
@@ -577,6 +579,21 @@ namespace LiveryGUIMod {
             if (liveryNameInput.label != null) {
                 liveryNameInput.label.modifier = UILabel.Modifier.None;
                 liveryNameInput.label.MarkAsChanged();
+            }
+        }
+
+        //==============================================================================
+        static void MoveSliderValueReadout(Component sliderBar) {
+            if (sliderBar == null)
+                return;
+
+            UILabel[] labels = sliderBar.GetComponentsInChildren<UILabel>(true);
+            foreach (UILabel label in labels) {
+                if (label == null)
+                    continue;
+
+                Transform labelTransform = label.transform;
+                labelTransform.localPosition += new Vector3(+119f, 0f, 0f);
             }
         }
 
