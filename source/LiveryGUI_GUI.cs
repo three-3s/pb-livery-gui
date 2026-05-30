@@ -18,13 +18,17 @@ namespace LiveryGUIMod {
     public class SliderConfig {
         public string name;
         public string label;
+        public int column;
+        public int row;
         public Color fillColor;
         public float min;
         public float max;
         public SliderKind sliderKind;
-        public SliderConfig(string name, string label, Color fillColor, float min = 0f, float max = 1f, SliderKind sliderKind = SliderKind.Continuous) {
+        public SliderConfig(string name, string label, int column, int row, Color fillColor, float min = 0f, float max = 1f, SliderKind sliderKind = SliderKind.Continuous) {
             this.name = name;
             this.label = label;
+            this.column = column;
+            this.row = row;
             this.fillColor = fillColor;
             this.min = min;
             this.max = max;
@@ -69,6 +73,7 @@ namespace LiveryGUIMod {
         public static GameObject paneGO = null;
         public static Dictionary<string, CIHelperSetting> sliderHelpers = null; // key = livery's key
         public static Dictionary<string, SliderConfig> sliderConfigs = null; // key = livery's key
+        static Dictionary<string, CIButton> settingTooltipButtons = null; // key = livery's key. (one per sliderHelpers[i])
         public static CIButton toggleLiveryGUIButton;
         public static CIButton pilotModeToggleButton;
         public static CIButton pilotModePrevButton;
@@ -100,6 +105,8 @@ namespace LiveryGUIMod {
         static readonly string liverySlotHierarchyLineNamePrefix = "LiveryGUI_HierarchyLine";
         static readonly string liverySlotChildMarkerSpriteName = "s_icon_sm_plus";
         static readonly string liverySlotHierarchyLineSpriteName = "line_vertical_4px";
+        static readonly string settingTooltipButtonSpriteName = "icon_help_outline";
+        const int settingLowerRowsStart = 8;
         static readonly Vector3 liverySlotLayerMarkerOffset = new Vector3(180f, 0f, 0f);
         static readonly string pilotLiverySlotMarkerTooltipHeader = "Pilot livery";
         static readonly string pilotLiverySlotMarkerTooltipContent = "The pilot's own livery-set is applied to this slot. This livery will be applied to this slot of any mech that is piloted by this pilot. Note: Any slot marked with a '+' has child slots, which will be affected by the parent slot.";
@@ -116,7 +123,7 @@ namespace LiveryGUIMod {
 
         public static bool modPrevPilotModeActive = false; // persists whether pilot-edit-mode is active, including when mod-gui is off.
         static bool reapplyLiverySetInProgress = false;
-        static bool suppressLiverySlotRecording = false;
+        static readonly bool suppressLiverySlotRecording = false; // (currently unused)
         static bool pilotModeMechBaseVisible = true;
         static string pilotModePilotId = null;
         static int pilotModePilotMechId = -99;
@@ -204,40 +211,40 @@ namespace LiveryGUIMod {
             Color B = new Color(0.1f, 0.1f, 0.8f, 0.5f);
             Color A = new Color(1f, 1f, 1f, 0.37f);
             sliderHelpers = new Dictionary<string, CIHelperSetting>();
+            settingTooltipButtons = new Dictionary<string, CIButton>();
             sliderConfigs = new Dictionary<string, SliderConfig>() {
-                    //todo consider making space for additional info like a small "?" button for each with tool explaining what the field does (ideally with translations).
-                    { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",   R, loC,  hiC) },
-                    { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",   G, loC,  hiC) },
-                    { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",   B, loC,  hiC) },
-                    { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",   A, loA,  hiA) },
-                    { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R", R, loC,  hiC) },
-                    { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G", G, loC,  hiC) },
-                    { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B", B, loC,  hiC) },
-                    { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A", A, loA,  hiA) },
-                    { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",  R, loC,  hiC) },
-                    { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",  G, loC,  hiC) },
-                    { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",  B, loC,  hiC) },
-                    { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",  A, loA,  hiA) },
-                    { "ContentX",   new SliderConfig("ContentX",   "Supporter DLC X", R, loNC, hiNC) },
-                    { "ContentY",   new SliderConfig("ContentY",   "Supporter DLC Y", G, loNC, hiNC) },
-                    { "ContentZ",   new SliderConfig("ContentZ",   "Supporter DLC Z", B, loNC, hiNC) },
-                    { "ContentW",   new SliderConfig("ContentW",   "Supporter DLC W", A, loNC, hiNC, SliderKind.Discrete) },
-                    { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",   A, loS,  hiS)  },
-                    { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",   A, loS,  hiS)  },
-                    { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",   A, loS,  hiS)  },
-                    { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",   B, loNC, hiNC) },
-                    { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X", A, loS,  hiS)  },
-                    { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y", A, loS,  hiS)  },
-                    { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z", A, loS,  hiS)  },
-                    { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W", B, loNC, hiNC) },
-                    { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",  A, loS,  hiS)  },
-                    { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",  A, loS,  hiS)  },
-                    { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",  A, loS,  hiS)  },
-                    { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",  B, loNC, hiNC) },
-                    { "EffectX",    new SliderConfig("EffectX",    "Effect X",    A, loNC, hiNC) },
-                    { "EffectY",    new SliderConfig("EffectY",    "Effect Y",    A, loNC, hiNC) },
-                    { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",    A, loNC, hiNC) },
-                    { "EffectW",    new SliderConfig("EffectW",    "Effect W",    B, loNC, hiNC) },
+                    { "PrimaryR",   new SliderConfig("PrimaryR",   "Primary R",       0,  0, R, loC,  hiC) },
+                    { "PrimaryG",   new SliderConfig("PrimaryG",   "Primary G",       0,  1, G, loC,  hiC) },
+                    { "PrimaryB",   new SliderConfig("PrimaryB",   "Primary B",       0,  2, B, loC,  hiC) },
+                    { "PrimaryA",   new SliderConfig("PrimaryA",   "Primary A",       0,  3, A, loA,  hiA) },
+                    { "SecondaryR", new SliderConfig("SecondaryR", "Secondary R",     0,  4, R, loC,  hiC) },
+                    { "SecondaryG", new SliderConfig("SecondaryG", "Secondary G",     0,  5, G, loC,  hiC) },
+                    { "SecondaryB", new SliderConfig("SecondaryB", "Secondary B",     0,  6, B, loC,  hiC) },
+                    { "SecondaryA", new SliderConfig("SecondaryA", "Secondary A",     0,  7, A, loA,  hiA) },
+                    { "TertiaryR",  new SliderConfig("TertiaryR",  "Tertiary R",      0,  8, R, loC,  hiC) },
+                    { "TertiaryG",  new SliderConfig("TertiaryG",  "Tertiary G",      0,  9, G, loC,  hiC) },
+                    { "TertiaryB",  new SliderConfig("TertiaryB",  "Tertiary B",      0, 10, B, loC,  hiC) },
+                    { "TertiaryA",  new SliderConfig("TertiaryA",  "Tertiary A",      0, 11, A, loA,  hiA) },
+                    { "ContentX",   new SliderConfig("ContentX",   "Supporter DLC X", 0, 12, R, loNC, hiNC) },
+                    { "ContentY",   new SliderConfig("ContentY",   "Supporter DLC Y", 0, 13, G, loNC, hiNC) },
+                    { "ContentZ",   new SliderConfig("ContentZ",   "Supporter DLC Z", 0, 14, B, loNC, hiNC) },
+                    { "ContentW",   new SliderConfig("ContentW",   "Supporter DLC W", 0, 15, A, loNC, hiNC, SliderKind.Discrete) },
+                    { "PrimaryX",   new SliderConfig("PrimaryX",   "Primary X",       1,  0, A, loS,  hiS)  },
+                    { "PrimaryY",   new SliderConfig("PrimaryY",   "Primary Y",       1,  1, A, loS,  hiS)  },
+                    { "PrimaryZ",   new SliderConfig("PrimaryZ",   "Primary Z",       1,  2, A, loS,  hiS)  },
+                    { "PrimaryW",   new SliderConfig("PrimaryW",   "Primary W",       1,  3, B, loNC, hiNC) },
+                    { "SecondaryX", new SliderConfig("SecondaryX", "Secondary X",     1,  4, A, loS,  hiS)  },
+                    { "SecondaryY", new SliderConfig("SecondaryY", "Secondary Y",     1,  5, A, loS,  hiS)  },
+                    { "SecondaryZ", new SliderConfig("SecondaryZ", "Secondary Z",     1,  6, A, loS,  hiS)  },
+                    { "SecondaryW", new SliderConfig("SecondaryW", "Secondary W",     1,  7, B, loNC, hiNC) },
+                    { "TertiaryX",  new SliderConfig("TertiaryX",  "Tertiary X",      1,  8, A, loS,  hiS)  },
+                    { "TertiaryY",  new SliderConfig("TertiaryY",  "Tertiary Y",      1,  9, A, loS,  hiS)  },
+                    { "TertiaryZ",  new SliderConfig("TertiaryZ",  "Tertiary Z",      1, 10, A, loS,  hiS)  },
+                    { "TertiaryW",  new SliderConfig("TertiaryW",  "Tertiary W",      1, 11, B, loNC, hiNC) },
+                    { "EffectX",    new SliderConfig("EffectX",    "Effect X",        1, 12, A, loNC, hiNC) },
+                    { "EffectY",    new SliderConfig("EffectY",    "Effect Y",        1, 13, A, loNC, hiNC) },
+                    { "EffectZ",    new SliderConfig("EffectZ",    "Effect Z",        1, 14, A, loNC, hiNC) },
+                    { "EffectW",    new SliderConfig("EffectW",    "Effect W",        1, 15, B, loNC, hiNC) },
                 };
 
             // add sliders to pane
@@ -341,6 +348,7 @@ namespace LiveryGUIMod {
                 }
             });
 
+            CreateSettingTooltipButtons(buttonTemplate: toggleLiveryGUIButtonGO);
             toggleLiveryGUIButtonGO.SetActive(true);
 
             ////////////////////////////////////////////////////////////////////////////////
@@ -417,7 +425,7 @@ namespace LiveryGUIMod {
             pilotModeNextButton.tooltipOffset = new Vector3(45f, 0f, 0f);
             pilotModeNextButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
 
-            CreatePilotModeReadoutWidgets(helperPrefab.sharedLabelName);
+            CreatePilotModeReadoutWidgets(labelTemplate: helperPrefab.sharedLabelName);
 
             ////////////////////////////////////////////////////////////////////////////////
             // Livery GUI buttons: 'revert changes', 'save livery to disk'
@@ -500,7 +508,7 @@ namespace LiveryGUIMod {
 
             ////////////////////////////////////////////////////////////////////////////////
             // row of no-op buttons, as a crude legend/hint about usable controls.
-            const string tooltip1 = "Click on sliders or click-and-drag to set.\n\nRemember to save.\nNormal values for sliders are between 0 and 1. Other values might work, but they might cause problems.";
+            const string tooltip1 = "Click on sliders or click-and-drag to set.\n\nRemember to save.\nNormal values for sliders are between 0 and 1. Other values might work, but they might cause problems.\n\nYou can use keyboard \"Move Camera\" (Move Up/Down/Left/Right) keys to adjust view.";
             const string tooltip2 = "For precise adjustments:\nRight-click-and-hold, and move mouse <--->\nChange speed: Hold SHIFT, ALT, or CTRL.";
             LegendConfig[] legendConfigs = {
                 // note: the button icons seem to get left/right mirror'd
@@ -570,6 +578,167 @@ namespace LiveryGUIMod {
                 liveryNameInput.label.modifier = UILabel.Modifier.None;
                 liveryNameInput.label.MarkAsChanged();
             }
+        }
+
+        //==============================================================================
+        static void CreateSettingTooltipButtons(GameObject buttonTemplate) {
+            if (buttonTemplate == null || sliderConfigs == null || settingTooltipButtons == null)
+                return;
+
+            foreach (KeyValuePair<string, SliderConfig> item in sliderConfigs) {
+                string key = item.Key;
+                SliderConfig cfg = item.Value;
+                string content = GetSettingTooltipContent(key);
+                if (string.IsNullOrEmpty(content))
+                    continue;
+
+                GameObject buttonGO = GameObject.Instantiate(buttonTemplate, paneGO.transform, false);
+                buttonGO.name = "SettingTooltipButton_" + key;
+                buttonGO.transform.localScale = new Vector3(0.45f, 0.45f, 1f);
+
+                var icon = buttonGO.transform.Find("Sprite_Icon")?.GetComponent<UISprite>();
+                var frame = buttonGO.transform.Find("Sprite_Frame")?.GetComponent<UISprite>();
+                var fillIdle = buttonGO.transform.Find("Sprite_Fill_Idle")?.GetComponent<UISprite>();
+                var fillHover = buttonGO.transform.Find("Sprite_Fill_Hover")?.GetComponent<UISprite>();
+                if (icon != null) {
+                    icon.spriteName = settingTooltipButtonSpriteName;
+                    icon.flip = UIBasicSprite.Flip.Nothing;
+                    icon.color = new Color(0.85f, 0.9f, 1f, 0.8f);
+                }
+                if (frame != null)
+                    frame.color = new Color(0.6f, 0.65f, 0.75f, 0.45f);
+                if (fillIdle != null)
+                    fillIdle.color = new Color(0f, 0f, 0f, 0.3f);
+                if (fillHover != null)
+                    fillHover.color = new Color(0.55f, 0.65f, 0.85f, 0.35f);
+
+                CIButton button = buttonGO.GetComponent<CIButton>();
+                button.callbackOnClick = null;
+                button.callbackOnClickLong = null;
+                button.callbackOnClickSecondary = null;
+                if (button.audio != null)
+                    button.audio.enabled = false;
+                ConfigureSettingTooltip(button, cfg, content);
+                settingTooltipButtons[key] = button;
+                buttonGO.SetActive(true);
+            }
+        }
+
+        //==============================================================================
+        static void ConfigureSettingTooltip(CIButton button, SliderConfig cfg, string content) {
+            if (button == null || cfg == null || string.IsNullOrEmpty(content))
+                return;
+
+            button.tooltipUsed = true;
+            button.tooltipKey = null;
+            button.AddTooltip(cfg.label, content);
+            button.tooltipDelay = false;
+            button.tooltipPivot  = GetSettingTooltipPivot(cfg);
+            button.tooltipOffset = GetSettingTooltipOffset(cfg);
+        }
+
+        //==============================================================================
+        static UIWidget.Pivot GetSettingTooltipPivot(SliderConfig cfg) {
+            bool rightColumn = IsRightColumnSetting(cfg);
+            bool lowerRows = IsLowerSettingRow(cfg);
+            if (rightColumn)
+                return lowerRows ? UIWidget.Pivot.BottomRight : UIWidget.Pivot.TopRight;
+            return lowerRows ? UIWidget.Pivot.BottomLeft : UIWidget.Pivot.TopLeft;
+        }
+
+        //==============================================================================
+        static Vector3 GetSettingTooltipOffset(SliderConfig cfg) {
+            if (IsRightColumnSetting(cfg)) {
+                if (IsLowerSettingRow(cfg))
+                    return new Vector3( -8f,  +11f, 0f);  // button-loc [ .]   tooltip-pos *[?]
+                else
+                    return new Vector3( -6f, -137f, 0f);  // button-loc [ *]   tooltip-pos .[?]
+            } else {
+                if (IsLowerSettingRow(cfg))
+                    return new Vector3(+54f,   +9f, 0f);  // button-loc [. ]   tooltip-pos  [?]*
+                else
+                    return new Vector3(+52f,  -75f, 0f);  // button-loc [* ]   tooltip-pos  [?].
+            }
+        }
+
+        //==============================================================================
+        static bool IsRightColumnSetting(SliderConfig cfg) {
+            return cfg != null && cfg.column > 0;
+        }
+
+        //==============================================================================
+        static bool IsLowerSettingRow(SliderConfig cfg) {
+            return cfg != null && cfg.row >= settingLowerRowsStart;
+        }
+
+        //==============================================================================
+        static string GetSettingTooltipContent(string key) {
+            if (string.IsNullOrEmpty(key))
+                return null;
+
+            if (key.StartsWith("Content", StringComparison.Ordinal))
+                return GetSupporterDLCTooltipContent(key);
+
+            if (key.StartsWith("Effect", StringComparison.Ordinal))
+                return GetEffectTooltipContent(key);
+
+            string layerName = GetPaintLayerName(key);
+            if (layerName == null)
+                return null;
+
+            char channel = key[key.Length - 1];
+            if (channel == 'R' || channel == 'G' || channel == 'B') {
+                string colorName = channel == 'R' ? "red" : (channel == 'G' ? "green" : "blue");
+                return "Sets the " + colorName + " amount for the " + layerName + " areas of the livery.\n\nPrimary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
+            }
+
+            if (channel == 'A')
+                return "Adjusts how strongly the " + layerName + " color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.\n\nThis behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
+
+            if (channel == 'X')
+                return "Controls the matte-to-shiny response for the duller regions of the " + layerName + " material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
+
+            if (channel == 'Y')
+                return "Controls the matte-to-shiny response for the middle regions of the " + layerName + " material (the areas that are not marked as \"dullest\" nor \"smoothest\"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
+
+            if (channel == 'Z')
+                return "Controls the matte-to-shiny response for the brightest or most polished regions of the " + layerName + " material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
+
+            if (channel == 'W')
+                return "Controls \"metalness\" for the " + layerName + " material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to \"glow\", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.";
+
+            return null;
+        }
+
+        //==============================================================================
+        static string GetPaintLayerName(string key) {
+            if (key.StartsWith("Primary", StringComparison.Ordinal))
+                return "primary";
+            if (key.StartsWith("Secondary", StringComparison.Ordinal))
+                return "secondary";
+            if (key.StartsWith("Tertiary", StringComparison.Ordinal))
+                return "tertiary";
+            return null;
+        }
+
+        //==============================================================================
+        static string GetSupporterDLCTooltipContent(string key) {
+            char channel = key[key.Length - 1];
+            if (channel == 'W')
+                return "Chooses the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed. The pattern is \"additive\", so the color must be brighter than black to be visible.";
+
+            string colorName = channel == 'X' ? "red" : (channel == 'Y' ? "green" : "blue");
+            return "Sets the " + colorName + " amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than \"none\" is selected (the Supporter DLC W setting).\n\nValues are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)";
+        }
+
+        //==============================================================================
+        static string GetEffectTooltipContent(string key) {
+            char channel = key[key.Length - 1];
+            if (channel == 'W')
+                return "Reserved effect value. It currently does not appear to have a visible effect, but it is saved for completeness and experimentation.";
+
+            string layerName = channel == 'X' ? "primary" : (channel == 'Y' ? "secondary" : "tertiary");
+            return "Controls \"iridescence\" for the " + layerName + " paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look \"unusual\". \"Metalness\" and the part's R,G,B color affect how this looks.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
         }
 
         //==============================================================================
@@ -866,7 +1035,7 @@ namespace LiveryGUIMod {
 
         //==============================================================================
         static void UpdateLiverySlotChildMarker(CIHelperLoadoutLiverySlot slot, bool visible, bool pilotColored, bool assignedColored) {
-            UISprite marker = GetOrCreateLiverySlotSprite(slot, liverySlotChildMarkerName, visible, slot?.spriteIcon);
+            UISprite marker = GetOrCreateLiverySlotSprite(slot, liverySlotChildMarkerName, visible, template: slot?.spriteIcon);
             if (marker == null)
                 return;
 
@@ -895,7 +1064,7 @@ namespace LiveryGUIMod {
             HideLiverySlotSprite(slot, liverySlotHierarchyLineNamePrefix + "1");
 
             bool lineVisible = visible && hierarchyDepth >= 2;
-            UISprite line = GetOrCreateLiverySlotSprite(slot, liverySlotHierarchyLineNamePrefix + "0", lineVisible, slot?.spriteIcon);
+            UISprite line = GetOrCreateLiverySlotSprite(slot, liverySlotHierarchyLineNamePrefix + "0", lineVisible, template: slot?.spriteIcon);
             if (line == null)
                 return;
 
@@ -1030,7 +1199,7 @@ namespace LiveryGUIMod {
             pilotModePilotId = pilotModePilotIds[pilotIndex];
             pilotModePilotMechId = mechId;
             Debug.Log($"[LiveryGUI] Pilot livery edit target: {pilotModePilotId}");
-            CIViewOverworldLog.AddMessage($"Pilot livery target: {GetPilotDisplayName(pilotModePilotId)} [sp={pilotSymbolSpriteName}]");
+            //CIViewOverworldLog.AddMessage($"Pilot livery target: {GetPilotDisplayName(pilotModePilotId)} [sp={pilotSymbolSpriteName}]");
             ReapplyLiverySet(mechId);
         }
 
@@ -1294,38 +1463,16 @@ namespace LiveryGUIMod {
                     -yStep * 16.1f,
                     -yStep * 17.1f,
                 };
-            sliderHelpers["PrimaryR"  ].gameObject.transform.localPosition = new Vector3(x[0], y[ 0]);
-            sliderHelpers["PrimaryG"  ].gameObject.transform.localPosition = new Vector3(x[0], y[ 1]);
-            sliderHelpers["PrimaryB"  ].gameObject.transform.localPosition = new Vector3(x[0], y[ 2]);
-            sliderHelpers["PrimaryA"  ].gameObject.transform.localPosition = new Vector3(x[0], y[ 3]);
-            sliderHelpers["SecondaryR"].gameObject.transform.localPosition = new Vector3(x[0], y[ 4]);
-            sliderHelpers["SecondaryG"].gameObject.transform.localPosition = new Vector3(x[0], y[ 5]);
-            sliderHelpers["SecondaryB"].gameObject.transform.localPosition = new Vector3(x[0], y[ 6]);
-            sliderHelpers["SecondaryA"].gameObject.transform.localPosition = new Vector3(x[0], y[ 7]);
-            sliderHelpers["TertiaryR" ].gameObject.transform.localPosition = new Vector3(x[0], y[ 8]);
-            sliderHelpers["TertiaryG" ].gameObject.transform.localPosition = new Vector3(x[0], y[ 9]);
-            sliderHelpers["TertiaryB" ].gameObject.transform.localPosition = new Vector3(x[0], y[10]);
-            sliderHelpers["TertiaryA" ].gameObject.transform.localPosition = new Vector3(x[0], y[11]);
-            sliderHelpers["ContentX"  ].gameObject.transform.localPosition = new Vector3(x[0], y[12]);
-            sliderHelpers["ContentY"  ].gameObject.transform.localPosition = new Vector3(x[0], y[13]);
-            sliderHelpers["ContentZ"  ].gameObject.transform.localPosition = new Vector3(x[0], y[14]);
-            sliderHelpers["ContentW"  ].gameObject.transform.localPosition = new Vector3(x[0], y[15]);
-            sliderHelpers["PrimaryX"  ].gameObject.transform.localPosition = new Vector3(x[1], y[ 0]);
-            sliderHelpers["PrimaryY"  ].gameObject.transform.localPosition = new Vector3(x[1], y[ 1]);
-            sliderHelpers["PrimaryZ"  ].gameObject.transform.localPosition = new Vector3(x[1], y[ 2]);
-            sliderHelpers["PrimaryW"  ].gameObject.transform.localPosition = new Vector3(x[1], y[ 3]);
-            sliderHelpers["SecondaryX"].gameObject.transform.localPosition = new Vector3(x[1], y[ 4]);
-            sliderHelpers["SecondaryY"].gameObject.transform.localPosition = new Vector3(x[1], y[ 5]);
-            sliderHelpers["SecondaryZ"].gameObject.transform.localPosition = new Vector3(x[1], y[ 6]);
-            sliderHelpers["SecondaryW"].gameObject.transform.localPosition = new Vector3(x[1], y[ 7]);
-            sliderHelpers["TertiaryX" ].gameObject.transform.localPosition = new Vector3(x[1], y[ 8]);
-            sliderHelpers["TertiaryY" ].gameObject.transform.localPosition = new Vector3(x[1], y[ 9]);
-            sliderHelpers["TertiaryZ" ].gameObject.transform.localPosition = new Vector3(x[1], y[10]);
-            sliderHelpers["TertiaryW" ].gameObject.transform.localPosition = new Vector3(x[1], y[11]);
-            sliderHelpers["EffectX"   ].gameObject.transform.localPosition = new Vector3(x[1], y[12]);
-            sliderHelpers["EffectY"   ].gameObject.transform.localPosition = new Vector3(x[1], y[13]);
-            sliderHelpers["EffectZ"   ].gameObject.transform.localPosition = new Vector3(x[1], y[14]);
-            sliderHelpers["EffectW"   ].gameObject.transform.localPosition = new Vector3(x[1], y[15]);
+            foreach (KeyValuePair<string, SliderConfig> item in sliderConfigs) {
+                string key = item.Key;
+                SliderConfig cfg = item.Value;
+                if (!sliderHelpers.TryGetValue(key, out CIHelperSetting helper) || helper == null)
+                    continue;
+
+                if (TryGetSettingPosition(cfg, x, y, out Vector3 position))
+                    helper.gameObject.transform.localPosition = position;
+            }
+            UpdateSettingTooltipButtonPositioning(x, y);
 
             float pilotCyclerBottomY = -(Screen.height * pixelSizeAdj) + Positions.pxGapAbovePaneGO + 66f;
             Vector3 pilotCyclerPos = new Vector3(Positions.pilotPanelLeft, pilotCyclerBottomY, 0f);
@@ -1335,6 +1482,37 @@ namespace LiveryGUIMod {
             pilotModeNameLabel.gameObject.transform.localPosition  = pilotCyclerPos + Positions.pilotNameOffset;
 
             liveryNameInput.gameObject.transform.localPosition = paneGO.activeSelf ? Positions.liveryName : Positions.liveryName_hiddenOffscreen;
+        }
+
+        //==============================================================================
+        static void UpdateSettingTooltipButtonPositioning(float[] x, float[] y) {
+            if (settingTooltipButtons == null)
+                return;
+
+            foreach (KeyValuePair<string, SliderConfig> item in sliderConfigs) {
+                string key = item.Key;
+                SliderConfig cfg = item.Value;
+                if (!settingTooltipButtons.TryGetValue(key, out CIButton button) || button == null)
+                    continue;
+
+                if (TryGetSettingPosition(cfg, x, y, out Vector3 position))
+                    button.gameObject.transform.localPosition = position + GetSettingTooltipButtonOffset(cfg);
+            }
+        }
+
+        //==============================================================================
+        static bool TryGetSettingPosition(SliderConfig cfg, float[] x, float[] y, out Vector3 position) {
+            position = Vector3.zero;
+            if (cfg == null || x == null || y == null || cfg.column < 0 || cfg.column >= x.Length || cfg.row < 0 || cfg.row >= y.Length)
+                return false;
+
+            position = new Vector3(x[cfg.column], y[cfg.row], 0f);
+            return true;
+        }
+
+        //==============================================================================
+        static Vector3 GetSettingTooltipButtonOffset(SliderConfig cfg) {
+            return IsRightColumnSetting(cfg) ? new Vector3(-29f, -9f, 0f) : new Vector3(327f, -9f, 0f);
         }
 
         //==============================================================================
@@ -1408,7 +1586,7 @@ namespace LiveryGUIMod {
                 dstLivery.effect.y            = origLivery.effect.y;
                 dstLivery.effect.z            = origLivery.effect.z;
                 dstLivery.effect.w            = origLivery.effect.w;
-                CIViewOverworldLog.AddMessage($"Reset livery to last saved version. [sp=s_icon_l32_retreat]");
+                //CIViewOverworldLog.AddMessage($"Reset livery to last saved version. [sp=s_icon_l32_retreat]");
             }
 
             RefreshSphereAndMechPreviews();
@@ -1452,7 +1630,7 @@ namespace LiveryGUIMod {
             LiverySnapshotDB.AddLiveryDataSnapshot(newKey, snapshotSource, true);
 
             Debug.Log($"[LiveryGUI] INFO: copied livery {origKey} to {newKey}");
-            CIViewOverworldLog.AddMessage($"Created a new copy of that livery. [sp=s_icon_l32_lc_grid_plus]");
+            //CIViewOverworldLog.AddMessage($"Created a new copy of that livery. [sp=s_icon_l32_lc_grid_plus]");
             return newKey;
         }
 

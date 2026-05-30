@@ -86,7 +86,7 @@ namespace LiveryGUIMod {
                 UtilitiesYAML.SaveDataToFile(liveryGUISaveDir, liveryFileName, liveryDat, false);
                 Debug.Log($"[LiveryGUI] INFO: Saved {liveryFileName} to {liveryGUISaveDir}");
                 LiverySnapshotDB.AddOrUpdateSnapshot(key, liveryDat);
-                CIViewOverworldLog.AddMessage($"Saved livery. [sp=s_icon_m_save5]");
+                //CIViewOverworldLog.AddMessage($"Saved livery. [sp=s_icon_m_save5]");
             }
             catch (Exception ex) {
                 Debug.LogError($"[LiveryGUI] WARNING: Failed to save {liveryFileName} to {liveryGUISaveDir}:\n{ex}");
