@@ -8,7 +8,7 @@ includesConfigEdits: false
 includesConfigTrees: false
 includesLibraries: true
 includesTextures: false
-includesLocalizationEdits: false
+includesLocalizationEdits: true
 includesLocalizations: false
 includesAssetBundles: false
 gameVersion2Compatible: true

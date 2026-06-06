@@ -8,7 +8,21 @@ This mod adds a livery editor that lets you customize livery colors and material
 
 This mod is compatible with Phantom Brigade v2.0.
 
-Basic usage
+Supported Languages:
+
+English: [url=https://github.com/three-3s/pb-livery-gui/blob/main/README.md]README[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md]FAQ[/url]
+简体中文: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseSimplified/README.md]说明文档[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseSimplified/FAQ.md]常见问题[/url]
+繁體中文: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseTraditional/README.md]說明文件[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseTraditional/FAQ.md]常見問題[/url]
+Français: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/French/README.md]Lisez-moi[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/French/FAQ.md]FAQ[/url]
+Deutsch: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/German/README.md]Liesmich[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/German/FAQ.md]Häufige Fragen[/url]
+Italiano: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Italian/README.md]Leggimi[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Italian/FAQ.md]Domande frequenti[/url]
+日本語: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Japanese/README.md]はじめに[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Japanese/FAQ.md]よくある質問[/url]
+한국어: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Korean/README.md]읽어보기[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Korean/FAQ.md]자주 묻는 질문[/url]
+Português Brasileiro: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/PortugueseBrazilian/README.md]Leia-me[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/PortugueseBrazilian/FAQ.md]Perguntas frequentes[/url]
+Русский: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Russian/README.md]Прочитайте[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Russian/FAQ.md]Часто задаваемые вопросы[/url]
+Español: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/README.md]Léeme[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md]Preguntas frecuentes[/url]
+
+Basic usage:
 [olist]
 [*] Go into the base's list of units.
 [*] Select a mech, then open the Livery selection page.

@@ -1,5 +1,5 @@
 # LLM guidance for this project
-The following guidelines were authored while working with GitHub Copilot GPT-5 mini.
+The following guidelines were authored while working with GitHub Copilot GPT-5 mini. (I've since switched to using gpt-5.5, which has been much better.)
 
 ## Code style guidelines
 - Keep to an absolute minimum the introduction of exception handling. Nesting try-blocks shall be avoided.

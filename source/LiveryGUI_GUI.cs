@@ -17,16 +17,18 @@ namespace LiveryGUIMod {
     // each of these is used to initialize one slider-bar
     public class SliderConfig {
         public string name;
-        public string label;
+        public string labelKey;
+        public string tooltipTextKey;
         public int column;
         public int row;
         public Color fillColor;
         public float min;
         public float max;
         public SliderKind sliderKind;
-        public SliderConfig(string name, string label, int column, int row, Color fillColor, float min = 0f, float max = 1f, SliderKind sliderKind = SliderKind.Continuous) {
+        public SliderConfig(string name, int column, int row, Color fillColor, float min = 0f, float max = 1f, SliderKind sliderKind = SliderKind.Continuous) {
             this.name = name;
-            this.label = label;
+            this.labelKey = "livery_gui_slider_" + name.ToLowerInvariant() + "_label";
+            this.tooltipTextKey = "livery_gui_slider_" + name.ToLowerInvariant() + "_text";
             this.column = column;
             this.row = row;
             this.fillColor = fillColor;
@@ -34,31 +36,40 @@ namespace LiveryGUIMod {
             this.max = max;
             this.sliderKind = sliderKind;
         }
+        public string GetLabel() {
+            return Localization.Get(labelKey);
+        }
     }
 
     public class LegendConfig {
         public string spriteName;
         public Vector3 localPosition;
-        public string tooltipText;
-        public LegendConfig(string spriteName, Vector3 localPosition, string tooltipText) {
+        public string tooltipKey;
+        public LegendConfig(string spriteName, Vector3 localPosition, string tooltipKey) {
             this.spriteName = spriteName;
             this.localPosition = localPosition;
-            this.tooltipText = tooltipText;
+            this.tooltipKey = tooltipKey;
         }
     }
 
-    // relating the SliderKind.Discrete selection to the livery's float contentParameters.w
+    // for SliderKind.Discrete selection of livery's contentParameters.w (a discretized float)
     public class ContentW {
-        public static string[] names = { "none (w=0.0)", "dots (w=1.0)", "lines (w=2.0)", "sheen (w=3.0)" };
+        static readonly string[] nameKeys = {
+            "livery_gui_supporter_pattern_none",
+            "livery_gui_supporter_pattern_dots",
+            "livery_gui_supporter_pattern_lines",
+            "livery_gui_supporter_pattern_sheen"
+        };
         public static int idx = 0;
+        public static int Count { get { return nameKeys.Length; } }
         public static void SetLevel(float val) {
-            idx = (int) Math.Min(Math.Max(0f, val + 0.1f), (float)names.Length - 1f);
+            idx = (int) Math.Min(Math.Max(0f, val + 0.1f), (float)Count - 1f);
         }
         public static float GetLevelValue() {
             return (float)idx;
         }
         public static string GetLevelName() {
-            return names[idx];
+            return Localization.Get(nameKeys[idx]);
         }
     }
 
@@ -74,6 +85,7 @@ namespace LiveryGUIMod {
         public static Dictionary<string, CIHelperSetting> sliderHelpers = null; // key = livery's key
         public static Dictionary<string, SliderConfig> sliderConfigs = null; // key = livery's key
         static Dictionary<string, CIButton> settingTooltipButtons = null; // key = livery's key. (one per sliderHelpers[i])
+        static Dictionary<string, CIButton> legendTooltipButtons = null; // key = localization key for legend tooltip content
         public static CIButton toggleLiveryGUIButton;
         public static CIButton pilotModeToggleButton;
         public static CIButton pilotModePrevButton;
@@ -107,11 +119,8 @@ namespace LiveryGUIMod {
         static readonly string liverySlotHierarchyLineSpriteName = "line_vertical_4px";
         static readonly string settingTooltipButtonSpriteName = "icon_help_outline";
         const int settingLowerRowsStart = 8;
+        static string liveryNameInputPlaceholderLast = null;
         static readonly Vector3 liverySlotLayerMarkerOffset = new Vector3(180f, 0f, 0f);
-        static readonly string pilotLiverySlotMarkerTooltipHeader = "Pilot livery";
-        static readonly string pilotLiverySlotMarkerTooltipContent = "The pilot's own livery-set is applied to this slot. This livery will be applied to this slot of any mech that is piloted by this pilot. Note: Any slot marked with a '+' has child slots, which will be affected by the parent slot.";
-        static readonly string mechLiverySlotMarkerTooltipHeader = "Mech base livery";
-        static readonly string mechLiverySlotMarkerTooltipContent = "No pilot livery has been assigned to this slot. The mech's own base livery will control this slot. Assigning a livery to this slot will assign the livery to the pilot's livery-set.";
         static readonly Color liverySlotChildMarkerColor = new Color(0.45f, 0.45f, 0.45f, 0.95f);
         static readonly Color liverySlotChildMarkerAssignedColor = new Color(1f, 1f, 1f, 1f);
         static readonly Color liverySlotHierarchyLineColor = new Color(0.7f, 0.7f, 0.7f, 0.75f);
@@ -183,6 +192,8 @@ namespace LiveryGUIMod {
             if (paneGO != null)
                 return;
 
+            Localization.RegisterLanguageChangeCallback();
+
             ////////////////////////////////////////////////////////////////////////////////
             // create a new pane
             var uiRoot = __instance.liveryRootObject.transform;
@@ -212,39 +223,40 @@ namespace LiveryGUIMod {
             Color A = new Color(1f, 1f, 1f, 0.37f);
             sliderHelpers = new Dictionary<string, CIHelperSetting>();
             settingTooltipButtons = new Dictionary<string, CIButton>();
+            legendTooltipButtons = new Dictionary<string, CIButton>();
             sliderConfigs = new Dictionary<string, SliderConfig>() {
-                    { "PrimaryR",   new SliderConfig("PrimaryR",   "R              Primary Color",   0,  0, R, loC,  hiC) },
-                    { "PrimaryG",   new SliderConfig("PrimaryG",   "G",                              0,  1, G, loC,  hiC) },
-                    { "PrimaryB",   new SliderConfig("PrimaryB",   "B",                              0,  2, B, loC,  hiC) },
-                    { "PrimaryA",   new SliderConfig("PrimaryA",   "A",                              0,  3, A, loA,  hiA) },
-                    { "SecondaryR", new SliderConfig("SecondaryR", "R              Secondary Color", 0,  4, R, loC,  hiC) },
-                    { "SecondaryG", new SliderConfig("SecondaryG", "G",                              0,  5, G, loC,  hiC) },
-                    { "SecondaryB", new SliderConfig("SecondaryB", "B",                              0,  6, B, loC,  hiC) },
-                    { "SecondaryA", new SliderConfig("SecondaryA", "A",                              0,  7, A, loA,  hiA) },
-                    { "TertiaryR",  new SliderConfig("TertiaryR",  "R              Tertiary Color",  0,  8, R, loC,  hiC) },
-                    { "TertiaryG",  new SliderConfig("TertiaryG",  "G",                              0,  9, G, loC,  hiC) },
-                    { "TertiaryB",  new SliderConfig("TertiaryB",  "B",                              0, 10, B, loC,  hiC) },
-                    { "TertiaryA",  new SliderConfig("TertiaryA",  "A",                              0, 11, A, loA,  hiA) },
-                    { "ContentX",   new SliderConfig("ContentX",   "R         Supporter DLC Color",  0, 12, R, loNC, hiNC) },
-                    { "ContentY",   new SliderConfig("ContentY",   "G",                              0, 13, G, loNC, hiNC) },
-                    { "ContentZ",   new SliderConfig("ContentZ",   "B",                              0, 14, B, loNC, hiNC) },
-                    { "ContentW",   new SliderConfig("ContentW",   "Sup. DLC Pattern",               0, 15, A, loNC, hiNC, SliderKind.Discrete) },
-                    { "PrimaryX",   new SliderConfig("PrimaryX",   "low       Primary Shininess",    1,  0, A, loS,  hiS)  },
-                    { "PrimaryY",   new SliderConfig("PrimaryY",   "mid",                            1,  1, A, loS,  hiS)  },
-                    { "PrimaryZ",   new SliderConfig("PrimaryZ",   "high",                           1,  2, A, loS,  hiS)  },
-                    { "PrimaryW",   new SliderConfig("PrimaryW",   "           Metalness",           1,  3, B, loNC, hiNC) },
-                    { "SecondaryX", new SliderConfig("SecondaryX", "low       Secondary Shininess",  1,  4, A, loS,  hiS)  },
-                    { "SecondaryY", new SliderConfig("SecondaryY", "mid",                            1,  5, A, loS,  hiS)  },
-                    { "SecondaryZ", new SliderConfig("SecondaryZ", "high",                           1,  6, A, loS,  hiS)  },
-                    { "SecondaryW", new SliderConfig("SecondaryW", "           Metalness",           1,  7, B, loNC, hiNC) },
-                    { "TertiaryX",  new SliderConfig("TertiaryX",  "low       Tertiary Shininess",   1,  8, A, loS,  hiS)  },
-                    { "TertiaryY",  new SliderConfig("TertiaryY",  "mid",                            1,  9, A, loS,  hiS)  },
-                    { "TertiaryZ",  new SliderConfig("TertiaryZ",  "high",                           1, 10, A, loS,  hiS)  },
-                    { "TertiaryW",  new SliderConfig("TertiaryW",  "           Metalness",           1, 11, B, loNC, hiNC) },
-                    { "EffectX",    new SliderConfig("EffectX",    "Primary            Iridescence", 1, 12, A, loNC, hiNC) },
-                    { "EffectY",    new SliderConfig("EffectY",    "Secondary",                      1, 13, A, loNC, hiNC) },
-                    { "EffectZ",    new SliderConfig("EffectZ",    "Tertiary",                       1, 14, A, loNC, hiNC) },
-                    { "EffectW",    new SliderConfig("EffectW",    "Unused",                         1, 15, B, loNC, hiNC) },
+                    { "PrimaryR",   new SliderConfig("PrimaryR",    0,  0, R, loC,  hiC)  },
+                    { "PrimaryG",   new SliderConfig("PrimaryG",    0,  1, G, loC,  hiC)  },
+                    { "PrimaryB",   new SliderConfig("PrimaryB",    0,  2, B, loC,  hiC)  },
+                    { "PrimaryA",   new SliderConfig("PrimaryA",    0,  3, A, loA,  hiA)  },
+                    { "SecondaryR", new SliderConfig("SecondaryR",  0,  4, R, loC,  hiC)  },
+                    { "SecondaryG", new SliderConfig("SecondaryG",  0,  5, G, loC,  hiC)  },
+                    { "SecondaryB", new SliderConfig("SecondaryB",  0,  6, B, loC,  hiC)  },
+                    { "SecondaryA", new SliderConfig("SecondaryA",  0,  7, A, loA,  hiA)  },
+                    { "TertiaryR",  new SliderConfig("TertiaryR",   0,  8, R, loC,  hiC)  },
+                    { "TertiaryG",  new SliderConfig("TertiaryG",   0,  9, G, loC,  hiC)  },
+                    { "TertiaryB",  new SliderConfig("TertiaryB",   0, 10, B, loC,  hiC)  },
+                    { "TertiaryA",  new SliderConfig("TertiaryA",   0, 11, A, loA,  hiA)  },
+                    { "ContentX",   new SliderConfig("ContentX",    0, 12, R, loNC, hiNC) },
+                    { "ContentY",   new SliderConfig("ContentY",    0, 13, G, loNC, hiNC) },
+                    { "ContentZ",   new SliderConfig("ContentZ",    0, 14, B, loNC, hiNC) },
+                    { "ContentW",   new SliderConfig("ContentW",    0, 15, A, loNC, hiNC, SliderKind.Discrete) },
+                    { "PrimaryX",   new SliderConfig("PrimaryX",    1,  0, A, loS,  hiS)  },
+                    { "PrimaryY",   new SliderConfig("PrimaryY",    1,  1, A, loS,  hiS)  },
+                    { "PrimaryZ",   new SliderConfig("PrimaryZ",    1,  2, A, loS,  hiS)  },
+                    { "PrimaryW",   new SliderConfig("PrimaryW",    1,  3, B, loNC, hiNC) },
+                    { "SecondaryX", new SliderConfig("SecondaryX",  1,  4, A, loS,  hiS)  },
+                    { "SecondaryY", new SliderConfig("SecondaryY",  1,  5, A, loS,  hiS)  },
+                    { "SecondaryZ", new SliderConfig("SecondaryZ",  1,  6, A, loS,  hiS)  },
+                    { "SecondaryW", new SliderConfig("SecondaryW",  1,  7, B, loNC, hiNC) },
+                    { "TertiaryX",  new SliderConfig("TertiaryX",   1,  8, A, loS,  hiS)  },
+                    { "TertiaryY",  new SliderConfig("TertiaryY",   1,  9, A, loS,  hiS)  },
+                    { "TertiaryZ",  new SliderConfig("TertiaryZ",   1, 10, A, loS,  hiS)  },
+                    { "TertiaryW",  new SliderConfig("TertiaryW",   1, 11, B, loNC, hiNC) },
+                    { "EffectX",    new SliderConfig("EffectX",     1, 12, A, loNC, hiNC) },
+                    { "EffectY",    new SliderConfig("EffectY",     1, 13, A, loNC, hiNC) },
+                    { "EffectZ",    new SliderConfig("EffectZ",     1, 14, A, loNC, hiNC) },
+                    { "EffectW",    new SliderConfig("EffectW",     1, 15, B, loNC, hiNC) },
                 };
 
             // add sliders to pane
@@ -258,7 +270,7 @@ namespace LiveryGUIMod {
                 var helperGO = GameObject.Instantiate(helperPrefab.gameObject, paneGO.transform, false);
                 helperGO.name = cfg.name;
                 CIHelperSetting helper = helperGO.GetComponent<CIHelperSetting>();
-                helper.sharedLabelName.text = cfg.label;
+                helper.sharedLabelName.text = cfg.GetLabel();
 
                 helper.sliderBar.callbackOnClickSecondary = new UICallback(value => {
                     OnClickSecondary(helper);
@@ -300,18 +312,18 @@ namespace LiveryGUIMod {
                     //helper.sharedSpriteGradient.SetRGBColor(new Color(0.0f, 0.0f, 0.0f, 1f)); // very faint
                     //helper.sharedSpriteGradient.gameObject.SetActive(true);
                     helper.levelButtonLeft.callbackOnClick = new UICallback(() => {
-                        ContentW.idx = (ContentW.idx - 1 + ContentW.names.Length) % ContentW.names.Length;
+                        ContentW.idx = (ContentW.idx - 1 + ContentW.Count) % ContentW.Count;
                         UpdateContentWLevelWidget();
                         UpdateLiveryFromSliders();
                         RefreshSphereAndMechPreviews();
                     });
                     helper.levelButtonRight.callbackOnClick = new UICallback(() => {
-                        ContentW.idx = (ContentW.idx + 1) % ContentW.names.Length;
+                        ContentW.idx = (ContentW.idx + 1) % ContentW.Count;
                         UpdateContentWLevelWidget();
                         UpdateLiveryFromSliders();
                         RefreshSphereAndMechPreviews();
                     });
-                    UpdateDiscreteLevelWidget(helper, ContentW.idx, ContentW.names.Length, ContentW.GetLevelName());
+                    UpdateDiscreteLevelWidget(helper, ContentW.idx, ContentW.Count, ContentW.GetLevelName());
                 }
 
                 sliderHelpers.Add(key, helper);
@@ -335,7 +347,6 @@ namespace LiveryGUIMod {
 
             toggleLiveryGUIButton = toggleLiveryGUIButtonGO.GetComponent<CIButton>();
             toggleLiveryGUIButton.tooltipUsed = true;
-            toggleLiveryGUIButton.AddTooltip("Livery GUI", "Show/hide advanced livery customization options");
             toggleLiveryGUIButton.tooltipDelay = false;
             toggleLiveryGUIButton.tooltipPivot = UIWidget.Pivot.TopLeft;
             toggleLiveryGUIButton.tooltipOffset = new Vector3(44f, -62f, 0f);
@@ -360,7 +371,6 @@ namespace LiveryGUIMod {
             pilotModeToggleGO.transform.localPosition = Positions.pilotToggle;
 
             pilotModeToggleButton = pilotModeToggleGO.GetComponent<CIButton>();
-            pilotModeToggleButton.AddTooltip("Toggle Pilot Livery-Set Editing Mode", "In that mode, the selected PILOT's livery-set is edited by assigning liveries to the mech's parts. Mech parts that have no pilot-livery are transparent and will show the mech's livery. For example, it is possible to paint a mech gray in MECH edit mode, and then enable PILOT edit mode and assign a red livery to the upper body. Then, whenever that pilot is piloting that mech, the mech will be gray with a red upper body. Any mech this pilot is assigned to will have a red upper body.");
             pilotModeToggleButton.tooltipDelay = false;
             pilotModeToggleButton.tooltipPivot = UIWidget.Pivot.TopLeft;
             pilotModeToggleButton.tooltipOffset = new Vector3(44f, -62f, 0f);
@@ -391,7 +401,6 @@ namespace LiveryGUIMod {
                 ReapplyLiverySet(CIViewBaseLoadout.selectedUnitID);
             });
             pilotModeBaseToggleButton.tooltipUsed = true;
-            pilotModeBaseToggleButton.AddTooltip("Show/Hide Mech Livery", "Shows or hides the mech's base livery underneath the pilot's livery. Only the view in this editor is affected. Right click on livery slots to unassign pilot's livery from that slot. Note: Assigning a livery to a slot with a '+' also affects all parts contained within that slot.");
             pilotModeBaseToggleButton.tooltipDelay = false;
             pilotModeBaseToggleButton.tooltipPivot = UIWidget.Pivot.TopLeft;
             pilotModeBaseToggleButton.tooltipOffset = new Vector3(44f, -62f, 0f);
@@ -408,7 +417,6 @@ namespace LiveryGUIMod {
                 CyclePilotModePilot(-1);
             });
             pilotModePrevButton.tooltipUsed = true;
-            pilotModePrevButton.AddTooltip("Previous Pilot", "Select the previous pilot. This controls which pilot's livery-set is being edited in 'pilot livery-set editing mode'. (This does not assign the pilot to the mech. Assigning a pilot to a mech is done in mission briefing.)");
             pilotModePrevButton.tooltipDelay = false;
             pilotModePrevButton.tooltipOffset = new Vector3(45f, 0f, 0f);
             pilotModePrevButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
@@ -422,7 +430,6 @@ namespace LiveryGUIMod {
                 CyclePilotModePilot(+1);
             });
             pilotModeNextButton.tooltipUsed = true;
-            pilotModeNextButton.AddTooltip("Next Pilot", "Select the next pilot. This controls which pilot's livery-set is being edited in 'pilot livery-set editing mode'. (This does not assign the pilot to the mech. Assigning a pilot to a mech is done in mission briefing.)");
             pilotModeNextButton.tooltipDelay = false;
             pilotModeNextButton.tooltipOffset = new Vector3(45f, 0f, 0f);
             pilotModeNextButton.tooltipPivot = UIWidget.Pivot.BottomLeft;
@@ -444,7 +451,6 @@ namespace LiveryGUIMod {
             if (saveIcon != null) { saveIcon.color = new Color(0.5f, 0.6f, 0.8f, 0.8f); saveIcon.spriteName = "s_icon_l32_lc_save1"; }
 
             resetLiveryButton = resetLiveryButtonGO.GetComponent<CIButton>();
-            resetLiveryButton.AddTooltip("Revert Changes", "Reset this livery to its last saved values.");
             resetLiveryButton.tooltipDelay = false;
             resetLiveryButton.tooltipPivot = UIWidget.Pivot.TopLeft;
             resetLiveryButton.tooltipOffset = new Vector3(44f, -62f, 0f);
@@ -453,7 +459,6 @@ namespace LiveryGUIMod {
             });
 
             saveLiveryButton = saveLiveryButtonGO.GetComponent<CIButton>();
-            saveLiveryButton.AddTooltip("Save Livery", "Save this livery, using the given name. The name used must not match any built-in livery, nor any livery provided by a mod. Using a name that does not exist yet will save to a new livery with that name.");
             saveLiveryButton.tooltipDelay = false;
             saveLiveryButton.tooltipPivot = UIWidget.Pivot.TopLeft;
             saveLiveryButton.tooltipOffset = new Vector3(44f, -62f, 0f);
@@ -485,7 +490,7 @@ namespace LiveryGUIMod {
             liveryNameInput.onSubmit = new List<EventDelegate> { new EventDelegate(new EventDelegate.Callback(OnLiveryNameInput)) };
             liveryNameInput.validation = UIInput.Validation.None;
             liveryNameInput.characterLimit += 10;
-            liveryNameInput.defaultText = "Livery Name";
+            liveryNameInput.defaultText = GetLiveryNameInputPlaceholder();
 
             liveryNameInputGO.SetActive(true);
 
@@ -498,7 +503,6 @@ namespace LiveryGUIMod {
             if (favoriteIcon != null) { favoriteIcon.color = new Color(1f, 1f, 0.2f, 0.8f); favoriteIcon.spriteName = spriteNameStarOutline; } // (we'll toggle between Outline & Filled)
 
             favoriteLiveryButton = favoriteLiveryButtonGO.GetComponent<CIButton>();
-            favoriteLiveryButton.AddTooltip("Toggle as Favorite", "Marks this livery as a favorite. (Favorites are kept at the front of the list of liveries.)");
             favoriteLiveryButton.tooltipDelay = false;
             favoriteLiveryButton.tooltipPivot = UIWidget.Pivot.TopLeft;
             favoriteLiveryButton.tooltipOffset = new Vector3(44f, -62f, 0f);
@@ -510,13 +514,11 @@ namespace LiveryGUIMod {
 
             ////////////////////////////////////////////////////////////////////////////////
             // row of no-op buttons, as a crude legend/hint about usable controls.
-            const string tooltip1 = "Click on sliders or click-and-drag to set.\n\nRemember to save.\nNormal values for sliders are between 0 and 1. Other values might work, but they might cause problems.\n\nYou can use keyboard \"Move Camera\" (Move Up/Down/Left/Right) keys to adjust view.";
-            const string tooltip2 = "For precise adjustments:\nRight-click-and-hold, and move mouse <--->\nChange speed: Hold SHIFT, ALT, or CTRL.";
             LegendConfig[] legendConfigs = {
                 // note: the button icons seem to get left/right mirror'd
-                new LegendConfig("mouse_right_outline", Positions.legendGroup1Item1, tooltip1),
-                new LegendConfig("mouse_left_outline",  Positions.legendGroup2Item1, tooltip2),
-                new LegendConfig("mouse_horizontal",    Positions.legendGroup2Item2, tooltip2),
+                new LegendConfig("mouse_right_outline", Positions.legendGroup1Item1, "livery_gui_hints_basic_text"),
+                new LegendConfig("mouse_left_outline",  Positions.legendGroup2Item1, "livery_gui_hints_precise_left_text"),
+                new LegendConfig("mouse_horizontal",    Positions.legendGroup2Item2, "livery_gui_hints_precise_drag_text"),
             };
             Color legendColor = new Color(1f, 0f, 0f, 0.2f);
 
@@ -536,15 +538,14 @@ namespace LiveryGUIMod {
                 button = buttonGO.GetComponent<CIButton>();
                 button.callbackOnClick = null;
 
-                // 3todo.later update this with better description. ideally would support translations (and for any other tooltips/text).
                 button.tooltipUsed = true;
                 button.tooltipKey = null;
-                button.AddTooltip("Hints", legendConfig.tooltipText);
                 button.tooltipDelay = false;
                 button.tooltipPivot = UIWidget.Pivot.TopRight;
                 button.tooltipOffset = new Vector3(-77f + 100f -29f, -132f +84f -19f);
                 button.tooltipColor = legendColor;
                 button.tooltipColorCustom = true;
+                legendTooltipButtons[legendConfig.tooltipKey] = button;
             }
 
             ////////////////////////////////////////////////////////////////////////////////
@@ -554,6 +555,7 @@ namespace LiveryGUIMod {
 
             ////////////////////////////////////////////////////////////////////////////////
             // Livery GUI initial visibility
+            RefreshLocalization();
             paneGO.SetActive(false);
         }//Initialize()
 
@@ -562,23 +564,120 @@ namespace LiveryGUIMod {
             if (liveryNameInput == null || inputGO == null)
                 return;
 
+            string placeholder = GetLiveryNameInputPlaceholder();
             UILabel[] labels = inputGO.GetComponentsInChildren<UILabel>(true);
             foreach (UILabel label in labels) {
                 if (label == null)
                     continue;
 
                 label.modifier = UILabel.Modifier.None;
-                if (label == liveryNameInput.label && string.Equals(label.text, "Name", StringComparison.OrdinalIgnoreCase))
-                    label.text = "Livery Name";
-                if (label != liveryNameInput.label && string.Equals(label.text, "Name", StringComparison.OrdinalIgnoreCase)) {
-                    label.text = "Livery Name";
+                if (label == liveryNameInput.label &&
+                    (string.Equals(label.text, "Name", StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(label.text, liveryNameInputPlaceholderLast, StringComparison.Ordinal))) {
+                    label.text = placeholder;
+                }
+                if (label != liveryNameInput.label &&
+                    (string.Equals(label.text, "Name", StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(label.text, liveryNameInputPlaceholderLast, StringComparison.Ordinal))) {
+                    label.text = placeholder;
                     label.MarkAsChanged();
                 }
             }
 
+            liveryNameInput.defaultText = placeholder;
+            liveryNameInputPlaceholderLast = placeholder;
             if (liveryNameInput.label != null) {
                 liveryNameInput.label.modifier = UILabel.Modifier.None;
                 liveryNameInput.label.MarkAsChanged();
+            }
+        }
+
+        //==============================================================================
+        static string GetLiveryNameInputPlaceholder() {
+            return Localization.Get("livery_gui_livery_name_input");
+        }
+
+        //==============================================================================
+        public static void RefreshLocalization() {
+            LocalizeSliderLabels();
+            LocalizeStaticButtonTooltips();
+            LocalizeLegendTooltips();
+            LocalizeSettingTooltipButtons();
+
+            if (liveryNameInput != null)
+                ConfigureLiveryNameInput(liveryNameInput.gameObject);
+
+            UpdateContentWLevelWidget();
+            UpdatePilotModeReadout();
+
+            if (CIViewBaseLoadout.ins != null)
+                UpdateLiverySlotLayerMarkers(CIViewBaseLoadout.ins);
+        }
+
+        //==============================================================================
+        static void LocalizeSliderLabels() {
+            if (sliderConfigs != null && sliderHelpers != null) {
+                foreach (KeyValuePair<string, SliderConfig> item in sliderConfigs) {
+                    CIHelperSetting helper;
+                    if (sliderHelpers.TryGetValue(item.Key, out helper) && helper != null && helper.sharedLabelName != null) {
+                        helper.sharedLabelName.text = item.Value.GetLabel();
+                        helper.sharedLabelName.MarkAsChanged();
+                    }
+                }
+            }
+        }
+
+        //==============================================================================
+        static void LocalizeStaticButtonTooltips() {
+            Localization.SetTooltip(toggleLiveryGUIButton,
+                "livery_gui_toggle_header",
+                "livery_gui_toggle_text");
+            Localization.SetTooltip(pilotModeToggleButton,
+                "livery_gui_pilot_mode_toggle_header",
+                "livery_gui_pilot_mode_toggle_text");
+            Localization.SetTooltip(pilotModeBaseToggleButton,
+                "livery_gui_pilot_mode_base_toggle_header",
+                "livery_gui_pilot_mode_base_toggle_text");
+            Localization.SetTooltip(pilotModePrevButton,
+                "livery_gui_previous_pilot_header",
+                "livery_gui_previous_pilot_text");
+            Localization.SetTooltip(pilotModeNextButton,
+                "livery_gui_next_pilot_header",
+                "livery_gui_next_pilot_text");
+            Localization.SetTooltip(resetLiveryButton,
+                "livery_gui_reset_button_header",
+                "livery_gui_reset_button_text");
+            Localization.SetTooltip(saveLiveryButton,
+                "livery_gui_save_button_header",
+                "livery_gui_save_button_text");
+            Localization.SetTooltip(favoriteLiveryButton,
+                "livery_gui_favorite_button_header",
+                "livery_gui_favorite_button_text");
+        }
+
+        //==============================================================================
+        static void LocalizeLegendTooltips() {
+            if (legendTooltipButtons == null)
+                return;
+
+            CIButton button;
+            if (legendTooltipButtons.TryGetValue("livery_gui_hints_basic_text", out button))
+                Localization.SetTooltip(button, "livery_gui_hints_header", "livery_gui_hints_basic_text");
+            if (legendTooltipButtons.TryGetValue("livery_gui_hints_precise_left_text", out button))
+                Localization.SetTooltip(button, "livery_gui_hints_header", "livery_gui_hints_precise_left_text");
+            if (legendTooltipButtons.TryGetValue("livery_gui_hints_precise_drag_text", out button))
+                Localization.SetTooltip(button, "livery_gui_hints_header", "livery_gui_hints_precise_drag_text");
+        }
+
+        //==============================================================================
+        static void LocalizeSettingTooltipButtons() {
+            if (sliderConfigs == null || settingTooltipButtons == null)
+                return;
+
+            foreach (KeyValuePair<string, SliderConfig> item in sliderConfigs) {
+                CIButton button;
+                if (settingTooltipButtons.TryGetValue(item.Key, out button))
+                    ConfigureSettingTooltip(button, item.Value);
             }
         }
 
@@ -605,9 +704,6 @@ namespace LiveryGUIMod {
             foreach (KeyValuePair<string, SliderConfig> item in sliderConfigs) {
                 string key = item.Key;
                 SliderConfig cfg = item.Value;
-                string content = GetSettingTooltipContent(key);
-                if (string.IsNullOrEmpty(content))
-                    continue;
 
                 GameObject buttonGO = GameObject.Instantiate(buttonTemplate, paneGO.transform, false);
                 buttonGO.name = "SettingTooltipButton_" + key;
@@ -635,20 +731,19 @@ namespace LiveryGUIMod {
                 button.callbackOnClickSecondary = null;
                 if (button.audio != null)
                     button.audio.enabled = false;
-                ConfigureSettingTooltip(button, cfg, content);
+                ConfigureSettingTooltip(button, cfg);
                 settingTooltipButtons[key] = button;
                 buttonGO.SetActive(true);
             }
         }
 
         //==============================================================================
-        static void ConfigureSettingTooltip(CIButton button, SliderConfig cfg, string content) {
-            if (button == null || cfg == null || string.IsNullOrEmpty(content))
+        static void ConfigureSettingTooltip(CIButton button, SliderConfig cfg) {
+            if (button == null || cfg == null)
                 return;
 
             button.tooltipUsed = true;
-            button.tooltipKey = null;
-            button.AddTooltip(cfg.label, content);
+            Localization.SetTooltip(button, cfg.labelKey, cfg.tooltipTextKey);
             button.tooltipDelay = false;
             button.tooltipPivot  = GetSettingTooltipPivot(cfg);
             button.tooltipOffset = GetSettingTooltipOffset(cfg);
@@ -689,81 +784,11 @@ namespace LiveryGUIMod {
         }
 
         //==============================================================================
-        static string GetSettingTooltipContent(string key) {
-            if (string.IsNullOrEmpty(key))
-                return null;
-
-            if (key.StartsWith("Content", StringComparison.Ordinal))
-                return GetSupporterDLCTooltipContent(key);
-
-            if (key.StartsWith("Effect", StringComparison.Ordinal))
-                return GetEffectTooltipContent(key);
-
-            string layerName = GetPaintLayerName(key);
-            if (layerName == null)
-                return null;
-
-            char channel = key[key.Length - 1];
-            if (channel == 'R' || channel == 'G' || channel == 'B') {
-                string colorName = channel == 'R' ? "red" : (channel == 'G' ? "green" : "blue");
-                return "Sets the " + colorName + " amount for the " + layerName + " areas of the livery.\n\nPrimary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
-            }
-
-            if (channel == 'A')
-                return "Adjusts how strongly the " + layerName + " color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.\n\nThis behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
-
-            if (channel == 'X')
-                return "Controls the matte-to-shiny response for the duller regions of the " + layerName + " material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
-
-            if (channel == 'Y')
-                return "Controls the matte-to-shiny response for the middle regions of the " + layerName + " material (the areas that are not marked as \"dullest\" nor \"smoothest\"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
-
-            if (channel == 'Z')
-                return "Controls the matte-to-shiny response for the brightest or most polished regions of the " + layerName + " material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
-
-            if (channel == 'W')
-                return "Controls \"metalness\" for the " + layerName + " material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to \"glow\", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.";
-
-            return null;
-        }
-
-        //==============================================================================
-        static string GetPaintLayerName(string key) {
-            if (key.StartsWith("Primary", StringComparison.Ordinal))
-                return "primary";
-            if (key.StartsWith("Secondary", StringComparison.Ordinal))
-                return "secondary";
-            if (key.StartsWith("Tertiary", StringComparison.Ordinal))
-                return "tertiary";
-            return null;
-        }
-
-        //==============================================================================
-        static string GetSupporterDLCTooltipContent(string key) {
-            char channel = key[key.Length - 1];
-            if (channel == 'W')
-                return "Chooses the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed. The pattern is \"additive\", so the color must be brighter than black to be visible.";
-
-            string colorName = channel == 'X' ? "red" : (channel == 'Y' ? "green" : "blue");
-            return "Sets the " + colorName + " amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than \"none\" is selected (the Supporter DLC W setting).\n\nValues are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)";
-        }
-
-        //==============================================================================
-        static string GetEffectTooltipContent(string key) {
-            char channel = key[key.Length - 1];
-            if (channel == 'W')
-                return "Reserved effect value. It currently does not appear to have a visible effect, but it is saved for completeness and experimentation.";
-
-            string layerName = channel == 'X' ? "primary" : (channel == 'Y' ? "secondary" : "tertiary");
-            return "Controls \"iridescence\" for the " + layerName + " paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look \"unusual\". \"Metalness\" and the part's R,G,B color affect how this looks.\n\nExtremely bright parts, especially when shiny, can cause major visual bugs.";
-        }
-
-        //==============================================================================
         static void UpdateContentWLevelWidget() {
             if (sliderHelpers == null || !sliderHelpers.TryGetValue("ContentW", out CIHelperSetting helper))
                 return;
 
-            UpdateDiscreteLevelWidget(helper, ContentW.idx, ContentW.names.Length, ContentW.GetLevelName());
+            UpdateDiscreteLevelWidget(helper, ContentW.idx, ContentW.Count, ContentW.GetLevelName());
         }
 
         //==============================================================================
@@ -802,7 +827,7 @@ namespace LiveryGUIMod {
                 labelGO.name = "pilotModeNameLabelGO";
                 labelGO.transform.localScale = Vector3.one;
                 pilotModeNameLabel = labelGO.GetComponent<UILabel>();
-                pilotModeNameLabel.text = "[none]";
+                pilotModeNameLabel.text = Localization.Get("livery_gui_pilot_none");
                 pilotModeNameLabel.fontSize += 10;
                 pilotModeNameLabel.width = 500;
                 pilotModeNameLabel.height = 60;
@@ -1039,9 +1064,9 @@ namespace LiveryGUIMod {
             button.tooltipPivot = UIWidget.Pivot.BottomLeft;
             button.tooltipOffset = new Vector3(30f, 21f, 0f);
             button.tooltipWidth = 280;
-            button.AddTooltip(
-                pilotControlled ? pilotLiverySlotMarkerTooltipHeader : mechLiverySlotMarkerTooltipHeader,
-                pilotControlled ? pilotLiverySlotMarkerTooltipContent : mechLiverySlotMarkerTooltipContent);
+            Localization.SetTooltip(button,
+                pilotControlled ? "livery_gui_pilot_livery_slot_marker_header" : "livery_gui_mech_livery_slot_marker_header",
+                pilotControlled ? "livery_gui_pilot_livery_slot_marker_text" : "livery_gui_mech_livery_slot_marker_text");
 
             if (slot.button != null) {
                 button.callbackOnClick = slot.button.callbackOnClick;
@@ -1216,7 +1241,6 @@ namespace LiveryGUIMod {
             pilotModePilotId = pilotModePilotIds[pilotIndex];
             pilotModePilotMechId = mechId;
             Debug.Log($"[LiveryGUI] Pilot livery edit target: {pilotModePilotId}");
-            //CIViewOverworldLog.AddMessage($"Pilot livery target: {GetPilotDisplayName(pilotModePilotId)} [sp={pilotSymbolSpriteName}]");
             ReapplyLiverySet(mechId);
         }
 
@@ -1318,7 +1342,7 @@ namespace LiveryGUIMod {
         //==============================================================================
         static void UpdatePilotModeReadout() {
             bool pilotModeActive = IsPilotModeActive();
-            string pilotName = string.IsNullOrEmpty(pilotModePilotId) ? "[none]" : GetPilotDisplayName(pilotModePilotId);
+            string pilotName = string.IsNullOrEmpty(pilotModePilotId) ? Localization.Get("livery_gui_pilot_none") : GetPilotDisplayName(pilotModePilotId);
             if (pilotModeNameLabel != null) {
                 pilotModeNameLabel.text = pilotName;
                 pilotModeNameLabel.gameObject.SetActive(pilotModeActive);
@@ -1603,7 +1627,6 @@ namespace LiveryGUIMod {
                 dstLivery.effect.y            = origLivery.effect.y;
                 dstLivery.effect.z            = origLivery.effect.z;
                 dstLivery.effect.w            = origLivery.effect.w;
-                //CIViewOverworldLog.AddMessage($"Reset livery to last saved version. [sp=s_icon_l32_retreat]");
             }
 
             RefreshSphereAndMechPreviews();
@@ -1620,7 +1643,7 @@ namespace LiveryGUIMod {
 
             if (liveriesDict.ContainsKey(newKey)) {
                 Debug.LogWarning($"[LiveryGUI] USAGE: Refusing to create livery {newKey}: That key already exists.");
-                CIViewOverworldLog.AddMessage($"No. A livery with that Name already exists. [sp=s_icon_l32_cancel]");
+                Localization.AddOverworldMessage("livery_gui_message_livery_name_exists");
                 return null;
             }
 
@@ -1647,7 +1670,6 @@ namespace LiveryGUIMod {
             LiverySnapshotDB.AddLiveryDataSnapshot(newKey, snapshotSource, true);
 
             Debug.Log($"[LiveryGUI] INFO: copied livery {origKey} to {newKey}");
-            //CIViewOverworldLog.AddMessage($"Created a new copy of that livery. [sp=s_icon_l32_lc_grid_plus]");
             return newKey;
         }
 

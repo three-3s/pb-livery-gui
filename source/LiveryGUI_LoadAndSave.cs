@@ -65,7 +65,7 @@ namespace LiveryGUIMod {
 
             Debug.Log($"[LiveryGUI] INFO: Loaded {loadedCount} user-saved liveries. Total liveries: {liveryDict.Count} (though some may be hidden from player-selection list)");
             if (failCount > 0) {
-                CIViewOverworldLog.AddMessage($"LiveryGUI: Failed to load {failCount} liveries. See Player.log for more info. [sp=s_text_24_exclamation]");
+                Localization.AddOverworldMessage("livery_gui_message_load_failed", failCount);
             }
         }
 
@@ -73,7 +73,7 @@ namespace LiveryGUIMod {
         public static void SaveLiveryToFile(string key, DataContainerEquipmentLivery liveryDat) {
             if (LiverySnapshotDB.originalLiveries.ContainsKey(key) && !LiverySnapshotDB.originalLiveries[key].ownedByLiveryGUI) {
                 Debug.LogWarning($"[LiveryGUI] USAGE: Refusing to save to this livery key/name because LiveryGUI does not own that livery. Save it with a new key/name first. key={key}");
-                CIViewOverworldLog.AddMessage($"No. Change the livery Name. LiveryGUI does not own the current Name. [sp=s_icon_l32_cancel]");
+                Localization.AddOverworldMessage("livery_gui_message_save_blocked_name");
                 return;
             }
 
@@ -86,11 +86,10 @@ namespace LiveryGUIMod {
                 UtilitiesYAML.SaveDataToFile(liveryGUISaveDir, liveryFileName, liveryDat, false);
                 Debug.Log($"[LiveryGUI] INFO: Saved {liveryFileName} to {liveryGUISaveDir}");
                 LiverySnapshotDB.AddOrUpdateSnapshot(key, liveryDat);
-                //CIViewOverworldLog.AddMessage($"Saved livery. [sp=s_icon_m_save5]");
             }
             catch (Exception ex) {
                 Debug.LogError($"[LiveryGUI] WARNING: Failed to save {liveryFileName} to {liveryGUISaveDir}:\n{ex}");
-                CIViewOverworldLog.AddMessage($"Failed to save. See Player.log for more info. [sp=s_text_24_exclamation]");
+                Localization.AddOverworldMessage("livery_gui_message_save_failed");
             }
         }
 

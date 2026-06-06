@@ -6,7 +6,6 @@ PRIORITY ITEMS:
    a trivial change that would break the livery-loading. Presumably there's a safer pipeline
    built into the game. TODO: At least test it and confirm that eg adding/removing/renaming a
    field from the yaml does in fact prevent the livery from loading.
- - Translations.
 
 TODO:
  - One-time update notifications for major highlights?
@@ -15,7 +14,6 @@ TODO:
    reset button labeled for prev.
  - Might be nice to apply exponential scaling curve to slider values, though that might need
    to be more or less built-in (or implemented into the slider).
- - Consider adding tooltips to buttons. (with translations)
  - Ideally would want to be able to delete liveries.
  - Maybe a button to open the directory containing the livery .yaml files?
  - Maybe mark the liveries in the selection-list eg with a different color if they've been
@@ -27,8 +25,6 @@ TODO:
    limits. But maybe it would be possible to create a set of widgets where you could specify
    min/max limits, activate picker mode, and apply those limits to any clicked-on sliders.
  - Fix the label above the text input field from "Name" to eg "Livery Name".
- - Remove the forced-capitalization on the text input field. (Seems to only affect display,
-   not the actual string.)
  - Prefix-intercept and prevent CIViewBaseLoadout.UpdateCamera when the text-input field is
    selected (like is done for headerInputUnitName.isSelected in that module).
  - It seems like the liveryKey=null should map to "default" (?). But that's not hooked up right
@@ -45,4 +41,4 @@ BUGS:
 
 Would be nice to have, but [...]:
  - Color-picker
- - Might want to check with 5-color-liveries (Armored Core style) guy (Shytle)
+ - Might want to check with the (Armored Core style) 5-color-liveries guy (Shytle)

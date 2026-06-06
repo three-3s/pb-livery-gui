@@ -1,3 +1,10 @@
+<!--
+Translator notes:
+- This is the English FAQ source for translated documentation copies.
+- Keep file paths, URLs, LiveryGUI, Phantom Brigade, Player.log, and file extensions accurate.
+- Prefer Phantom Brigade's existing localized terminology for mech, unit, pilot, livery/paint scheme, base, and mission briefing.
+-->
+
 # Questions & Answers
 
 ## Which languages are supported?
