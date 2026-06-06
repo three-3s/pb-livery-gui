@@ -1,8 +1,8 @@
-# Questions & Answers
+# 질문과 답변
 
-## Which languages are supported?
+## 어떤 언어를 지원하나요?
 
-The mod has basic translations for all languages currently supported by the game.
+이 모드는 현재 게임이 지원하는 모든 언어에 대한 기본 번역을 포함합니다.
 
 <table>
   <tr>
@@ -61,66 +61,65 @@ The mod has basic translations for all languages currently supported by the game
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## 새 게임을 시작해야 하나요?
 
-## Do I need to start a new game?
+아니요. 이 모드는 기존 저장 파일을 완전히 지원할 것입니다.
 
-No. This mod should fully support existing saves.
+## 도색을 추가하는 다른 모드도 계속 사용할 수 있나요?
 
-## Can I still use other mods that add liveries?
+네. 덮어쓸 수는 없지만, 복사한 뒤 그 복사본을 편집할 수 있습니다.
 
-Yes. You won't be able to overwrite them, but you can copy them and edit the copies.
-
-## Where are the livery files saved?
+## 도색 파일은 어디에 저장되나요?
 
 AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml
 
-For example:
+예시:
 C:/Users/yourUserID/AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI
 
-Feel free to package these files into a mod of liveries.
+이 파일들을 도색 모드로 묶어 배포해도 됩니다.
 
-## Is it possible to use larger/smaller values than the sliders allow?
+## 슬라이더가 허용하는 범위보다 크거나 작은 값을 사용할 수 있나요?
 
-Yes, but the mod does not currently support this. For colors at least, negative values "break" the color and make it black. Colors that are too bright will eventually "break" the color and start showing increasingly large black portions. The material W parameters can trigger some major rendering glitches, particularly with certain effect XYZ values.
+가능하지만, 현재 모드는 이를 직접 지원하지 않습니다. 적어도 색상의 경우 음수 값은 색상을 깨뜨려 검게 만듭니다. 너무 밝은 색상도 결국 색상이 깨지며 점점 더 큰 검은 영역을 표시하기 시작합니다. 재질 W 매개변수는 특히 특정 효과 XYZ 값과 함께 사용할 때 큰 렌더링 오류를 일으킬 수 있습니다.
 
-## Can I change a built-in livery or a livery provided by other mods?
+## 기본 도색이나 다른 모드가 제공하는 도색을 바꿀 수 있나요?
 
-Not directly, but you can save a copy of the livery and edit the copy.
+직접 바꿀 수는 없지만, 해당 도색의 복사본을 저장하고 그 복사본을 편집할 수 있습니다.
 
-## What if I uninstall this mod?
+## 이 모드를 제거하면 어떻게 되나요?
 
-It should be OK. The liveries that no longer exist will look like default liveries. But you may need to re-assign affected parts to use different liveries, or right-click in the liveries page to clear out the liveries to "no livery". If you had an old "upper torso" livery that no longer exists, changing the livery of the whole mech or whole torso can leave the upper torso stuck on "default livery" until it is cleared (right-click).
+대체로 괜찮을 것입니다. 더 이상 존재하지 않는 도색은 기본 도색처럼 보입니다. 다만 영향을 받은 부품에 다른 도색을 다시 지정하거나, 도색 페이지에서 오른쪽 클릭으로 도색을 없음 상태로 지워야 할 수 있습니다. 더 이상 존재하지 않는 예전 상부 몸통 도색이 있었다면, 전체 메카나 전체 몸통의 도색을 바꿀 때 상부 몸통이 지워질 때까지 기본 도색에 고정된 것처럼 남을 수 있습니다(오른쪽 클릭).
 
-Other than that, the game seems to handle disabling/uninstalling the mod well enough.
+그 외에는 게임이 모드 비활성화나 제거를 충분히 잘 처리하는 것으로 보입니다.
 
-## I'm seeing big white circles?
+## 큰 흰색 원이 보입니다.
 
-The normal range for values is between 0 and 1. Anything else is experimental.
+값의 일반적인 범위는 0에서 1 사이입니다. 그 밖의 값은 실험적입니다.
 
-The major culprit for the "big white circles" rendering glitch is having a primary, secondary, or tertiary material W value that is too large, positive or negative. You can sometimes work around this by adjusting the corresponding effect XYZ slider (for effect, X=primary, Y=secondary, Z=tertiary), or reducing the RGB color of the problem part (make R+G+B be less). Reducing the RGB may make it dimmer, but some brightness can be restored by using a negative A component for that color.
+큰 흰색 원 렌더링 오류의 주요 원인은 주/보조/제3 재질 W 값이 너무 큰 경우입니다. 양수와 음수 모두에서 발생할 수 있습니다. 대응하는 효과 XYZ 슬라이더를 조정해 우회할 수 있는 경우가 있습니다(효과에서는 X=주, Y=보조, Z=제3). 또는 문제가 되는 부품의 RGB 색상을 낮춰 보세요(R+G+B를 더 작게). RGB를 낮추면 어두워질 수 있지만, 해당 색상의 A 성분을 음수로 사용하면 밝기를 일부 되돌릴 수 있습니다.
 
-Note: The big white circles may only be visible from certain angles, so use the "move camera" buttons (WASD by default, for QWERTY keyboards) to examine the mech from multiple angles. Try to overshoot the elimination of the white circles by a bit, to help ensure they don't pop up when seen from just the right angle.
+참고: 큰 흰색 원은 특정 각도에서만 보일 수 있으므로 카메라 이동 키(QWERTY 키보드 기본값은 WASD)를 사용해 여러 각도에서 메카를 확인하세요. 흰 원이 겨우 사라지는 지점보다 조금 더 여유 있게 조정하면, 딱 맞는 각도에서 다시 나타나는 일을 줄일 수 있습니다.
 
-## The "Supporter DLC" sliders don't do anything?
+## Supporter DLC 슬라이더가 아무 효과도 없습니다.
 
-The effects are only visible if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0, and you can adjust them from there. The W value should be set to something other than "none".
+이 효과는 Supporter Upgrade DLC를 구매하고 설치한 경우에만 보입니다. 또한 처음에는 색상(XYZ=RGB)을 예를 들어 0.5에서 1.0 사이로 두고 거기서부터 조정하세요. W 값은 none이 아닌 값으로 설정해야 합니다.
 
-## The "effect W" slider doesn't do anything?
+## effect W 슬라이더가 아무 효과도 없습니다.
 
-As far as I can tell, this value has no effect.
+제가 확인한 바로는 이 값에는 효과가 없습니다.
 
-## What are the other livery values in the livery .yaml files? Can I edit those?
+## 도색 .yaml 파일의 다른 값들은 무엇인가요? 편집해도 되나요?
 
-I haven't looked into all of them yet, and am not sure what if anything they do. The mod doesn't currently support anything other than primary/secondary/tertiary colors/materials, and the effects.
+아직 모두 살펴보지 않았고, 실제로 무엇을 하는지 또는 어떤 역할이 있는지도 확실하지 않습니다. 현재 모드는 주/보조/제3 색상과 재질, 그리고 효과만 지원합니다.
 
-## Is there a way to delete liveries?
+## 도색을 삭제하는 방법이 있나요?
 
-Not from inside the mod at the moment. But you can manually delete any of them from AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
+현재는 모드 안에서는 삭제할 수 없습니다. 하지만 AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml 에서 수동으로 원하는 파일을 삭제할 수 있습니다.
 
-This should be safe, other than your mech parts will be using the default livery until you specifically reassign liveries to the affected mech parts.
+이는 안전할 것입니다. 다만 영향을 받은 메카 부품에 다시 도색을 명시적으로 지정할 때까지 그 부품은 기본 도색을 사용합니다.
 
-## Something went wrong?
+## 문제가 생겼나요?
 
-There may be additional information in C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
+C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log 에 추가 정보가 있을 수 있습니다.
 
-In particular, look for [LiveryGUI] log messages, or log messages about problems in "LiveryGUI" files.
+특히 [LiveryGUI] 로그 메시지나 “LiveryGUI” 파일 문제에 대한 로그 메시지를 찾아보세요.

@@ -1,8 +1,8 @@
-# Questions & Answers
+# 質問と回答
 
-## Which languages are supported?
+## どの言語に対応していますか？
 
-The mod has basic translations for all languages currently supported by the game.
+このModには、現在ゲームが対応しているすべての言語向けの基本翻訳があります。
 
 <table>
   <tr>
@@ -61,66 +61,65 @@ The mod has basic translations for all languages currently supported by the game
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## 新しいゲームを始める必要がありますか？
 
-## Do I need to start a new game?
+いいえ。このModは既存のセーブデータを完全にサポートするはずです。
 
-No. This mod should fully support existing saves.
+## 塗装を追加する他のModも使えますか？
 
-## Can I still use other mods that add liveries?
+はい。上書きはできませんが、コピーを作成してそのコピーを編集できます。
 
-Yes. You won't be able to overwrite them, but you can copy them and edit the copies.
-
-## Where are the livery files saved?
+## 塗装ファイルはどこに保存されますか？
 
 AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml
 
-For example:
+例：
 C:/Users/yourUserID/AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI
 
-Feel free to package these files into a mod of liveries.
+これらのファイルを塗装Modとしてまとめてもかまいません。
 
-## Is it possible to use larger/smaller values than the sliders allow?
+## スライダーの範囲より大きい値や小さい値を使えますか？
 
-Yes, but the mod does not currently support this. For colors at least, negative values "break" the color and make it black. Colors that are too bright will eventually "break" the color and start showing increasingly large black portions. The material W parameters can trigger some major rendering glitches, particularly with certain effect XYZ values.
+可能ですが、現在このModは直接対応していません。少なくとも色については、負の値は色を壊して黒くします。明るすぎる色も最終的には色が壊れ、黒い部分がだんだん大きく表示されます。材質のWパラメーターは、特に一部のエフェクトXYZ値と組み合わさると、大きな表示不具合を起こすことがあります。
 
-## Can I change a built-in livery or a livery provided by other mods?
+## 標準の塗装や他のModが提供する塗装を変更できますか？
 
-Not directly, but you can save a copy of the livery and edit the copy.
+直接は変更できません。ただし、その塗装のコピーを保存し、そのコピーを編集できます。
 
-## What if I uninstall this mod?
+## このModをアンインストールするとどうなりますか？
 
-It should be OK. The liveries that no longer exist will look like default liveries. But you may need to re-assign affected parts to use different liveries, or right-click in the liveries page to clear out the liveries to "no livery". If you had an old "upper torso" livery that no longer exists, changing the livery of the whole mech or whole torso can leave the upper torso stuck on "default livery" until it is cleared (right-click).
+おそらく問題ありません。存在しなくなった塗装は標準塗装のように見えます。ただし、影響を受けた部品に別の塗装を再割り当てするか、塗装ページで右クリックして塗装を「塗装なし」に消去する必要があるかもしれません。古い「上部胴体」塗装が存在しなくなった場合、メカ全体や胴体全体の塗装を変更しても、上部胴体が消去されるまで「標準塗装」に固定されたようになることがあります（右クリックで消去）。
 
-Other than that, the game seems to handle disabling/uninstalling the mod well enough.
+それ以外については、ゲームはModの無効化やアンインストールを十分うまく処理しているようです。
 
-## I'm seeing big white circles?
+## 大きな白い円が見えます。
 
-The normal range for values is between 0 and 1. Anything else is experimental.
+通常の値の範囲は0から1です。それ以外は実験的な値です。
 
-The major culprit for the "big white circles" rendering glitch is having a primary, secondary, or tertiary material W value that is too large, positive or negative. You can sometimes work around this by adjusting the corresponding effect XYZ slider (for effect, X=primary, Y=secondary, Z=tertiary), or reducing the RGB color of the problem part (make R+G+B be less). Reducing the RGB may make it dimmer, but some brightness can be restored by using a negative A component for that color.
+「大きな白い円」の表示不具合の主な原因は、メイン、サブ、第3のいずれかの材質W値が大きすぎることです。正の値でも負の値でも発生します。対応するエフェクトXYZスライダーを調整することで回避できる場合があります（エフェクトでは X=メイン、Y=サブ、Z=第3）。または、問題の部品のRGB色を下げてください（R+G+Bを小さくする）。RGBを下げると暗くなる場合がありますが、その色のA成分を負にすると明るさをある程度戻せます。
 
-Note: The big white circles may only be visible from certain angles, so use the "move camera" buttons (WASD by default, for QWERTY keyboards) to examine the mech from multiple angles. Try to overshoot the elimination of the white circles by a bit, to help ensure they don't pop up when seen from just the right angle.
+注意：大きな白い円は特定の角度からしか見えないことがあります。メカを複数の角度から確認するために、「カメラ移動」キー（QWERTYキーボードでは既定でWASD）を使ってください。白い円がぎりぎり消えるところより少し余裕を持って調整すると、ちょうど特定の角度で再発するのを避けやすくなります。
 
-## The "Supporter DLC" sliders don't do anything?
+## 「Supporter DLC」スライダーが何もしません。
 
-The effects are only visible if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0, and you can adjust them from there. The W value should be set to something other than "none".
+この効果は、Supporter Upgrade DLCを購入してインストールしている場合にのみ表示されます。また、最初は色（XYZ=RGB）をたとえば0.5から1.0の間にして、そこから調整してください。W値は none 以外に設定する必要があります。
 
-## The "effect W" slider doesn't do anything?
+## 「effect W」スライダーが何もしません。
 
-As far as I can tell, this value has no effect.
+私が確認できる限り、この値には効果がありません。
 
-## What are the other livery values in the livery .yaml files? Can I edit those?
+## 塗装の.yamlファイルにある他の値は何ですか？編集できますか？
 
-I haven't looked into all of them yet, and am not sure what if anything they do. The mod doesn't currently support anything other than primary/secondary/tertiary colors/materials, and the effects.
+まだすべては調べておらず、それらが何をするのか、あるいは何かをするのかも確かではありません。このModが現在対応しているのは、メイン/サブ/第3の色と材質、およびエフェクトだけです。
 
-## Is there a way to delete liveries?
+## 塗装を削除する方法はありますか？
 
-Not from inside the mod at the moment. But you can manually delete any of them from AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
+現時点ではMod内からは削除できません。ただし、AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml から手動で削除できます。
 
-This should be safe, other than your mech parts will be using the default livery until you specifically reassign liveries to the affected mech parts.
+これは安全なはずです。ただし、影響を受けたメカ部品にあらためて塗装を割り当てるまで、その部品は標準塗装を使用します。
 
-## Something went wrong?
+## 何か問題が起きましたか？
 
-There may be additional information in C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
+C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log に追加情報があるかもしれません。
 
-In particular, look for [LiveryGUI] log messages, or log messages about problems in "LiveryGUI" files.
+特に [LiveryGUI] のログメッセージ、または “LiveryGUI” ファイルの問題に関するログメッセージを探してください。

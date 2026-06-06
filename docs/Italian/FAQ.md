@@ -1,8 +1,8 @@
-# Questions & Answers
+# Domande e risposte
 
-## Which languages are supported?
+## Quali lingue sono supportate?
 
-The mod has basic translations for all languages currently supported by the game.
+La mod include traduzioni di base per tutte le lingue attualmente supportate dal gioco.
 
 <table>
   <tr>
@@ -61,66 +61,65 @@ The mod has basic translations for all languages currently supported by the game
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## Devo iniziare una nuova partita?
 
-## Do I need to start a new game?
+No. Questa mod dovrebbe supportare completamente i salvataggi esistenti.
 
-No. This mod should fully support existing saves.
+## Posso ancora usare altre mod che aggiungono livree?
 
-## Can I still use other mods that add liveries?
+Sì. Non potrai sovrascriverle, ma puoi copiarle e modificare le copie.
 
-Yes. You won't be able to overwrite them, but you can copy them and edit the copies.
-
-## Where are the livery files saved?
+## Dove vengono salvati i file delle livree?
 
 AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml
 
-For example:
+Per esempio:
 C:/Users/yourUserID/AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI
 
-Feel free to package these files into a mod of liveries.
+Puoi impacchettare questi file in una mod di livree.
 
-## Is it possible to use larger/smaller values than the sliders allow?
+## È possibile usare valori più grandi o più piccoli di quelli consentiti dagli slider?
 
-Yes, but the mod does not currently support this. For colors at least, negative values "break" the color and make it black. Colors that are too bright will eventually "break" the color and start showing increasingly large black portions. The material W parameters can trigger some major rendering glitches, particularly with certain effect XYZ values.
+Sì, ma al momento la mod non lo supporta direttamente. Almeno per i colori, i valori negativi rompono il colore e lo rendono nero. I colori troppo luminosi prima o poi rompono il colore e iniziano a mostrare porzioni nere sempre più grandi. I parametri W dei materiali possono causare grossi glitch di rendering, specialmente con certi valori XYZ degli effetti.
 
-## Can I change a built-in livery or a livery provided by other mods?
+## Posso modificare una livrea integrata o una livrea fornita da altre mod?
 
-Not directly, but you can save a copy of the livery and edit the copy.
+Non direttamente, ma puoi salvare una copia della livrea e modificare la copia.
 
-## What if I uninstall this mod?
+## Che succede se disinstallo questa mod?
 
-It should be OK. The liveries that no longer exist will look like default liveries. But you may need to re-assign affected parts to use different liveries, or right-click in the liveries page to clear out the liveries to "no livery". If you had an old "upper torso" livery that no longer exists, changing the livery of the whole mech or whole torso can leave the upper torso stuck on "default livery" until it is cleared (right-click).
+Dovrebbe andare bene. Le livree che non esistono più appariranno come livree predefinite. Potresti però dover riassegnare le parti interessate ad altre livree, oppure fare clic destro nella pagina delle livree per svuotarle e impostarle su nessuna livrea. Se avevi una vecchia livrea del busto superiore che non esiste più, cambiare la livrea dell'intero Mech o dell'intero busto può lasciare il busto superiore bloccato sulla livrea predefinita finché non viene svuotato (clic destro).
 
-Other than that, the game seems to handle disabling/uninstalling the mod well enough.
+A parte questo, il gioco sembra gestire abbastanza bene la disattivazione o la disinstallazione della mod.
 
-## I'm seeing big white circles?
+## Vedo grandi cerchi bianchi?
 
-The normal range for values is between 0 and 1. Anything else is experimental.
+L'intervallo normale dei valori è tra 0 e 1. Tutto il resto è sperimentale.
 
-The major culprit for the "big white circles" rendering glitch is having a primary, secondary, or tertiary material W value that is too large, positive or negative. You can sometimes work around this by adjusting the corresponding effect XYZ slider (for effect, X=primary, Y=secondary, Z=tertiary), or reducing the RGB color of the problem part (make R+G+B be less). Reducing the RGB may make it dimmer, but some brightness can be restored by using a negative A component for that color.
+La causa principale del glitch di rendering dei grandi cerchi bianchi è un valore W del materiale primario, secondario o terzo troppo grande, positivo o negativo. A volte puoi aggirare il problema regolando lo slider XYZ dell'effetto corrispondente (per gli effetti: X=primario, Y=secondario, Z=terzo), oppure riducendo il colore RGB della parte problematica (rendendo R+G+B più piccolo). Ridurre RGB può renderlo più scuro, ma parte della luminosità può essere recuperata usando una componente A negativa per quel colore.
 
-Note: The big white circles may only be visible from certain angles, so use the "move camera" buttons (WASD by default, for QWERTY keyboards) to examine the mech from multiple angles. Try to overshoot the elimination of the white circles by a bit, to help ensure they don't pop up when seen from just the right angle.
+Nota: i grandi cerchi bianchi possono essere visibili solo da certi angoli, quindi usa i tasti di movimento della telecamera (WASD per impostazione predefinita sulle tastiere QWERTY) per esaminare il Mech da più angolazioni. Prova a superare leggermente il punto in cui i cerchi spariscono, così è meno probabile che riappaiano dal punto di vista giusto.
 
-## The "Supporter DLC" sliders don't do anything?
+## Gli slider Supporter DLC non fanno nulla?
 
-The effects are only visible if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0, and you can adjust them from there. The W value should be set to something other than "none".
+Gli effetti sono visibili solo se il DLC Supporter Upgrade è acquistato e installato. Inoltre, per iniziare, assicurati che i colori (XYZ=RGB) siano ad esempio tra 0.5 e 1.0, poi regolali da lì. Il valore W deve essere impostato su qualcosa di diverso da none.
 
-## The "effect W" slider doesn't do anything?
+## Lo slider effect W non fa nulla?
 
-As far as I can tell, this value has no effect.
+Per quanto posso vedere, questo valore non ha alcun effetto.
 
-## What are the other livery values in the livery .yaml files? Can I edit those?
+## Cosa sono gli altri valori delle livree nei file .yaml? Posso modificarli?
 
-I haven't looked into all of them yet, and am not sure what if anything they do. The mod doesn't currently support anything other than primary/secondary/tertiary colors/materials, and the effects.
+Non li ho ancora esaminati tutti e non sono sicuro di cosa facciano, se fanno qualcosa. La mod attualmente supporta solo colori/materiali primario/secondario/terzo e gli effetti.
 
-## Is there a way to delete liveries?
+## C è un modo per eliminare le livree?
 
-Not from inside the mod at the moment. But you can manually delete any of them from AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
+Non dall'interno della mod, al momento. Ma puoi eliminarle manualmente da AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
 
-This should be safe, other than your mech parts will be using the default livery until you specifically reassign liveries to the affected mech parts.
+Questo dovrebbe essere sicuro, a parte il fatto che le parti dei tuoi Mech useranno la livrea predefinita finché non assegnerai di nuovo esplicitamente una livrea alle parti interessate.
 
-## Something went wrong?
+## Qualcosa è andato storto?
 
-There may be additional information in C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
+Potrebbero esserci informazioni aggiuntive in C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
 
-In particular, look for [LiveryGUI] log messages, or log messages about problems in "LiveryGUI" files.
+In particolare, cerca messaggi di log [LiveryGUI], oppure messaggi di log su problemi nei file "LiveryGUI".

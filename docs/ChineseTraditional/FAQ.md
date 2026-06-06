@@ -1,8 +1,8 @@
-# Questions & Answers
+# 問題與回答
 
-## Which languages are supported?
+## 支援哪些語言？
 
-The mod has basic translations for all languages currently supported by the game.
+本模組為遊戲目前支援的所有語言提供基礎翻譯。
 
 <table>
   <tr>
@@ -62,65 +62,65 @@ The mod has basic translations for all languages currently supported by the game
   </tr>
 </table>
 
-## Do I need to start a new game?
+## 我需要開始新遊戲嗎？
 
-No. This mod should fully support existing saves.
+不需要。本模組應可完整支援現有存檔。
 
-## Can I still use other mods that add liveries?
+## 我還能使用其他新增塗裝的模組嗎？
 
-Yes. You won't be able to overwrite them, but you can copy them and edit the copies.
+可以。你不能覆寫它們，但可以複製它們並編輯副本。
 
-## Where are the livery files saved?
+## 塗裝檔案儲存在哪裡？
 
 AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml
 
-For example:
+例如：
 C:/Users/yourUserID/AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI
 
-Feel free to package these files into a mod of liveries.
+你可以將這些檔案打包成一個塗裝模組。
 
-## Is it possible to use larger/smaller values than the sliders allow?
+## 是否可以使用比滑桿允許範圍更大或更小的值？
 
-Yes, but the mod does not currently support this. For colors at least, negative values "break" the color and make it black. Colors that are too bright will eventually "break" the color and start showing increasingly large black portions. The material W parameters can trigger some major rendering glitches, particularly with certain effect XYZ values.
+可以，但模組目前不支援直接這樣做。至少對顏色而言，負值會「破壞」顏色並使其變黑。過亮的顏色最終也會「破壞」顏色，並開始顯示越來越大的黑色區域。材質 W 參數可能觸發一些嚴重的渲染故障，尤其是在某些效果 XYZ 值下。
 
-## Can I change a built-in livery or a livery provided by other mods?
+## 我可以修改內建塗裝或其他模組提供的塗裝嗎？
 
-Not directly, but you can save a copy of the livery and edit the copy.
+不能直接修改，但你可以儲存該塗裝的副本，然後編輯這個副本。
 
-## What if I uninstall this mod?
+## 如果我解除安裝這個模組會怎樣？
 
-It should be OK. The liveries that no longer exist will look like default liveries. But you may need to re-assign affected parts to use different liveries, or right-click in the liveries page to clear out the liveries to "no livery". If you had an old "upper torso" livery that no longer exists, changing the livery of the whole mech or whole torso can leave the upper torso stuck on "default livery" until it is cleared (right-click).
+應該沒有問題。不再存在的塗裝會看起來像預設塗裝。但你可能需要重新指定受影響部件使用其他塗裝，或者在塗裝頁面中按右鍵，將塗裝清除為「無塗裝」。如果你有一個舊的「上軀幹」塗裝已不存在，改變整台機甲或整個軀幹的塗裝時，可能會讓上軀幹卡在「預設塗裝」，直到它被清除（右鍵）。
 
-Other than that, the game seems to handle disabling/uninstalling the mod well enough.
+除此之外，遊戲似乎能相當好地處理停用或解除安裝本模組的情況。
 
-## I'm seeing big white circles?
+## 我看到了很大的白色圓圈？
 
-The normal range for values is between 0 and 1. Anything else is experimental.
+數值的正常範圍是 0 到 1。其他數值都屬於實驗性用法。
 
-The major culprit for the "big white circles" rendering glitch is having a primary, secondary, or tertiary material W value that is too large, positive or negative. You can sometimes work around this by adjusting the corresponding effect XYZ slider (for effect, X=primary, Y=secondary, Z=tertiary), or reducing the RGB color of the problem part (make R+G+B be less). Reducing the RGB may make it dimmer, but some brightness can be restored by using a negative A component for that color.
+造成「巨大白色圓圈」渲染故障的主要原因，是主色、副色或第三色的材質 W 值過大，正負都可能發生。你有時可以透過調整對應的效果 XYZ 滑桿來規避這個問題（效果中 X=主色，Y=副色，Z=第三色），或降低問題部件的 RGB 顏色（讓 R+G+B 更小）。降低 RGB 可能會讓顏色變暗，但可以透過為該顏色使用負的 A 分量來恢復一部分亮度。
 
-Note: The big white circles may only be visible from certain angles, so use the "move camera" buttons (WASD by default, for QWERTY keyboards) to examine the mech from multiple angles. Try to overshoot the elimination of the white circles by a bit, to help ensure they don't pop up when seen from just the right angle.
+注意：巨大白色圓圈可能只會從某些角度可見，所以請使用「移動攝影機」按鍵（QWERTY 鍵盤預設 WASD）從多個角度檢查機甲。嘗試比剛好消除白圈再多調一點，以協助確保它們不會在某個剛好的角度再次出現。
 
-## The "Supporter DLC" sliders don't do anything?
+## 「Supporter DLC」滑桿沒有任何效果？
 
-The effects are only visible if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0, and you can adjust them from there. The W value should be set to something other than "none".
+這些效果只有在已購買並安裝 Supporter Upgrade DLC 時才可見。另外，開始調整時請先確保顏色（XYZ=RGB）大約在 0.5 到 1.0 之間，然後再從那裡繼續調整。W 值應設定為「none」之外的選項。
 
-## The "effect W" slider doesn't do anything?
+## 「effect W」滑桿沒有任何效果？
 
-As far as I can tell, this value has no effect.
+就我所能判斷，這個值沒有作用。
 
-## What are the other livery values in the livery .yaml files? Can I edit those?
+## 塗裝 .yaml 檔案中的其他塗裝值是什麼？我可以編輯它們嗎？
 
-I haven't looked into all of them yet, and am not sure what if anything they do. The mod doesn't currently support anything other than primary/secondary/tertiary colors/materials, and the effects.
+我還沒有研究完所有這些值，也不確定它們是否有什麼作用。模組目前只支援主色/副色/第三色的顏色和材質，以及效果參數。
 
-## Is there a way to delete liveries?
+## 有沒有辦法刪除塗裝？
 
-Not from inside the mod at the moment. But you can manually delete any of them from AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
+目前不能在模組內部刪除。但你可以手動從 AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml 刪除任何塗裝檔案。
 
-This should be safe, other than your mech parts will be using the default livery until you specifically reassign liveries to the affected mech parts.
+這應該是安全的，只是你的機甲部件會使用預設塗裝，直到你專門為受影響的機甲部件重新指定塗裝。
 
-## Something went wrong?
+## 出問題了？
 
-There may be additional information in C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
+C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log 中可能有更多資訊。
 
-In particular, look for [LiveryGUI] log messages, or log messages about problems in "LiveryGUI" files.
+請特別尋找 [LiveryGUI] 記錄訊息，或關於 “LiveryGUI” 檔案問題的記錄訊息。

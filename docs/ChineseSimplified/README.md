@@ -1,6 +1,6 @@
-![workshop_preview.png](workshop_preview.png)
+![workshop_preview.png](../../workshop_preview.png)
 
-## Supported Languages
+## 支持的语言
 
 <table>
   <tr>
@@ -60,42 +60,42 @@
   </tr>
 </table>
 
-## Overview
+## 概览
 
-In the base game, mech paint schemes ("liveries") are limited to preset color and material combinations.
+在基础游戏中，机甲涂装仅限于预设的颜色和材质组合。
 
-Can't find quite the right color combination?
+找不到正好合适的颜色组合？
 
-This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+这个模组添加了一个涂装编辑器，让你可以自定义涂装颜色和材质属性，将它们保存为新的涂装，并应用到你的机甲上。
 
-This mod is compatible with Phantom Brigade v2.0.
+本模组兼容 Phantom Brigade v2.0。
 
-Basic usage
+基本用法：
 
-1. Go into the base's list of units.
-2. Select a mech, then open the Livery selection page.
-3. Click the new "sliders" button to toggle the livery editor UI.
-4. Select an existing livery to use as a starting point.
-5. Enter a new name if you want to create a new editable copy.
-6. Adjust colors and material settings using the sliders.
-7. Click Save to store the livery.
-8. The livery is ready to use.
+1. 进入基地的单位列表。
+2. 选择一台机甲，然后打开涂装选择页面。
+3. 点击新的“滑块”按钮，切换涂装编辑器界面。
+4. 选择一个现有涂装作为起点。
+5. 如果想创建新的可编辑副本，请输入一个新名称。
+6. 使用滑块调整颜色和材质设置。
+7. 点击保存来存储涂装。
+8. 该涂装即可使用。
 
-These liveries are saved to a single common location, and are usable across all your save games.
+这些涂装会保存到一个通用位置，并可在你的所有存档中使用。
 
-Additional controls:
+额外控制：
 
-* Reset: Reverts the current livery to its last saved state.
-* Favorite: Toggles PB's built-in favorited-livery flag, keeping the livery near the front of the list.
-* Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
-* Pilot mode: Lets you edit a livery set for a pilot instead of the mech. Assigned pilot liveries are layered over the mech's own base livery in the base and briefing screens; unpainted pilot slots fall back to the mech's livery.
+* 重置：将当前涂装恢复到上次保存的状态。
+* 收藏：切换 PB 内置的收藏涂装标记，使该涂装靠近列表前端。
+* 右键拖动：进行更高精度的调整。可与左 Shift/Control/Alt 组合使用（更快/更慢）。
+* 驾驶员模式：让你编辑驾驶员的涂装组，而不是机甲本身。已分配驾驶员的涂装会在基地和任务简报画面中叠加到机甲自身的基础涂装之上；未上色的驾驶员槽位会回退到机甲涂装。
 
-The game also lets you use the "move camera" keys to change the camera angle.
+游戏也允许你使用“移动摄像机”按键来改变摄像机角度。
 
-([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+（[Steam 创意工坊页面在这里](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996)）
 
-For questions and troubleshooting, consider looking at the [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md).
+如需查看问题和故障排查，请参阅 [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseSimplified/FAQ.md)。
 
-Bonus features:
+额外功能：
 
-* (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to select sprite entries by clicking on sprites in the atlas.
+* （开发者工具）在开发控制台 `ui.view-enter uitools` 中：增加了通过点击图集中的精灵来选择精灵条目的功能。

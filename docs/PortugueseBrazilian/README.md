@@ -1,6 +1,6 @@
-![workshop_preview.png](workshop_preview.png)
+![workshop_preview.png](../../workshop_preview.png)
 
-## Supported Languages
+## Idiomas suportados
 
 <table>
   <tr>
@@ -59,43 +59,42 @@
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## Visão geral
 
-## Overview
+No jogo base, as pinturas dos Mekas são limitadas a combinações predefinidas de cores e materiais.
 
-In the base game, mech paint schemes ("liveries") are limited to preset color and material combinations.
+Não encontra exatamente a combinação de cores certa?
 
-Can't find quite the right color combination?
+Este mod adiciona um editor de pinturas que permite personalizar cores e propriedades de material, salvá-las como novas pinturas e aplicá-las aos seus Mekas.
 
-This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+Este mod é compatível com Phantom Brigade v2.0.
 
-This mod is compatible with Phantom Brigade v2.0.
+Uso básico:
 
-Basic usage
+1. Abra a lista de unidades na Base.
+2. Selecione um Meka e abra a página de seleção de pintura.
+3. Clique no novo botão de sliders para alternar a interface do editor de pintura.
+4. Selecione uma pintura existente para usar como ponto de partida.
+5. Digite um novo nome se quiser criar uma nova cópia editável.
+6. Ajuste cores e configurações de material usando os sliders.
+7. Clique em Salvar para armazenar a pintura.
+8. A pintura está pronta para uso.
 
-1. Go into the base's list of units.
-2. Select a mech, then open the Livery selection page.
-3. Click the new "sliders" button to toggle the livery editor UI.
-4. Select an existing livery to use as a starting point.
-5. Enter a new name if you want to create a new editable copy.
-6. Adjust colors and material settings using the sliders.
-7. Click Save to store the livery.
-8. The livery is ready to use.
+Essas pinturas são salvas em um único local comum e podem ser usadas em todos os seus jogos salvos.
 
-These liveries are saved to a single common location, and are usable across all your save games.
+Controles adicionais:
 
-Additional controls:
+* Redefinir: reverte a pintura atual para o último estado salvo.
+* Favorita: alterna o marcador de pintura favorita integrado do PB, mantendo a pintura perto do início da lista.
+* Clique direito e arraste: ajuste de maior precisão. Pode ser combinado com Shift/Control/Alt esquerdo para mais rápido ou mais lento.
+* Modo Mekanauta: permite editar um conjunto de pinturas para uma Mekanauta em vez do Meka. As pinturas de Mekanauta atribuídas são aplicadas sobre a pintura base do próprio Meka nas telas da Base e do Briefing da missão; slots de Mekanauta sem pintura usam a pintura do Meka.
 
-* Reset: Reverts the current livery to its last saved state.
-* Favorite: Toggles PB's built-in favorited-livery flag, keeping the livery near the front of the list.
-* Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
-* Pilot mode: Lets you edit a livery set for a pilot instead of the mech. Assigned pilot liveries are layered over the mech's own base livery in the base and briefing screens; unpainted pilot slots fall back to the mech's livery.
+O jogo também permite usar as teclas de mover câmera para alterar o ângulo da câmera.
 
-The game also lets you use the "move camera" keys to change the camera angle.
+([Página do Steam Workshop aqui](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
 
-([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+Para perguntas e solução de problemas, consulte as [Perguntas frequentes](https://github.com/three-3s/pb-livery-gui/blob/main/docs/PortugueseBrazilian/FAQ.md).
 
-For questions and troubleshooting, consider looking at the [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md).
+Recursos bônus:
 
-Bonus features:
-
-* (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to select sprite entries by clicking on sprites in the atlas.
+* (ferramenta de desenvolvedor) No console de desenvolvedor `ui.view-enter uitools`: adicionada a capacidade de selecionar entradas de sprites clicando em sprites no atlas.

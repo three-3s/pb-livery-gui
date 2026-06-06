@@ -1,6 +1,6 @@
-![workshop_preview.png](workshop_preview.png)
+![workshop_preview.png](../../workshop_preview.png)
 
-## Supported Languages
+## Langues prises en charge
 
 <table>
   <tr>
@@ -59,43 +59,42 @@
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## Aperçu
 
-## Overview
+Dans le jeu de base, les peintures de Mech, ou livrées, sont limitées à des combinaisons prédéfinies de couleurs et de matériaux.
 
-In the base game, mech paint schemes ("liveries") are limited to preset color and material combinations.
+Vous ne trouvez pas exactement la bonne combinaison de couleurs ?
 
-Can't find quite the right color combination?
+Ce mod ajoute un éditeur de livrées qui vous permet de personnaliser les couleurs et les propriétés de matériau, de les enregistrer comme nouvelles livrées, puis de les appliquer à vos Mechs.
 
-This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+Ce mod est compatible avec Phantom Brigade v2.0.
 
-This mod is compatible with Phantom Brigade v2.0.
+Utilisation de base :
 
-Basic usage
+1. Ouvrez la liste des unités dans la Base.
+2. Sélectionnez un Mech, puis ouvrez la page de sélection des livrées.
+3. Cliquez sur le nouveau bouton avec les curseurs pour afficher ou masquer l'interface de l'éditeur de livrée.
+4. Sélectionnez une livrée existante comme point de départ.
+5. Entrez un nouveau nom si vous voulez créer une nouvelle copie modifiable.
+6. Réglez les couleurs et les matériaux avec les curseurs.
+7. Cliquez sur Enregistrer pour sauvegarder la livrée.
+8. La livrée est prête à être utilisée.
 
-1. Go into the base's list of units.
-2. Select a mech, then open the Livery selection page.
-3. Click the new "sliders" button to toggle the livery editor UI.
-4. Select an existing livery to use as a starting point.
-5. Enter a new name if you want to create a new editable copy.
-6. Adjust colors and material settings using the sliders.
-7. Click Save to store the livery.
-8. The livery is ready to use.
+Ces livrées sont enregistrées dans un emplacement commun unique et sont utilisables dans toutes vos sauvegardes.
 
-These liveries are saved to a single common location, and are usable across all your save games.
+Commandes supplémentaires :
 
-Additional controls:
+* Réinitialiser : rétablit la livrée actuelle à son dernier état enregistré.
+* Favori : active ou désactive le marqueur de livrée favorite intégré à PB, ce qui garde la livrée près du début de la liste.
+* Clic droit et glisser : réglage plus précis. Peut être combiné avec Maj gauche/Contrôle/Alt pour aller plus vite ou plus lentement.
+* Mode Pilote : permet de modifier un ensemble de livrées pour un Pilote au lieu du Mech. Les livrées des Pilotes assignés sont superposées à la livrée de base du Mech dans la Base et les écrans de Briefing de mission ; les emplacements non peints du Pilote reprennent la livrée du Mech.
 
-* Reset: Reverts the current livery to its last saved state.
-* Favorite: Toggles PB's built-in favorited-livery flag, keeping the livery near the front of the list.
-* Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
-* Pilot mode: Lets you edit a livery set for a pilot instead of the mech. Assigned pilot liveries are layered over the mech's own base livery in the base and briefing screens; unpainted pilot slots fall back to the mech's livery.
+Le jeu vous permet aussi d'utiliser les touches de déplacement de la caméra pour changer l'angle de vue.
 
-The game also lets you use the "move camera" keys to change the camera angle.
+([Page Steam Workshop ici](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
 
-([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+Pour les questions et le dépannage, consultez la [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/docs/French/FAQ.md).
 
-For questions and troubleshooting, consider looking at the [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md).
+Fonctions bonus :
 
-Bonus features:
-
-* (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to select sprite entries by clicking on sprites in the atlas.
+* (outil de développement) Dans la console développeur `ui.view-enter uitools` : ajout de la possibilité de sélectionner des entrées de sprites en cliquant sur les sprites dans l'atlas.

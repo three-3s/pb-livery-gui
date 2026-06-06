@@ -1,8 +1,8 @@
-# Questions & Answers
+# Вопросы и ответы
 
-## Which languages are supported?
+## Какие языки поддерживаются?
 
-The mod has basic translations for all languages currently supported by the game.
+Мод содержит базовые переводы для всех языков, которые сейчас поддерживает игра.
 
 <table>
   <tr>
@@ -61,66 +61,65 @@ The mod has basic translations for all languages currently supported by the game
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## Нужно ли начинать новую игру?
 
-## Do I need to start a new game?
+Нет. Этот мод должен полностью поддерживать существующие сохранения.
 
-No. This mod should fully support existing saves.
+## Можно ли продолжать использовать другие моды, добавляющие окраски?
 
-## Can I still use other mods that add liveries?
+Да. Вы не сможете перезаписывать их окраски, но сможете копировать их и редактировать копии.
 
-Yes. You won't be able to overwrite them, but you can copy them and edit the copies.
-
-## Where are the livery files saved?
+## Где сохраняются файлы окраски?
 
 AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml
 
-For example:
+Например:
 C:/Users/yourUserID/AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI
 
-Feel free to package these files into a mod of liveries.
+Эти файлы можно упаковать в отдельный мод с окрасками.
 
-## Is it possible to use larger/smaller values than the sliders allow?
+## Можно ли использовать значения больше или меньше, чем позволяют слайдеры?
 
-Yes, but the mod does not currently support this. For colors at least, negative values "break" the color and make it black. Colors that are too bright will eventually "break" the color and start showing increasingly large black portions. The material W parameters can trigger some major rendering glitches, particularly with certain effect XYZ values.
+Да, но сейчас мод напрямую этого не поддерживает. По крайней мере для цветов отрицательные значения ломают цвет и делают его черным. Слишком яркие цвета тоже рано или поздно ломаются и начинают показывать все более крупные черные области. Параметры материала W могут вызывать серьезные ошибки рендеринга, особенно с некоторыми значениями эффектов XYZ.
 
-## Can I change a built-in livery or a livery provided by other mods?
+## Можно ли изменить встроенную окраску или окраску из другого мода?
 
-Not directly, but you can save a copy of the livery and edit the copy.
+Не напрямую, но можно сохранить копию окраски и редактировать эту копию.
 
-## What if I uninstall this mod?
+## Что будет, если удалить этот мод?
 
-It should be OK. The liveries that no longer exist will look like default liveries. But you may need to re-assign affected parts to use different liveries, or right-click in the liveries page to clear out the liveries to "no livery". If you had an old "upper torso" livery that no longer exists, changing the livery of the whole mech or whole torso can leave the upper torso stuck on "default livery" until it is cleared (right-click).
+Все должно быть в порядке. Окраски, которых больше не существует, будут выглядеть как стандартные окраски. Но может потребоваться заново назначить затронутым деталям другие окраски или щелкнуть правой кнопкой мыши на странице окраски, чтобы очистить окраску до нет окраски. Если у вас была старая окраска верхней части торса, которой больше не существует, изменение окраски всего меха или всего торса может оставить верхнюю часть торса застрявшей на стандартной окраске, пока она не будет очищена правым щелчком.
 
-Other than that, the game seems to handle disabling/uninstalling the mod well enough.
+Кроме этого, игра, похоже, достаточно хорошо справляется с отключением или удалением мода.
 
-## I'm seeing big white circles?
+## Я вижу большие белые круги?
 
-The normal range for values is between 0 and 1. Anything else is experimental.
+Нормальный диапазон значений находится между 0 и 1. Все остальное является экспериментальным.
 
-The major culprit for the "big white circles" rendering glitch is having a primary, secondary, or tertiary material W value that is too large, positive or negative. You can sometimes work around this by adjusting the corresponding effect XYZ slider (for effect, X=primary, Y=secondary, Z=tertiary), or reducing the RGB color of the problem part (make R+G+B be less). Reducing the RGB may make it dimmer, but some brightness can be restored by using a negative A component for that color.
+Главная причина ошибки рендеринга с большими белыми кругами — слишком большое значение W материала для основного, дополнительного или третьего цвета, как положительное, так и отрицательное. Иногда это можно обойти, изменив соответствующий слайдер эффекта XYZ (для эффектов: X=основной, Y=дополнительный, Z=третий), или уменьшив RGB-цвет проблемной детали (сделав R+G+B меньше). Уменьшение RGB может сделать ее темнее, но часть яркости можно вернуть, используя отрицательную компоненту A для этого цвета.
 
-Note: The big white circles may only be visible from certain angles, so use the "move camera" buttons (WASD by default, for QWERTY keyboards) to examine the mech from multiple angles. Try to overshoot the elimination of the white circles by a bit, to help ensure they don't pop up when seen from just the right angle.
+Примечание: большие белые круги могут быть видны только под некоторыми углами, поэтому используйте клавиши движения камеры (по умолчанию WASD на клавиатурах QWERTY), чтобы осмотреть меха с разных сторон. Попробуйте немного превысить точку исчезновения белых кругов, чтобы они не появлялись снова при взгляде точно под нужным углом.
 
-## The "Supporter DLC" sliders don't do anything?
+## Слайдеры Supporter DLC ничего не делают?
 
-The effects are only visible if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0, and you can adjust them from there. The W value should be set to something other than "none".
+Эффекты видны только если DLC Supporter Upgrade куплен и установлен. Кроме того, для начала убедитесь, что цвета (XYZ=RGB) находятся, например, между 0.5 и 1.0, и настраивайте их оттуда. Значение W должно быть чем-то отличным от none.
 
-## The "effect W" slider doesn't do anything?
+## Слайдер effect W ничего не делает?
 
-As far as I can tell, this value has no effect.
+Насколько я могу судить, это значение ни на что не влияет.
 
-## What are the other livery values in the livery .yaml files? Can I edit those?
+## Что означают другие значения окраски в файлах .yaml? Можно ли их редактировать?
 
-I haven't looked into all of them yet, and am not sure what if anything they do. The mod doesn't currently support anything other than primary/secondary/tertiary colors/materials, and the effects.
+Я еще не изучил их все и не уверен, что они делают, если вообще что-то делают. Сейчас мод поддерживает только основные/дополнительные/третьи цвета и материалы, а также эффекты.
 
-## Is there a way to delete liveries?
+## Есть ли способ удалить окраски?
 
-Not from inside the mod at the moment. But you can manually delete any of them from AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
+На данный момент не из самого мода. Но вы можете вручную удалить любые из них из AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
 
-This should be safe, other than your mech parts will be using the default livery until you specifically reassign liveries to the affected mech parts.
+Это должно быть безопасно, за исключением того, что детали ваших мехов будут использовать стандартную окраску, пока вы явно не назначите новые окраски затронутым деталям.
 
-## Something went wrong?
+## Что-то пошло не так?
 
-There may be additional information in C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
+Дополнительная информация может быть в C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
 
-In particular, look for [LiveryGUI] log messages, or log messages about problems in "LiveryGUI" files.
+В частности, ищите сообщения журнала [LiveryGUI] или сообщения о проблемах в файлах "LiveryGUI".

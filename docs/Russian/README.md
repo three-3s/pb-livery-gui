@@ -1,6 +1,6 @@
-![workshop_preview.png](workshop_preview.png)
+![workshop_preview.png](../../workshop_preview.png)
 
-## Supported Languages
+## Поддерживаемые языки
 
 <table>
   <tr>
@@ -59,43 +59,42 @@
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## Обзор
 
-## Overview
+В базовой игре окраски мехов ограничены заранее заданными сочетаниями цветов и материалов.
 
-In the base game, mech paint schemes ("liveries") are limited to preset color and material combinations.
+Не получается найти подходящее сочетание цветов?
 
-Can't find quite the right color combination?
+Этот мод добавляет редактор окраски, который позволяет настраивать цвета и свойства материалов, сохранять их как новые окраски и применять к вашим мехам.
 
-This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+Этот мод совместим с Phantom Brigade v2.0.
 
-This mod is compatible with Phantom Brigade v2.0.
+Основное использование:
 
-Basic usage
+1. Откройте список юнитов на Базе.
+2. Выберите меха, затем откройте страницу выбора окраски.
+3. Нажмите новую кнопку со слайдерами, чтобы включить интерфейс редактора окраски.
+4. Выберите существующую окраску как отправную точку.
+5. Введите новое имя, если хотите создать новую редактируемую копию.
+6. Настройте цвета и параметры материалов с помощью слайдеров.
+7. Нажмите Сохранить, чтобы сохранить окраску.
+8. Окраска готова к использованию.
 
-1. Go into the base's list of units.
-2. Select a mech, then open the Livery selection page.
-3. Click the new "sliders" button to toggle the livery editor UI.
-4. Select an existing livery to use as a starting point.
-5. Enter a new name if you want to create a new editable copy.
-6. Adjust colors and material settings using the sliders.
-7. Click Save to store the livery.
-8. The livery is ready to use.
+Эти окраски сохраняются в одном общем месте и доступны во всех ваших сохранениях.
 
-These liveries are saved to a single common location, and are usable across all your save games.
+Дополнительное управление:
 
-Additional controls:
+* Сброс: возвращает текущую окраску к последнему сохраненному состоянию.
+* Избранное: переключает встроенный в PB флаг избранной окраски, оставляя окраску ближе к началу списка.
+* Правая кнопка мыши и перетаскивание: более точная настройка. Можно сочетать с левыми Shift/Control/Alt для более быстрой или медленной настройки.
+* Режим пилота: позволяет редактировать набор окраски для пилота вместо меха. Окраски назначенного пилота накладываются поверх собственной базовой окраски меха на экранах Базы и Брифинга задания; неокрашенные слоты пилота используют окраску меха.
 
-* Reset: Reverts the current livery to its last saved state.
-* Favorite: Toggles PB's built-in favorited-livery flag, keeping the livery near the front of the list.
-* Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
-* Pilot mode: Lets you edit a livery set for a pilot instead of the mech. Assigned pilot liveries are layered over the mech's own base livery in the base and briefing screens; unpainted pilot slots fall back to the mech's livery.
+Игра также позволяет использовать клавиши движения камеры, чтобы менять угол обзора.
 
-The game also lets you use the "move camera" keys to change the camera angle.
+([Страница Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
 
-([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+Ответы на вопросы и помощь с неполадками см. в [часто задаваемых вопросах](https://github.com/three-3s/pb-livery-gui/blob/main/docs/Russian/FAQ.md).
 
-For questions and troubleshooting, consider looking at the [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md).
+Бонусные функции:
 
-Bonus features:
-
-* (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to select sprite entries by clicking on sprites in the atlas.
+* (инструмент разработчика) В консоли разработчика `ui.view-enter uitools`: добавлена возможность выбирать записи спрайтов щелчком по спрайтам в атласе.
