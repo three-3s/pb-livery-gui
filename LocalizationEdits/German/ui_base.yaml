@@ -1,0 +1,296 @@
+edits:
+  livery_gui_toggle_header: |-
+    Livery GUI
+  livery_gui_toggle_text: |-
+    Erweiterte Optionen zur Lackierungsanpassung anzeigen/ausblenden
+  livery_gui_pilot_mode_toggle_header: |-
+    Piloten-Lackierungsset-Bearbeitung umschalten
+  livery_gui_pilot_mode_toggle_text: |-
+    In diesem Modus bearbeitest du das Lackierungsset des ausgewählten Piloten, indem du den Mech-Teilen Lackierungen zuweist. Mech-Teile ohne Piloten-Lackierung sind transparent und zeigen die Lackierung des Mechs. Beispiel: Du kannst einen Mech im Mech-Modus grau lackieren, dann den Pilotenmodus aktivieren und dem Oberkörper eine rote Lackierung zuweisen. Wenn dieser Pilot diesen Mech steuert, ist der Mech grau mit rotem Oberkörper. Jeder Mech, dem dieser Pilot zugewiesen wird, erhält einen roten Oberkörper.
+  livery_gui_pilot_mode_base_toggle_header: |-
+    Mech-Lackierung anzeigen/ausblenden
+  livery_gui_pilot_mode_base_toggle_text: |-
+    Zeigt oder verbirgt die Basislackierung des Mechs unter der Piloten-Lackierung. Das betrifft nur die Ansicht in diesem Editor. Rechtsklicke auf Lackierungsplätze, um die Piloten-Lackierung von diesem Platz zu entfernen. Hinweis: Eine Lackierung auf einem Platz mit + betrifft auch alle darin enthaltenen Teile.
+  livery_gui_previous_pilot_header: |-
+    Vorheriger Pilot
+  livery_gui_previous_pilot_text: |-
+    Wählt den vorherigen Piloten. Dies bestimmt, welches Piloten-Lackierungsset im Piloten-Lackierungsmodus bearbeitet wird. Dadurch wird der Pilot nicht dem Mech zugewiesen; Piloten werden im Missionsbriefing zugewiesen.
+  livery_gui_next_pilot_header: |-
+    Nächster Pilot
+  livery_gui_next_pilot_text: |-
+    Wählt den nächsten Piloten. Dies bestimmt, welches Piloten-Lackierungsset im Piloten-Lackierungsmodus bearbeitet wird. Dadurch wird der Pilot nicht dem Mech zugewiesen; Piloten werden im Missionsbriefing zugewiesen.
+  livery_gui_reset_button_header: |-
+    Änderungen zurücksetzen
+  livery_gui_reset_button_text: |-
+    Setzt diese Lackierung auf die zuletzt gespeicherten Werte zurück.
+  livery_gui_save_button_header: |-
+    Lackierung speichern
+  livery_gui_save_button_text: |-
+    Speichert diese Lackierung unter dem angegebenen Namen. Der Name darf keiner eingebauten Lackierung und keiner von einem Mod bereitgestellten Lackierung entsprechen. Ein neuer Name speichert eine neue Lackierung mit diesem Namen.
+  livery_gui_favorite_button_header: |-
+    Favorit umschalten
+  livery_gui_favorite_button_text: |-
+    Markiert diese Lackierung als Favorit. Favoriten bleiben am Anfang der Lackierungsliste.
+  livery_gui_hints_header: |-
+    Hinweise
+  livery_gui_hints_basic_text: |-
+    Klicke auf Schieberegler oder klicke und ziehe zum Einstellen.
+    
+    Speichern nicht vergessen.
+    Normale Werte liegen zwischen 0 und 1. Andere Werte können funktionieren, aber Probleme verursachen.
+    
+    Du kannst die Tastaturbefehle Kamera bewegen (hoch/runter/links/rechts) verwenden, um die Ansicht anzupassen.
+  livery_gui_hints_precise_left_text: |-
+    Für präzise Anpassungen:
+    Rechtsklick halten und Maus nach links/rechts bewegen.
+    Geschwindigkeit ändern: SHIFT, ALT oder CTRL halten.
+  livery_gui_hints_precise_drag_text: |-
+    Für präzise Anpassungen:
+    Rechtsklick halten und Maus nach links/rechts bewegen.
+    Geschwindigkeit ändern: SHIFT, ALT oder CTRL halten.
+  livery_gui_pilot_livery_slot_marker_header: |-
+    Piloten-Lackierung
+  livery_gui_pilot_livery_slot_marker_text: |-
+    Das eigene Lackierungsset des Piloten wird auf diesen Platz angewendet. Diese Lackierung wird auf jedem von diesem Piloten gesteuerten Mech auf diesen Platz angewendet. Hinweis: Jeder mit + markierte Platz hat Unterplätze, die vom übergeordneten Platz beeinflusst werden.
+  livery_gui_mech_livery_slot_marker_header: |-
+    Mech-Basislackierung
+  livery_gui_mech_livery_slot_marker_text: |-
+    Diesem Platz wurde keine Piloten-Lackierung zugewiesen. Die Basislackierung des Mechs steuert diesen Platz. Eine hier zugewiesene Lackierung wird dem Piloten-Lackierungsset hinzugefügt.
+  livery_gui_livery_name_input: |-
+    Lackierungsname
+  livery_gui_pilot_none: |-
+    [keine]
+  livery_gui_supporter_pattern_none: |-
+    keine (w=0.0)
+  livery_gui_supporter_pattern_dots: |-
+    Punkte (w=1.0)
+  livery_gui_supporter_pattern_lines: |-
+    Linien (w=2.0)
+  livery_gui_supporter_pattern_sheen: |-
+    Schimmer (w=3.0)
+  livery_gui_message_load_failed: |-
+    LiveryGUI: {0} Lackierungen konnten nicht geladen werden. Weitere Infos in Player.log. [sp=s_text_24_exclamation]
+  livery_gui_message_save_blocked_name: |-
+    Nein. Ändere den Lackierungsnamen. LiveryGUI besitzt den aktuellen Namen nicht. [sp=s_icon_l32_cancel]
+  livery_gui_message_save_failed: |-
+    Speichern fehlgeschlagen. Weitere Infos in Player.log. [sp=s_text_24_exclamation]
+  livery_gui_message_livery_name_exists: |-
+    Nein. Eine Lackierung mit diesem Namen existiert bereits. [sp=s_icon_l32_cancel]
+  livery_gui_message_save_livery_sets_error: |-
+    Fehler beim Speichern der Lackierungssets (LiveryGUI). [sp=s_icon_l32_cancel]
+  livery_gui_message_load_livery_sets_error: |-
+    Fehler beim Laden der Lackierungssets (LiveryGUI). [sp=s_icon_l32_cancel]
+  livery_gui_message_init_livery_sets_error: |-
+    Fehler beim Initialisieren der Lackierungssets (LiveryGUI). [sp=s_icon_l32_cancel]
+  livery_gui_slider_primaryr_label: |-
+    R              Hauptfarbe
+  livery_gui_slider_primaryg_label: |-
+    G
+  livery_gui_slider_primaryb_label: |-
+    B
+  livery_gui_slider_primarya_label: |-
+    A
+  livery_gui_slider_secondaryr_label: |-
+    R              Nebenfarbe
+  livery_gui_slider_secondaryg_label: |-
+    G
+  livery_gui_slider_secondaryb_label: |-
+    B
+  livery_gui_slider_secondarya_label: |-
+    A
+  livery_gui_slider_tertiaryr_label: |-
+    R              Dritte Farbe
+  livery_gui_slider_tertiaryg_label: |-
+    G
+  livery_gui_slider_tertiaryb_label: |-
+    B
+  livery_gui_slider_tertiarya_label: |-
+    A
+  livery_gui_slider_contentx_label: |-
+    R         Supporter-DLC-Farbe
+  livery_gui_slider_contenty_label: |-
+    G
+  livery_gui_slider_contentz_label: |-
+    B
+  livery_gui_slider_contentw_label: |-
+    Supporter-DLC-Muster
+  livery_gui_slider_primaryx_label: |-
+    niedrig   Haupt-Glanz
+  livery_gui_slider_primaryy_label: |-
+    mittel
+  livery_gui_slider_primaryz_label: |-
+    hoch
+  livery_gui_slider_primaryw_label: |-
+               Metallwirkung
+  livery_gui_slider_secondaryx_label: |-
+    niedrig   Neben-Glanz
+  livery_gui_slider_secondaryy_label: |-
+    mittel
+  livery_gui_slider_secondaryz_label: |-
+    hoch
+  livery_gui_slider_secondaryw_label: |-
+               Metallwirkung
+  livery_gui_slider_tertiaryx_label: |-
+    niedrig   Dritter Glanz
+  livery_gui_slider_tertiaryy_label: |-
+    mittel
+  livery_gui_slider_tertiaryz_label: |-
+    hoch
+  livery_gui_slider_tertiaryw_label: |-
+               Metallwirkung
+  livery_gui_slider_effectx_label: |-
+    Hauptfarbe            Schillern
+  livery_gui_slider_effecty_label: |-
+    Nebenfarbe
+  livery_gui_slider_effectz_label: |-
+    Dritte
+  livery_gui_slider_effectw_label: |-
+    Ungenutzt
+  livery_gui_slider_primaryr_text: |-
+    Legt den Rot-Anteil für die Hauptfarbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_primaryg_text: |-
+    Legt den Grün-Anteil für die Hauptfarbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_primaryb_text: |-
+    Legt den Blau-Anteil für die Hauptfarbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_primarya_text: |-
+    Passt an, wie stark die Hauptfarbe angewendet wird. Um 1 entspricht dem normalen Aussehen. Niedrigere oder negative Werte hellen die Farbe oft Richtung Weiß auf; höhere Werte dunkeln sie Richtung Schwarz ab und reagieren besonders mit Farben über 1.
+    
+    Dies verhält sich eher wie Helligkeit/Kontrast als wie normale Transparenz, und Extremwerte können ungewöhnliche Ergebnisse erzeugen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_secondaryr_text: |-
+    Legt den Rot-Anteil für die Nebenfarbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_secondaryg_text: |-
+    Legt den Grün-Anteil für die Nebenfarbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_secondaryb_text: |-
+    Legt den Blau-Anteil für die Nebenfarbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_secondarya_text: |-
+    Passt an, wie stark die Nebenfarbe angewendet wird. Um 1 entspricht dem normalen Aussehen. Niedrigere oder negative Werte hellen die Farbe oft Richtung Weiß auf; höhere Werte dunkeln sie Richtung Schwarz ab und reagieren besonders mit Farben über 1.
+    
+    Dies verhält sich eher wie Helligkeit/Kontrast als wie normale Transparenz, und Extremwerte können ungewöhnliche Ergebnisse erzeugen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_tertiaryr_text: |-
+    Legt den Rot-Anteil für die dritten Farbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_tertiaryg_text: |-
+    Legt den Grün-Anteil für die dritten Farbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_tertiaryb_text: |-
+    Legt den Blau-Anteil für die dritten Farbe-Bereiche der Lackierung fest.
+    
+    Haupt-, Neben- und dritte Farbbereiche sind unterschiedliche Bereiche auf jedem Mech-Teil. Normale Farbwerte liegen meist zwischen 0 und 1. Werte über 1 können Farben heller machen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_tertiarya_text: |-
+    Passt an, wie stark die dritten Farbe angewendet wird. Um 1 entspricht dem normalen Aussehen. Niedrigere oder negative Werte hellen die Farbe oft Richtung Weiß auf; höhere Werte dunkeln sie Richtung Schwarz ab und reagieren besonders mit Farben über 1.
+    
+    Dies verhält sich eher wie Helligkeit/Kontrast als wie normale Transparenz, und Extremwerte können ungewöhnliche Ergebnisse erzeugen.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_contentx_text: |-
+    Legt den Rot-Anteil für das Overlay-Muster des Supporter Upgrade DLC fest. Dies ist nur sichtbar, wenn der Supporter Upgrade DLC installiert ist und ein anderes Muster als keine gewählt ist (Supporter DLC W).
+    
+    Die Werte sind additiv und können helles Leuchten oder Bloom erzeugen. Zu negative Werte können den Effekt deaktivieren. Gemischte positive und negative Werte können ungewöhnliches Leuchten erzeugen, z. B. (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contenty_text: |-
+    Legt den Grün-Anteil für das Overlay-Muster des Supporter Upgrade DLC fest. Dies ist nur sichtbar, wenn der Supporter Upgrade DLC installiert ist und ein anderes Muster als keine gewählt ist (Supporter DLC W).
+    
+    Die Werte sind additiv und können helles Leuchten oder Bloom erzeugen. Zu negative Werte können den Effekt deaktivieren. Gemischte positive und negative Werte können ungewöhnliches Leuchten erzeugen, z. B. (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contentz_text: |-
+    Legt den Blau-Anteil für das Overlay-Muster des Supporter Upgrade DLC fest. Dies ist nur sichtbar, wenn der Supporter Upgrade DLC installiert ist und ein anderes Muster als keine gewählt ist (Supporter DLC W).
+    
+    Die Werte sind additiv und können helles Leuchten oder Bloom erzeugen. Zu negative Werte können den Effekt deaktivieren. Gemischte positive und negative Werte können ungewöhnliches Leuchten erzeugen, z. B. (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contentw_text: |-
+    Wählt das Overlay-Muster des Supporter Upgrade DLC. Dies ist nur sichtbar, wenn der Supporter Upgrade DLC installiert ist. Das Muster ist additiv, daher muss die Farbe heller als Schwarz sein, um sichtbar zu werden.
+  livery_gui_slider_primaryx_text: |-
+    Steuert die Reaktion von matt zu glänzend für die stumpferen Bereiche des Materials Hauptfarbe. Niedrige Werte wirken flacher und lackierter; höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_primaryy_text: |-
+    Steuert die Reaktion von matt zu glänzend für die mittleren Bereiche des Materials Hauptfarbe. Höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_primaryz_text: |-
+    Steuert die Reaktion von matt zu glänzend für die hellsten oder am stärksten polierten Bereiche des Materials Hauptfarbe. Höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_primaryw_text: |-
+    Steuert die Metallwirkung des Materials Hauptfarbe. Um 0 verhält es sich eher wie Lack oder Kunststoff: Der Winkel des Materials beeinflusst das Aussehen nicht. Um 1 verhält es sich eher wie Metall: Der Winkel beeinflusst das Aussehen dieses Materialbereichs. Werte außerhalb 0 bis 1 sind experimentell. Negative Werte scheinen zu leuchten, und große positive Werte beeinflussen die Helligkeit glatter Glanzlichter und können exotische Farbeffekte erzeugen, besonders mit gemischten RGB-Werten wie (R,G,B)=(1.2, 0.5, 0.8) oder (1.2, 0.4, 1.2).
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen. Bei großen W-Werten X,Y,Z-Glanz reduzieren, um das zu vermeiden.
+  livery_gui_slider_secondaryx_text: |-
+    Steuert die Reaktion von matt zu glänzend für die stumpferen Bereiche des Materials Nebenfarbe. Niedrige Werte wirken flacher und lackierter; höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_secondaryy_text: |-
+    Steuert die Reaktion von matt zu glänzend für die mittleren Bereiche des Materials Nebenfarbe. Höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_secondaryz_text: |-
+    Steuert die Reaktion von matt zu glänzend für die hellsten oder am stärksten polierten Bereiche des Materials Nebenfarbe. Höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_secondaryw_text: |-
+    Steuert die Metallwirkung des Materials Nebenfarbe. Um 0 verhält es sich eher wie Lack oder Kunststoff: Der Winkel des Materials beeinflusst das Aussehen nicht. Um 1 verhält es sich eher wie Metall: Der Winkel beeinflusst das Aussehen dieses Materialbereichs. Werte außerhalb 0 bis 1 sind experimentell. Negative Werte scheinen zu leuchten, und große positive Werte beeinflussen die Helligkeit glatter Glanzlichter und können exotische Farbeffekte erzeugen, besonders mit gemischten RGB-Werten wie (R,G,B)=(1.2, 0.5, 0.8) oder (1.2, 0.4, 1.2).
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen. Bei großen W-Werten X,Y,Z-Glanz reduzieren, um das zu vermeiden.
+  livery_gui_slider_tertiaryx_text: |-
+    Steuert die Reaktion von matt zu glänzend für die stumpferen Bereiche des Materials dritten Farbe. Niedrige Werte wirken flacher und lackierter; höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_tertiaryy_text: |-
+    Steuert die Reaktion von matt zu glänzend für die mittleren Bereiche des Materials dritten Farbe. Höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_tertiaryz_text: |-
+    Steuert die Reaktion von matt zu glänzend für die hellsten oder am stärksten polierten Bereiche des Materials dritten Farbe. Höhere Werte erzeugen schärfere Lichtreflexe. Werte nahe 1 wirken fast spiegelnd.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_tertiaryw_text: |-
+    Steuert die Metallwirkung des Materials dritten Farbe. Um 0 verhält es sich eher wie Lack oder Kunststoff: Der Winkel des Materials beeinflusst das Aussehen nicht. Um 1 verhält es sich eher wie Metall: Der Winkel beeinflusst das Aussehen dieses Materialbereichs. Werte außerhalb 0 bis 1 sind experimentell. Negative Werte scheinen zu leuchten, und große positive Werte beeinflussen die Helligkeit glatter Glanzlichter und können exotische Farbeffekte erzeugen, besonders mit gemischten RGB-Werten wie (R,G,B)=(1.2, 0.5, 0.8) oder (1.2, 0.4, 1.2).
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen. Bei großen W-Werten X,Y,Z-Glanz reduzieren, um das zu vermeiden.
+  livery_gui_slider_effectx_text: |-
+    Steuert das Schillern der Hauptfarbe-Lackbereiche. Positive Werte verstärken eher regenbogenartige Irideszenz. Negative Werte wirken eher perlmuttartig. Werte nahe 0 haben wenig oder keinen Effekt. Große positive oder negative Werte wirken ungewöhnlich. Metallwirkung und die R,G,B-Farbe des Teils beeinflussen das Ergebnis.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_effecty_text: |-
+    Steuert das Schillern der Nebenfarbe-Lackbereiche. Positive Werte verstärken eher regenbogenartige Irideszenz. Negative Werte wirken eher perlmuttartig. Werte nahe 0 haben wenig oder keinen Effekt. Große positive oder negative Werte wirken ungewöhnlich. Metallwirkung und die R,G,B-Farbe des Teils beeinflussen das Ergebnis.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_effectz_text: |-
+    Steuert das Schillern der dritten Farbe-Lackbereiche. Positive Werte verstärken eher regenbogenartige Irideszenz. Negative Werte wirken eher perlmuttartig. Werte nahe 0 haben wenig oder keinen Effekt. Große positive oder negative Werte wirken ungewöhnlich. Metallwirkung und die R,G,B-Farbe des Teils beeinflussen das Ergebnis.
+    
+    Extrem helle Teile können besonders bei hohem Glanz schwere Grafikfehler verursachen.
+  livery_gui_slider_effectw_text: |-
+    Reservierter Effektwert. Er scheint derzeit keinen sichtbaren Effekt zu haben, wird aber der Vollständigkeit und zum Experimentieren gespeichert.

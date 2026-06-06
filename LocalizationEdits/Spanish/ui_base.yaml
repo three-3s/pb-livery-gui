@@ -1,0 +1,296 @@
+edits:
+  livery_gui_toggle_header: |-
+    Livery GUI
+  livery_gui_toggle_text: |-
+    Mostrar/ocultar opciones avanzadas de personalización de pinturas
+  livery_gui_pilot_mode_toggle_header: |-
+    Alternar modo de edición de pinturas de piloto
+  livery_gui_pilot_mode_toggle_text: |-
+    En este modo, editas el conjunto de pinturas del piloto seleccionado asignando pinturas a las piezas del meca. Las piezas sin pintura de piloto son transparentes y muestran la pintura del meca. Por ejemplo, puedes pintar un meca de gris en modo de edición del meca, activar el modo de piloto y asignar una pintura roja al torso superior. Cuando ese piloto maneje ese meca, el meca será gris con el torso superior rojo. Cualquier meca asignado a ese piloto tendrá el torso superior rojo.
+  livery_gui_pilot_mode_base_toggle_header: |-
+    Mostrar/ocultar pintura del meca
+  livery_gui_pilot_mode_base_toggle_text: |-
+    Muestra u oculta la pintura base del meca debajo de la pintura del piloto. Solo afecta a la vista de este editor. Haz clic derecho en los espacios de pintura para quitar la pintura del piloto de ese espacio. Nota: asignar una pintura a un espacio con “+” también afecta a todas las piezas contenidas en ese espacio.
+  livery_gui_previous_pilot_header: |-
+    Piloto anterior
+  livery_gui_previous_pilot_text: |-
+    Selecciona el piloto anterior. Esto controla qué conjunto de pinturas de piloto se edita en el modo de edición de pinturas de piloto. No asigna el piloto al meca; eso se hace en las instrucciones de la misión.
+  livery_gui_next_pilot_header: |-
+    Piloto siguiente
+  livery_gui_next_pilot_text: |-
+    Selecciona el piloto siguiente. Esto controla qué conjunto de pinturas de piloto se edita en el modo de edición de pinturas de piloto. No asigna el piloto al meca; eso se hace en las instrucciones de la misión.
+  livery_gui_reset_button_header: |-
+    Revertir cambios
+  livery_gui_reset_button_text: |-
+    Restablece esta pintura a sus últimos valores guardados.
+  livery_gui_save_button_header: |-
+    Guardar pintura
+  livery_gui_save_button_text: |-
+    Guarda esta pintura con el nombre indicado. El nombre no debe coincidir con ninguna pintura integrada ni con una pintura proporcionada por otro mod. Usar un nombre nuevo guardará una pintura nueva con ese nombre.
+  livery_gui_favorite_button_header: |-
+    Marcar/desmarcar favorito
+  livery_gui_favorite_button_text: |-
+    Marca esta pintura como favorita. Las favoritas se mantienen al principio de la lista de pinturas.
+  livery_gui_hints_header: |-
+    Consejos
+  livery_gui_hints_basic_text: |-
+    Haz clic en los controles deslizantes o haz clic y arrastra para ajustar.
+    
+    Recuerda guardar.
+    Los valores normales de los controles están entre 0 y 1. Otros valores pueden funcionar, pero también pueden causar problemas.
+    
+    Puedes usar las teclas de “Mover cámara” (arriba/abajo/izquierda/derecha) para ajustar la vista.
+  livery_gui_hints_precise_left_text: |-
+    Para ajustes precisos:
+    mantén clic derecho y mueve el ratón <–––>.
+    Cambiar velocidad: mantén SHIFT, ALT o CTRL.
+  livery_gui_hints_precise_drag_text: |-
+    Para ajustes precisos:
+    mantén clic derecho y mueve el ratón <–––>.
+    Cambiar velocidad: mantén SHIFT, ALT o CTRL.
+  livery_gui_pilot_livery_slot_marker_header: |-
+    Pintura del piloto
+  livery_gui_pilot_livery_slot_marker_text: |-
+    El conjunto de pinturas propio del piloto se aplica a este espacio. Esta pintura se aplicará al mismo espacio de cualquier meca pilotado por este piloto. Nota: cualquier espacio marcado con “+” tiene espacios secundarios que se verán afectados por el espacio padre.
+  livery_gui_mech_livery_slot_marker_header: |-
+    Pintura base del meca
+  livery_gui_mech_livery_slot_marker_text: |-
+    No se ha asignado pintura de piloto a este espacio. La pintura base del meca controlará este espacio. Asignar una pintura aquí la asignará al conjunto de pinturas del piloto.
+  livery_gui_livery_name_input: |-
+    Nombre de pintura
+  livery_gui_pilot_none: |-
+    [ninguno]
+  livery_gui_supporter_pattern_none: |-
+    ninguno (w=0.0)
+  livery_gui_supporter_pattern_dots: |-
+    puntos (w=1.0)
+  livery_gui_supporter_pattern_lines: |-
+    líneas (w=2.0)
+  livery_gui_supporter_pattern_sheen: |-
+    brillo (w=3.0)
+  livery_gui_message_load_failed: |-
+    LiveryGUI: No se pudieron cargar {0} pinturas. Consulta Player.log para más información. [sp=s_text_24_exclamation]
+  livery_gui_message_save_blocked_name: |-
+    No. Cambia el nombre de la pintura. LiveryGUI no posee el nombre actual. [sp=s_icon_l32_cancel]
+  livery_gui_message_save_failed: |-
+    No se pudo guardar. Consulta Player.log para más información. [sp=s_text_24_exclamation]
+  livery_gui_message_livery_name_exists: |-
+    No. Ya existe una pintura con ese nombre. [sp=s_icon_l32_cancel]
+  livery_gui_message_save_livery_sets_error: |-
+    Error al guardar conjuntos de pinturas (LiveryGUI). [sp=s_icon_l32_cancel]
+  livery_gui_message_load_livery_sets_error: |-
+    Error al cargar conjuntos de pinturas (LiveryGUI). [sp=s_icon_l32_cancel]
+  livery_gui_message_init_livery_sets_error: |-
+    Error al inicializar conjuntos de pinturas (LiveryGUI). [sp=s_icon_l32_cancel]
+  livery_gui_slider_primaryr_label: |-
+    R              Color principal
+  livery_gui_slider_primaryg_label: |-
+    G
+  livery_gui_slider_primaryb_label: |-
+    B
+  livery_gui_slider_primarya_label: |-
+    A
+  livery_gui_slider_secondaryr_label: |-
+    R              Color secundario
+  livery_gui_slider_secondaryg_label: |-
+    G
+  livery_gui_slider_secondaryb_label: |-
+    B
+  livery_gui_slider_secondarya_label: |-
+    A
+  livery_gui_slider_tertiaryr_label: |-
+    R              Color terciario
+  livery_gui_slider_tertiaryg_label: |-
+    G
+  livery_gui_slider_tertiaryb_label: |-
+    B
+  livery_gui_slider_tertiarya_label: |-
+    A
+  livery_gui_slider_contentx_label: |-
+    R         Color DLC Supporter
+  livery_gui_slider_contenty_label: |-
+    G
+  livery_gui_slider_contentz_label: |-
+    B
+  livery_gui_slider_contentw_label: |-
+    Patrón DLC Sup.
+  livery_gui_slider_primaryx_label: |-
+    bajo      Brillo principal
+  livery_gui_slider_primaryy_label: |-
+    medio
+  livery_gui_slider_primaryz_label: |-
+    alto
+  livery_gui_slider_primaryw_label: |-
+               Aspecto metálico
+  livery_gui_slider_secondaryx_label: |-
+    bajo      Brillo secundario
+  livery_gui_slider_secondaryy_label: |-
+    medio
+  livery_gui_slider_secondaryz_label: |-
+    alto
+  livery_gui_slider_secondaryw_label: |-
+               Aspecto metálico
+  livery_gui_slider_tertiaryx_label: |-
+    bajo      Brillo terciario
+  livery_gui_slider_tertiaryy_label: |-
+    medio
+  livery_gui_slider_tertiaryz_label: |-
+    alto
+  livery_gui_slider_tertiaryw_label: |-
+               Aspecto metálico
+  livery_gui_slider_effectx_label: |-
+    Principal            Iridiscencia
+  livery_gui_slider_effecty_label: |-
+    Secundario
+  livery_gui_slider_effectz_label: |-
+    Terciario
+  livery_gui_slider_effectw_label: |-
+    Sin usar
+  livery_gui_slider_primaryr_text: |-
+    Ajusta la cantidad de rojo para las zonas principal de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_primaryg_text: |-
+    Ajusta la cantidad de verde para las zonas principal de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_primaryb_text: |-
+    Ajusta la cantidad de azul para las zonas principal de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_primarya_text: |-
+    Ajusta la fuerza con la que se aplica el color principal. Cerca de 1 es el aspecto normal. Los valores más bajos o negativos tienden a aclarar o lavar el color hacia blanco; los valores más altos lo oscurecen hacia negro, con una interacción especial con colores más brillantes que 1.
+    
+    Se comporta más como un control de brillo/contraste que como transparencia normal, y los valores extremos pueden dar resultados inusuales.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_secondaryr_text: |-
+    Ajusta la cantidad de rojo para las zonas secundaria de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_secondaryg_text: |-
+    Ajusta la cantidad de verde para las zonas secundaria de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_secondaryb_text: |-
+    Ajusta la cantidad de azul para las zonas secundaria de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_secondarya_text: |-
+    Ajusta la fuerza con la que se aplica el color secundaria. Cerca de 1 es el aspecto normal. Los valores más bajos o negativos tienden a aclarar o lavar el color hacia blanco; los valores más altos lo oscurecen hacia negro, con una interacción especial con colores más brillantes que 1.
+    
+    Se comporta más como un control de brillo/contraste que como transparencia normal, y los valores extremos pueden dar resultados inusuales.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_tertiaryr_text: |-
+    Ajusta la cantidad de rojo para las zonas terciaria de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_tertiaryg_text: |-
+    Ajusta la cantidad de verde para las zonas terciaria de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_tertiaryb_text: |-
+    Ajusta la cantidad de azul para las zonas terciaria de la pintura.
+    
+    las zonas principales, secundarias y terciarias son zonas distintas de cada pieza del meca. Los valores normales de color suelen ir de 0 a 1. Los valores superiores a 1 pueden hacer los colores más brillantes.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_tertiarya_text: |-
+    Ajusta la fuerza con la que se aplica el color terciaria. Cerca de 1 es el aspecto normal. Los valores más bajos o negativos tienden a aclarar o lavar el color hacia blanco; los valores más altos lo oscurecen hacia negro, con una interacción especial con colores más brillantes que 1.
+    
+    Se comporta más como un control de brillo/contraste que como transparencia normal, y los valores extremos pueden dar resultados inusuales.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_contentx_text: |-
+    Ajusta la cantidad de rojo del patrón superpuesto del Supporter Upgrade DLC. Solo tiene efecto visible si el Supporter Upgrade DLC está instalado y se selecciona un patrón que no sea “ninguno” (ajuste Supporter DLC W).
+    
+    Los valores son aditivos y pueden crear resplandor o bloom brillante. Los valores demasiado negativos pueden desactivar el efecto. Mezclar valores positivos y negativos puede producir resplandores inusuales, como (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contenty_text: |-
+    Ajusta la cantidad de verde del patrón superpuesto del Supporter Upgrade DLC. Solo tiene efecto visible si el Supporter Upgrade DLC está instalado y se selecciona un patrón que no sea “ninguno” (ajuste Supporter DLC W).
+    
+    Los valores son aditivos y pueden crear resplandor o bloom brillante. Los valores demasiado negativos pueden desactivar el efecto. Mezclar valores positivos y negativos puede producir resplandores inusuales, como (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contentz_text: |-
+    Ajusta la cantidad de azul del patrón superpuesto del Supporter Upgrade DLC. Solo tiene efecto visible si el Supporter Upgrade DLC está instalado y se selecciona un patrón que no sea “ninguno” (ajuste Supporter DLC W).
+    
+    Los valores son aditivos y pueden crear resplandor o bloom brillante. Los valores demasiado negativos pueden desactivar el efecto. Mezclar valores positivos y negativos puede producir resplandores inusuales, como (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contentw_text: |-
+    Elige el patrón superpuesto del Supporter Upgrade DLC. Solo tiene efecto visible si el Supporter Upgrade DLC está instalado. El patrón es “aditivo”, así que el color debe ser más brillante que el negro para verse.
+  livery_gui_slider_primaryx_text: |-
+    Controla la respuesta de mate a brillante en las regiones más apagadas del material principal. Los valores bajos se ven más planos y pintados; los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_primaryy_text: |-
+    Controla la respuesta de mate a brillante en las regiones medias del material principal (zonas que no son ni las más apagadas ni las más lisas). Los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_primaryz_text: |-
+    Controla la respuesta de mate a brillante en las regiones más luminosas o pulidas del material principal. Los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_primaryw_text: |-
+    Controla el “aspecto metálico” del material principal. Cerca de 0 se comporta más como pintura o plástico: el ángulo del material no afecta su aspecto. Cerca de 1 se comporta más como metal: el ángulo del material sí afecta el aspecto de esa parte. Los valores fuera de 0 a 1 son experimentales. Los valores negativos parecen “brillar”, y los valores positivos grandes afectan el brillo de los reflejos suaves y pueden causar efectos de color exóticos, sobre todo con valores RGB mezclados como (R,G,B)=(1.2, 0.5, 0.8) o (1.2, 0.4, 1.2).
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves. Al usar valores W grandes, baja el brillo X,Y,Z para ayudar a evitarlo.
+  livery_gui_slider_secondaryx_text: |-
+    Controla la respuesta de mate a brillante en las regiones más apagadas del material secundaria. Los valores bajos se ven más planos y pintados; los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_secondaryy_text: |-
+    Controla la respuesta de mate a brillante en las regiones medias del material secundaria (zonas que no son ni las más apagadas ni las más lisas). Los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_secondaryz_text: |-
+    Controla la respuesta de mate a brillante en las regiones más luminosas o pulidas del material secundaria. Los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_secondaryw_text: |-
+    Controla el “aspecto metálico” del material secundaria. Cerca de 0 se comporta más como pintura o plástico: el ángulo del material no afecta su aspecto. Cerca de 1 se comporta más como metal: el ángulo del material sí afecta el aspecto de esa parte. Los valores fuera de 0 a 1 son experimentales. Los valores negativos parecen “brillar”, y los valores positivos grandes afectan el brillo de los reflejos suaves y pueden causar efectos de color exóticos, sobre todo con valores RGB mezclados como (R,G,B)=(1.2, 0.5, 0.8) o (1.2, 0.4, 1.2).
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves. Al usar valores W grandes, baja el brillo X,Y,Z para ayudar a evitarlo.
+  livery_gui_slider_tertiaryx_text: |-
+    Controla la respuesta de mate a brillante en las regiones más apagadas del material terciaria. Los valores bajos se ven más planos y pintados; los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_tertiaryy_text: |-
+    Controla la respuesta de mate a brillante en las regiones medias del material terciaria (zonas que no son ni las más apagadas ni las más lisas). Los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_tertiaryz_text: |-
+    Controla la respuesta de mate a brillante en las regiones más luminosas o pulidas del material terciaria. Los valores altos producen reflejos más definidos. Los valores cercanos a 1 son casi como un espejo.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_tertiaryw_text: |-
+    Controla el “aspecto metálico” del material terciaria. Cerca de 0 se comporta más como pintura o plástico: el ángulo del material no afecta su aspecto. Cerca de 1 se comporta más como metal: el ángulo del material sí afecta el aspecto de esa parte. Los valores fuera de 0 a 1 son experimentales. Los valores negativos parecen “brillar”, y los valores positivos grandes afectan el brillo de los reflejos suaves y pueden causar efectos de color exóticos, sobre todo con valores RGB mezclados como (R,G,B)=(1.2, 0.5, 0.8) o (1.2, 0.4, 1.2).
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves. Al usar valores W grandes, baja el brillo X,Y,Z para ayudar a evitarlo.
+  livery_gui_slider_effectx_text: |-
+    Controla la “iridiscencia” de las zonas de pintura principal. Los valores positivos tienden a una iridiscencia arcoíris más fuerte. Los valores negativos tienden a un aspecto nacarado. Los valores cerca de 0 tienen poco o ningún efecto. Los valores grandes, positivos o negativos, se verán “inusuales”. El “aspecto metálico” y el color R,G,B de la pieza afectan el resultado.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_effecty_text: |-
+    Controla la “iridiscencia” de las zonas de pintura secundaria. Los valores positivos tienden a una iridiscencia arcoíris más fuerte. Los valores negativos tienden a un aspecto nacarado. Los valores cerca de 0 tienen poco o ningún efecto. Los valores grandes, positivos o negativos, se verán “inusuales”. El “aspecto metálico” y el color R,G,B de la pieza afectan el resultado.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_effectz_text: |-
+    Controla la “iridiscencia” de las zonas de pintura terciaria. Los valores positivos tienden a una iridiscencia arcoíris más fuerte. Los valores negativos tienden a un aspecto nacarado. Los valores cerca de 0 tienen poco o ningún efecto. Los valores grandes, positivos o negativos, se verán “inusuales”. El “aspecto metálico” y el color R,G,B de la pieza afectan el resultado.
+    
+    Las piezas extremadamente brillantes, sobre todo si tienen mucho brillo, pueden causar errores visuales graves.
+  livery_gui_slider_effectw_text: |-
+    Valor de efecto reservado. Actualmente no parece tener un efecto visible, pero se guarda por completitud y experimentación.

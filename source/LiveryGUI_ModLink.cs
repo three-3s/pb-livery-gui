@@ -70,6 +70,7 @@ namespace LiveryGUIMod {
                         return;
                     loadedYet = true;
 
+                    Localization.RegisterLanguageChangeCallback();
                     LiverySnapshotDB.SnapshotInitialLiveries();
                     LoadAndSave.LoadUserSavedLiveries();
                 }
@@ -87,7 +88,7 @@ namespace LiveryGUIMod {
                 }
                 catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error saving livery sets: {ex}");
-                    CIViewOverworldLog.AddMessage($"Error saving livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]");
+                    Localization.AddOverworldMessage("livery_gui_message_save_livery_sets_error");
                 }
             }
         }
@@ -103,7 +104,7 @@ namespace LiveryGUIMod {
                 }
                 catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error loading livery-sets: {ex}");
-                    CIViewOverworldLog.AddMessage($"Error loading livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]");
+                    Localization.AddOverworldMessage("livery_gui_message_load_livery_sets_error");
                 }
             }
         }
@@ -116,7 +117,7 @@ namespace LiveryGUIMod {
                 }
                 catch (Exception ex) {
                     Debug.LogError($"[LiveryGUI] Error initializing save-game livery sets after load: {ex}");
-                    CIViewOverworldLog.AddMessage($"Error initializing livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]");
+                    Localization.AddOverworldMessage("livery_gui_message_init_livery_sets_error");
                 }
             }
         }

@@ -1,6 +1,6 @@
-![workshop_preview.png](workshop_preview.png)
+![workshop_preview.png](../../workshop_preview.png)
 
-## Supported Languages
+## Lingue supportate
 
 <table>
   <tr>
@@ -59,43 +59,42 @@
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## Panoramica
 
-## Overview
+Nel gioco base, le verniciature dei Mech sono limitate a combinazioni predefinite di colori e materiali.
 
-In the base game, mech paint schemes ("liveries") are limited to preset color and material combinations.
+Non trovi proprio la combinazione di colori giusta?
 
-Can't find quite the right color combination?
+Questa mod aggiunge un editor di livree che ti permette di personalizzare colori e proprietà dei materiali, salvarli come nuove livree e applicarli ai tuoi Mech.
 
-This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+Questa mod è compatibile con Phantom Brigade v2.0.
 
-This mod is compatible with Phantom Brigade v2.0.
+Uso di base:
 
-Basic usage
+1. Apri la lista delle unità nella Base.
+2. Seleziona un Mech, poi apri la pagina di selezione della livrea.
+3. Fai clic sul nuovo pulsante con gli slider per mostrare o nascondere l'interfaccia dell'editor livrea.
+4. Seleziona una livrea esistente come punto di partenza.
+5. Inserisci un nuovo nome se vuoi creare una nuova copia modificabile.
+6. Regola colori e materiali usando gli slider.
+7. Fai clic su Salva per memorizzare la livrea.
+8. La livrea è pronta per l'uso.
 
-1. Go into the base's list of units.
-2. Select a mech, then open the Livery selection page.
-3. Click the new "sliders" button to toggle the livery editor UI.
-4. Select an existing livery to use as a starting point.
-5. Enter a new name if you want to create a new editable copy.
-6. Adjust colors and material settings using the sliders.
-7. Click Save to store the livery.
-8. The livery is ready to use.
+Queste livree vengono salvate in un unica posizione comune e possono essere usate in tutti i tuoi salvataggi.
 
-These liveries are saved to a single common location, and are usable across all your save games.
+Controlli aggiuntivi:
 
-Additional controls:
+* Reimposta: riporta la livrea corrente al suo ultimo stato salvato.
+* Preferita: attiva o disattiva il flag preferita integrato di PB, mantenendo la livrea vicino all'inizio della lista.
+* Clic destro e trascina: regolazione a precisione più alta. Può essere combinata con Shift/Control/Alt sinistro (più veloce/più lenta).
+* Modalità Pilota: ti permette di modificare un set di livree per una Pilota invece del Mech. Le livree delle Pilote assegnate vengono sovrapposte alla livrea base del Mech nella Base e nelle schermate del Briefing della missione; gli slot Pilota non dipinti usano la livrea del Mech.
 
-* Reset: Reverts the current livery to its last saved state.
-* Favorite: Toggles PB's built-in favorited-livery flag, keeping the livery near the front of the list.
-* Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
-* Pilot mode: Lets you edit a livery set for a pilot instead of the mech. Assigned pilot liveries are layered over the mech's own base livery in the base and briefing screens; unpainted pilot slots fall back to the mech's livery.
+Il gioco ti permette anche di usare i tasti di movimento della telecamera per cambiare l'angolo di visuale.
 
-The game also lets you use the "move camera" keys to change the camera angle.
+([Pagina Steam Workshop qui](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
 
-([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+Per domande e risoluzione dei problemi, consulta le [Domande frequenti](https://github.com/three-3s/pb-livery-gui/blob/main/docs/Italian/FAQ.md).
 
-For questions and troubleshooting, consider looking at the [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md).
+Funzioni bonus:
 
-Bonus features:
-
-* (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to select sprite entries by clicking on sprites in the atlas.
+* (strumento per sviluppatori) Nella console sviluppatore `ui.view-enter uitools`: aggiunta la possibilità di selezionare voci sprite facendo clic sugli sprite nell'atlante.

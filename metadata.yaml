@@ -1,14 +1,14 @@
 priority: 0
 colorHue: 0.55
 id: LiveryGUI
-ver: 1.3.0-DEV-INTERNAL
+ver: 2.0.0-DEV-INTERNAL
 url: 
 includesConfigOverrides: false
 includesConfigEdits: false
 includesConfigTrees: false
 includesLibraries: true
 includesTextures: false
-includesLocalizationEdits: false
+includesLocalizationEdits: true
 includesLocalizations: false
 includesAssetBundles: false
 gameVersion2Compatible: true
@@ -19,4 +19,7 @@ desc: >-
   Adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
 
 
-  Go to the "mech paint" part of the base, and click on the new "sliders" button. Choose a livery to start from, give it a new name, and click SAVE or CLONE button. Adjust the sliders to your liking. Remember to SAVE any changes to your livery.
+  Can also assign liveries to pilots (affecting whatever mech they pilot).
+
+
+  Go to the "mech paint" part of the base, and click on the new "sliders" button. Choose a livery to start from, give it a new name (if necessary/desired), and click SAVE. Adjust the sliders to your liking. Remember to SAVE any changes to your livery.

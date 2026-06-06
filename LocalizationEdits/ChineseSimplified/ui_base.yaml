@@ -1,0 +1,296 @@
+edits:
+  livery_gui_toggle_header: |-
+    Livery GUI
+  livery_gui_toggle_text: |-
+    显示/隐藏高级涂装自定义选项
+  livery_gui_pilot_mode_toggle_header: |-
+    切换驾驶员涂装集编辑模式
+  livery_gui_pilot_mode_toggle_text: |-
+    在此模式中，你通过给机甲部件分配涂装来编辑所选驾驶员的涂装集。没有驾驶员涂装的机甲部件会保持透明，显示机甲自身的涂装。例如，可以在机甲编辑模式中把机甲涂成灰色，然后启用驾驶员编辑模式并给上半身分配红色涂装。只要该驾驶员驾驶这台机甲，机甲就会显示为灰色并带有红色上半身。该驾驶员分配到任何机甲时，都会让其上半身变为红色。
+  livery_gui_pilot_mode_base_toggle_header: |-
+    显示/隐藏机甲涂装
+  livery_gui_pilot_mode_base_toggle_text: |-
+    显示或隐藏驾驶员涂装下方的机甲基础涂装。只影响此编辑器中的显示。右键点击涂装槽可取消该槽的驾驶员涂装。注意：给带有“+”的槽分配涂装也会影响该槽包含的所有部件。
+  livery_gui_previous_pilot_header: |-
+    上一名驾驶员
+  livery_gui_previous_pilot_text: |-
+    选择上一名驾驶员。这会控制驾驶员涂装集编辑模式中正在编辑哪名驾驶员的涂装集。此操作不会把驾驶员分配给机甲；驾驶员分配需要在任务简报中完成。
+  livery_gui_next_pilot_header: |-
+    下一名驾驶员
+  livery_gui_next_pilot_text: |-
+    选择下一名驾驶员。这会控制驾驶员涂装集编辑模式中正在编辑哪名驾驶员的涂装集。此操作不会把驾驶员分配给机甲；驾驶员分配需要在任务简报中完成。
+  livery_gui_reset_button_header: |-
+    还原更改
+  livery_gui_reset_button_text: |-
+    将此涂装重置为上次保存的数值。
+  livery_gui_save_button_header: |-
+    保存涂装
+  livery_gui_save_button_text: |-
+    使用给定名称保存此涂装。名称不能与内置涂装或其他模组提供的涂装相同。使用尚不存在的名称会以该名称保存为新的涂装。
+  livery_gui_favorite_button_header: |-
+    切换收藏
+  livery_gui_favorite_button_text: |-
+    将此涂装标记为收藏。收藏会保留在涂装列表前方。
+  livery_gui_hints_header: |-
+    提示
+  livery_gui_hints_basic_text: |-
+    点击滑块或点击并拖动来设置。
+    
+    记得保存。
+    滑块的正常值通常在0到1之间。其他值可能有效，但也可能导致问题。
+    
+    可使用键盘“移动相机”（上/下/左/右移动）按键来调整视角。
+  livery_gui_hints_precise_left_text: |-
+    精细调整：
+    按住右键并左右移动鼠标。
+    改变速度：按住 SHIFT、ALT 或 CTRL。
+  livery_gui_hints_precise_drag_text: |-
+    精细调整：
+    按住右键并左右移动鼠标。
+    改变速度：按住 SHIFT、ALT 或 CTRL。
+  livery_gui_pilot_livery_slot_marker_header: |-
+    驾驶员涂装
+  livery_gui_pilot_livery_slot_marker_text: |-
+    驾驶员自己的涂装集会应用到此槽。该驾驶员驾驶任何机甲时，此涂装都会应用到对应槽。注意：带有“+”的槽有子槽，会受父槽影响。
+  livery_gui_mech_livery_slot_marker_header: |-
+    机甲基础涂装
+  livery_gui_mech_livery_slot_marker_text: |-
+    此槽没有分配驾驶员涂装。机甲自身的基础涂装将控制此槽。给此槽分配涂装会把该涂装分配到驾驶员涂装集。
+  livery_gui_livery_name_input: |-
+    涂装名称
+  livery_gui_pilot_none: |-
+    [无]
+  livery_gui_supporter_pattern_none: |-
+    无 (w=0.0)
+  livery_gui_supporter_pattern_dots: |-
+    点 (w=1.0)
+  livery_gui_supporter_pattern_lines: |-
+    线 (w=2.0)
+  livery_gui_supporter_pattern_sheen: |-
+    光泽 (w=3.0)
+  livery_gui_message_load_failed: |-
+    LiveryGUI：无法加载 {0} 个涂装。更多信息请查看 Player.log。 [sp=s_text_24_exclamation]
+  livery_gui_message_save_blocked_name: |-
+    不行。请更改涂装名称。LiveryGUI 不拥有当前名称。 [sp=s_icon_l32_cancel]
+  livery_gui_message_save_failed: |-
+    保存失败。更多信息请查看 Player.log。 [sp=s_text_24_exclamation]
+  livery_gui_message_livery_name_exists: |-
+    不行。已有同名涂装。 [sp=s_icon_l32_cancel]
+  livery_gui_message_save_livery_sets_error: |-
+    保存涂装集时出错 (LiveryGUI)。 [sp=s_icon_l32_cancel]
+  livery_gui_message_load_livery_sets_error: |-
+    加载涂装集时出错 (LiveryGUI)。 [sp=s_icon_l32_cancel]
+  livery_gui_message_init_livery_sets_error: |-
+    初始化涂装集时出错 (LiveryGUI)。 [sp=s_icon_l32_cancel]
+  livery_gui_slider_primaryr_label: |-
+    R              主色
+  livery_gui_slider_primaryg_label: |-
+    G
+  livery_gui_slider_primaryb_label: |-
+    B
+  livery_gui_slider_primarya_label: |-
+    A
+  livery_gui_slider_secondaryr_label: |-
+    R              副色
+  livery_gui_slider_secondaryg_label: |-
+    G
+  livery_gui_slider_secondaryb_label: |-
+    B
+  livery_gui_slider_secondarya_label: |-
+    A
+  livery_gui_slider_tertiaryr_label: |-
+    R              第三色
+  livery_gui_slider_tertiaryg_label: |-
+    G
+  livery_gui_slider_tertiaryb_label: |-
+    B
+  livery_gui_slider_tertiarya_label: |-
+    A
+  livery_gui_slider_contentx_label: |-
+    R         支持者DLC颜色
+  livery_gui_slider_contenty_label: |-
+    G
+  livery_gui_slider_contentz_label: |-
+    B
+  livery_gui_slider_contentw_label: |-
+    支持者DLC图案
+  livery_gui_slider_primaryx_label: |-
+    低       主色光泽
+  livery_gui_slider_primaryy_label: |-
+    中
+  livery_gui_slider_primaryz_label: |-
+    高
+  livery_gui_slider_primaryw_label: |-
+               金属感
+  livery_gui_slider_secondaryx_label: |-
+    低       副色光泽
+  livery_gui_slider_secondaryy_label: |-
+    中
+  livery_gui_slider_secondaryz_label: |-
+    高
+  livery_gui_slider_secondaryw_label: |-
+               金属感
+  livery_gui_slider_tertiaryx_label: |-
+    低       第三色光泽
+  livery_gui_slider_tertiaryy_label: |-
+    中
+  livery_gui_slider_tertiaryz_label: |-
+    高
+  livery_gui_slider_tertiaryw_label: |-
+               金属感
+  livery_gui_slider_effectx_label: |-
+    主色            虹色效果
+  livery_gui_slider_effecty_label: |-
+    副色
+  livery_gui_slider_effectz_label: |-
+    第三色
+  livery_gui_slider_effectw_label: |-
+    未使用
+  livery_gui_slider_primaryr_text: |-
+    设置涂装主色区域的红色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_primaryg_text: |-
+    设置涂装主色区域的绿色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_primaryb_text: |-
+    设置涂装主色区域的蓝色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_primarya_text: |-
+    调整主色应用的强度。约为1时是正常外观。较低或负数值通常会让颜色变亮或洗成白色；较高数值会让颜色变暗趋向黑色，并且会与大于1的亮色产生特殊互动。
+    
+    它更像亮度/对比度控制，而不是普通透明度；极端值可能产生异常结果。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_secondaryr_text: |-
+    设置涂装副色区域的红色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_secondaryg_text: |-
+    设置涂装副色区域的绿色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_secondaryb_text: |-
+    设置涂装副色区域的蓝色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_secondarya_text: |-
+    调整副色应用的强度。约为1时是正常外观。较低或负数值通常会让颜色变亮或洗成白色；较高数值会让颜色变暗趋向黑色，并且会与大于1的亮色产生特殊互动。
+    
+    它更像亮度/对比度控制，而不是普通透明度；极端值可能产生异常结果。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_tertiaryr_text: |-
+    设置涂装第三色区域的红色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_tertiaryg_text: |-
+    设置涂装第三色区域的绿色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_tertiaryb_text: |-
+    设置涂装第三色区域的蓝色量。
+    
+    主色、副色和第三色是每个机甲部件上的不同区域。普通颜色值通常为0到1。大于1的值可以让颜色更亮。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_tertiarya_text: |-
+    调整第三色应用的强度。约为1时是正常外观。较低或负数值通常会让颜色变亮或洗成白色；较高数值会让颜色变暗趋向黑色，并且会与大于1的亮色产生特殊互动。
+    
+    它更像亮度/对比度控制，而不是普通透明度；极端值可能产生异常结果。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_contentx_text: |-
+    设置 Supporter Upgrade DLC 叠加图案的红色量。只有安装了 Supporter Upgrade DLC 且选择了“无”以外的图案（Supporter DLC W 设置）时才可见。
+    
+    这些值是加性的，可以产生明亮辉光或泛光。过于负的值可能禁用效果。混合正值和负值可能产生异常辉光，例如 (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contenty_text: |-
+    设置 Supporter Upgrade DLC 叠加图案的绿色量。只有安装了 Supporter Upgrade DLC 且选择了“无”以外的图案（Supporter DLC W 设置）时才可见。
+    
+    这些值是加性的，可以产生明亮辉光或泛光。过于负的值可能禁用效果。混合正值和负值可能产生异常辉光，例如 (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contentz_text: |-
+    设置 Supporter Upgrade DLC 叠加图案的蓝色量。只有安装了 Supporter Upgrade DLC 且选择了“无”以外的图案（Supporter DLC W 设置）时才可见。
+    
+    这些值是加性的，可以产生明亮辉光或泛光。过于负的值可能禁用效果。混合正值和负值可能产生异常辉光，例如 (R,G,B)=(+5, -5, -1.8)
+  livery_gui_slider_contentw_text: |-
+    选择 Supporter Upgrade DLC 叠加图案。只有安装了 Supporter Upgrade DLC 时才可见。该图案是“加性”的，因此颜色必须比黑色更亮才可见。
+  livery_gui_slider_primaryx_text: |-
+    控制主色材质较暗区域从哑光到高光的反应。较低值看起来更平、更像涂漆；较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_primaryy_text: |-
+    控制主色材质中间区域（既不是“最暗”也不是“最光滑”的区域）从哑光到高光的反应。较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_primaryz_text: |-
+    控制主色材质最亮或最抛光区域从哑光到高光的反应。较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_primaryw_text: |-
+    控制主色材质的“金属感”。约为0时更像涂漆或塑料：材质角度不会影响外观。约为1时更像金属：材质角度会影响该区域的外观。0到1之外的值属于实验性质。负值似乎会“发光”，较大的正值会影响平滑高光的亮度，并可能造成特殊颜色效果，尤其在混合 RGB 值如 (R,G,B)=(1.2, 0.5, 0.8) 或 (1.2, 0.4, 1.2) 时。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。使用较大的 W 值时，请降低 X,Y,Z 光泽度以帮助避免问题。
+  livery_gui_slider_secondaryx_text: |-
+    控制副色材质较暗区域从哑光到高光的反应。较低值看起来更平、更像涂漆；较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_secondaryy_text: |-
+    控制副色材质中间区域（既不是“最暗”也不是“最光滑”的区域）从哑光到高光的反应。较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_secondaryz_text: |-
+    控制副色材质最亮或最抛光区域从哑光到高光的反应。较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_secondaryw_text: |-
+    控制副色材质的“金属感”。约为0时更像涂漆或塑料：材质角度不会影响外观。约为1时更像金属：材质角度会影响该区域的外观。0到1之外的值属于实验性质。负值似乎会“发光”，较大的正值会影响平滑高光的亮度，并可能造成特殊颜色效果，尤其在混合 RGB 值如 (R,G,B)=(1.2, 0.5, 0.8) 或 (1.2, 0.4, 1.2) 时。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。使用较大的 W 值时，请降低 X,Y,Z 光泽度以帮助避免问题。
+  livery_gui_slider_tertiaryx_text: |-
+    控制第三色材质较暗区域从哑光到高光的反应。较低值看起来更平、更像涂漆；较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_tertiaryy_text: |-
+    控制第三色材质中间区域（既不是“最暗”也不是“最光滑”的区域）从哑光到高光的反应。较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_tertiaryz_text: |-
+    控制第三色材质最亮或最抛光区域从哑光到高光的反应。较高值会产生更锐利的反光高光。接近1的值几乎像镜面。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_tertiaryw_text: |-
+    控制第三色材质的“金属感”。约为0时更像涂漆或塑料：材质角度不会影响外观。约为1时更像金属：材质角度会影响该区域的外观。0到1之外的值属于实验性质。负值似乎会“发光”，较大的正值会影响平滑高光的亮度，并可能造成特殊颜色效果，尤其在混合 RGB 值如 (R,G,B)=(1.2, 0.5, 0.8) 或 (1.2, 0.4, 1.2) 时。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。使用较大的 W 值时，请降低 X,Y,Z 光泽度以帮助避免问题。
+  livery_gui_slider_effectx_text: |-
+    控制主色涂漆区域的“虹色效果”。正值通常会增强彩虹般的虹彩。负值通常更接近珠光效果。接近0时几乎没有效果。较大的正值或负值都会显得“异常”。“金属感”和部件的 R,G,B 颜色会影响其外观。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_effecty_text: |-
+    控制副色涂漆区域的“虹色效果”。正值通常会增强彩虹般的虹彩。负值通常更接近珠光效果。接近0时几乎没有效果。较大的正值或负值都会显得“异常”。“金属感”和部件的 R,G,B 颜色会影响其外观。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_effectz_text: |-
+    控制第三色涂漆区域的“虹色效果”。正值通常会增强彩虹般的虹彩。负值通常更接近珠光效果。接近0时几乎没有效果。较大的正值或负值都会显得“异常”。“金属感”和部件的 R,G,B 颜色会影响其外观。
+    
+    过亮的部件，尤其在高光泽时，可能造成严重视觉错误。
+  livery_gui_slider_effectw_text: |-
+    保留的效果值。目前似乎没有可见效果，但仍会保存以便完整性和实验。

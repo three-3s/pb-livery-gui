@@ -1,6 +1,6 @@
-![workshop_preview.png](workshop_preview.png)
+![workshop_preview.png](../../workshop_preview.png)
 
-## Supported Languages
+## 지원 언어
 
 <table>
   <tr>
@@ -59,43 +59,42 @@
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## 개요
 
-## Overview
+기본 게임에서 메카 도색은 미리 정해진 색상과 재질 조합으로 제한됩니다.
 
-In the base game, mech paint schemes ("liveries") are limited to preset color and material combinations.
+딱 맞는 색상 조합을 찾기 어렵나요?
 
-Can't find quite the right color combination?
+이 모드는 도색 편집기를 추가합니다. 도색 색상과 재질 속성을 직접 조정하고, 새 도색으로 저장한 뒤 메카에 적용할 수 있습니다.
 
-This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+이 모드는 Phantom Brigade v2.0과 호환됩니다.
 
-This mod is compatible with Phantom Brigade v2.0.
+기본 사용법:
 
-Basic usage
+1. 기지의 유닛 목록으로 이동합니다.
+2. 메카를 선택한 뒤 도색 선택 페이지를 엽니다.
+3. 새 슬라이더 버튼을 클릭해 도색 편집기 UI를 켭니다.
+4. 시작점으로 사용할 기존 도색을 선택합니다.
+5. 새로 편집 가능한 복사본을 만들고 싶다면 새 이름을 입력합니다.
+6. 슬라이더로 색상과 재질 설정을 조정합니다.
+7. 저장을 클릭해 도색을 저장합니다.
+8. 이제 해당 도색을 사용할 수 있습니다.
 
-1. Go into the base's list of units.
-2. Select a mech, then open the Livery selection page.
-3. Click the new "sliders" button to toggle the livery editor UI.
-4. Select an existing livery to use as a starting point.
-5. Enter a new name if you want to create a new editable copy.
-6. Adjust colors and material settings using the sliders.
-7. Click Save to store the livery.
-8. The livery is ready to use.
+이 도색들은 하나의 공통 위치에 저장되며, 모든 저장 파일에서 사용할 수 있습니다.
 
-These liveries are saved to a single common location, and are usable across all your save games.
+추가 조작:
 
-Additional controls:
+* 초기화: 현재 도색을 마지막으로 저장된 상태로 되돌립니다.
+* 즐겨찾기: PB의 기본 즐겨찾기 도색 플래그를 전환해 해당 도색이 목록 앞쪽에 유지되도록 합니다.
+* 오른쪽 클릭 후 드래그: 더 정밀하게 조정합니다. 왼쪽 Shift/Control/Alt와 함께 사용해 더 빠르게 또는 느리게 조정할 수 있습니다.
+* 조종사 모드: 메카 대신 조종사용 도색 세트를 편집합니다. 배정된 조종사 도색은 기지와 임무 브리핑 화면에서 메카 자체의 기본 도색 위에 겹쳐 적용됩니다. 칠하지 않은 조종사 슬롯은 메카 도색을 사용합니다.
 
-* Reset: Reverts the current livery to its last saved state.
-* Favorite: Toggles PB's built-in favorited-livery flag, keeping the livery near the front of the list.
-* Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
-* Pilot mode: Lets you edit a livery set for a pilot instead of the mech. Assigned pilot liveries are layered over the mech's own base livery in the base and briefing screens; unpainted pilot slots fall back to the mech's livery.
+게임의 카메라 이동 키를 사용해 카메라 각도를 바꿀 수도 있습니다.
 
-The game also lets you use the "move camera" keys to change the camera angle.
+([Steam Workshop 페이지](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
 
-([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+질문과 문제 해결은 [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/docs/Korean/FAQ.md)를 참고하세요.
 
-For questions and troubleshooting, consider looking at the [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md).
+보너스 기능:
 
-Bonus features:
-
-* (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to select sprite entries by clicking on sprites in the atlas.
+* (개발자 도구) 개발자 콘솔 `ui.view-enter uitools`에서: 아틀라스의 스프라이트를 클릭해 스프라이트 항목을 선택하는 기능을 추가했습니다.

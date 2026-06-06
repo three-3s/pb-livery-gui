@@ -1,6 +1,6 @@
-![workshop_preview.png](workshop_preview.png)
+![workshop_preview.png](../../workshop_preview.png)
 
-## Supported Languages
+## 対応言語
 
 <table>
   <tr>
@@ -59,43 +59,42 @@
     <td><a href="https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md">Preguntas frecuentes</a></td>
   </tr>
 </table>
+## 概要
 
-## Overview
+基本ゲームでは、メカの塗装はあらかじめ用意された色と材質の組み合わせに限られています。
 
-In the base game, mech paint schemes ("liveries") are limited to preset color and material combinations.
+ちょうどいい色の組み合わせが見つかりませんか？
 
-Can't find quite the right color combination?
+このModは塗装エディターを追加します。塗装の色や材質プロパティを調整し、新しい塗装として保存して、自分のメカに適用できます。
 
-This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
+このModは Phantom Brigade v2.0 に対応しています。
 
-This mod is compatible with Phantom Brigade v2.0.
+基本的な使い方：
 
-Basic usage
+1. 基地のユニット一覧を開きます。
+2. メカを選択し、塗装選択ページを開きます。
+3. 新しい「スライダー」ボタンをクリックして、塗装エディターUIを表示します。
+4. 既存の塗装を出発点として選びます。
+5. 新しい編集可能なコピーを作る場合は、新しい名前を入力します。
+6. スライダーで色と材質設定を調整します。
+7. 保存をクリックして塗装を保存します。
+8. その塗装を使用できるようになります。
 
-1. Go into the base's list of units.
-2. Select a mech, then open the Livery selection page.
-3. Click the new "sliders" button to toggle the livery editor UI.
-4. Select an existing livery to use as a starting point.
-5. Enter a new name if you want to create a new editable copy.
-6. Adjust colors and material settings using the sliders.
-7. Click Save to store the livery.
-8. The livery is ready to use.
+これらの塗装は共通の場所に保存され、すべてのセーブデータで使用できます。
 
-These liveries are saved to a single common location, and are usable across all your save games.
+追加操作：
 
-Additional controls:
+* リセット：現在の塗装を最後に保存した状態に戻します。
+* お気に入り：PB標準のお気に入り塗装フラグを切り替え、塗装をリストの前の方に残します。
+* 右クリックしてドラッグ：より細かく調整します。左Shift/Control/Altと組み合わせると、調整速度を速くしたり遅くしたりできます。
+* パイロットモード：メカではなく、パイロット用の塗装セットを編集します。割り当てられたパイロット塗装は、基地とミッションブリーフィング画面でメカ自身の基本塗装の上に重ねられます。未塗装のパイロットスロットはメカの塗装に戻ります。
 
-* Reset: Reverts the current livery to its last saved state.
-* Favorite: Toggles PB's built-in favorited-livery flag, keeping the livery near the front of the list.
-* Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
-* Pilot mode: Lets you edit a livery set for a pilot instead of the mech. Assigned pilot liveries are layered over the mech's own base livery in the base and briefing screens; unpainted pilot slots fall back to the mech's livery.
+ゲーム内の「カメラ移動」キーを使ってカメラ角度を変えることもできます。
 
-The game also lets you use the "move camera" keys to change the camera angle.
+（[Steam Workshopページはこちら](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996)）
 
-([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+質問やトラブルシューティングについては、[FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/docs/Japanese/FAQ.md)をご覧ください。
 
-For questions and troubleshooting, consider looking at the [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md).
+追加機能：
 
-Bonus features:
-
-* (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to select sprite entries by clicking on sprites in the atlas.
+* （開発者ツール）開発コンソール `ui.view-enter uitools` 内：アトラス内のスプライトをクリックして、スプライト項目を選択できる機能を追加しました。

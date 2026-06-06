@@ -1,3 +1,10 @@
+<!--
+Translator notes:
+- This is the English README source for translated documentation copies.
+- Keep file paths, URLs, LiveryGUI, Phantom Brigade, and keyboard/control names accurate.
+- Prefer Phantom Brigade's existing localized terminology for mech, unit, pilot, livery/paint scheme, base, and mission briefing.
+-->
+
 ![workshop_preview.png](workshop_preview.png)
 
 ## Supported Languages

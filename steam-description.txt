@@ -1,16 +1,32 @@
 [h1]Overview[/h1]
 
-In the base game, mech paint schemes (“liveries”) are limited to pre-set color and material combinations.
+In the base game, mech paint schemes ("liveries") are limited to preset color and material combinations.
 
 Can't find quite the right color combination?
 
 This mod adds a livery editor that lets you customize livery colors and material properties, save them as new liveries, and apply them to your mechs.
 
-Basic usage
+This mod is compatible with Phantom Brigade v2.0.
+
+Supported Languages:
+
+English: [url=https://github.com/three-3s/pb-livery-gui/blob/main/README.md]README[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md]FAQ[/url]
+简体中文: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseSimplified/README.md]说明文档[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseSimplified/FAQ.md]常见问题[/url]
+繁體中文: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseTraditional/README.md]說明文件[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseTraditional/FAQ.md]常見問題[/url]
+Français: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/French/README.md]Lisez-moi[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/French/FAQ.md]FAQ[/url]
+Deutsch: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/German/README.md]Liesmich[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/German/FAQ.md]Häufige Fragen[/url]
+Italiano: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Italian/README.md]Leggimi[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Italian/FAQ.md]Domande frequenti[/url]
+日本語: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Japanese/README.md]はじめに[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Japanese/FAQ.md]よくある質問[/url]
+한국어: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Korean/README.md]읽어보기[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Korean/FAQ.md]자주 묻는 질문[/url]
+Português Brasileiro: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/PortugueseBrazilian/README.md]Leia-me[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/PortugueseBrazilian/FAQ.md]Perguntas frequentes[/url]
+Русский: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Russian/README.md]Прочитайте[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Russian/FAQ.md]Часто задаваемые вопросы[/url]
+Español: [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/README.md]Léeme[/url] / [url=https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md]Preguntas frecuentes[/url]
+
+Basic usage:
 [olist]
-[*] Go to the Base.
-[*] Select a Mech, then open the Livery selection page.
-[*] Click the new “Sliders” button to toggle the livery editor UI.
+[*] Go into the base's list of units.
+[*] Select a mech, then open the Livery selection page.
+[*] Click the new "sliders" button to toggle the livery editor UI.
 [*] Select an existing livery to use as a starting point.
 [*] Enter a new name if you want to create a new editable copy.
 [*] Adjust colors and material settings using the sliders.
@@ -18,79 +34,23 @@ Basic usage
 [*] The livery is ready to use.
 [/olist]
 
+These liveries are saved to a single common location, and are usable across all your save games.
+
 Additional controls:
 [list]
 [*] Reset: Reverts the current livery to its last saved state.
-[*] Favorite: Toggles the (PB built-in) 'favorited livery' flag. (Keeps livery at front of list.)
+[*] Favorite: Toggles PB's built-in favorited-livery flag, keeping the livery near the front of the list.
 [*] Right-click-and-drag: A higher-precision adjustment. Can combine with left-Shift/Control/Alt (faster/slower).
+[*] Pilot mode: Lets you edit a livery set for a pilot instead of the mech. Assigned pilot liveries are layered over the mech's own base livery in the base and briefing screens; unpainted pilot slots fall back to the mech's livery.
 [/list]
 
 The game also lets you use the "move camera" keys to change the camera angle.
 
-These liveries are saved to a single common location, and are usable across all your save games.
-
-Created after Phantom Brigade v2.0.
-
 ([url=https://github.com/three-3s/pb-livery-gui]Source code here[/url])
+
+For questions and troubleshooting, consider looking at the [url=https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md]FAQ[/url].
 
 Bonus features:
 [list]
-[*] (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to click on sprites in the atlas.
+[*] (developer tool) In the dev-console `ui.view-enter uitools`: Added ability to select sprite entries by clicking on sprites in the atlas.
 [/list]
-
-
-
-[h1]Questions & Answers[/h1]
-
-[h2]Where are the livery files saved?[/h2]
-
-AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml
-
-For example:
-C:/Users/yourUserID/AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI
-
-[h2]Is it possible to use larger/smaller values than the sliders allow?[/h2]
-
-Yes, but the mod does not currently support this. (For colors at least, negative values 'break' the color and make it black. Colors that are too bright will eventually 'break' the color and start showing increasingly large black portions. The 'material' W parameters can trigger some major rendering glitches, particularly with certain 'effect' XYZ values)
-
-[h2]I can't change built-in liveries, or liveries provided by other mods?[/h2]
-
-No. But you can copy them and edit the copy.
-
-[h2]What if I uninstall this mod?[/h2]
-
-It seems to be OK. The liveries that no longer exist will look like default liveries. But you may need to re-assign affected parts to use different liveries, or right-click in the liveries page to clear out the liveries to "no livery". (Otherwise, if you had an old "upper torso" livery that no longer exists, if you change the livery of the whole mech or whole torso, the upper torso will still be stuck on "default livery".)
-
-But otherwise the game seems to handle disabling/uninstalling the mod well enough.
-
-[h2]I'm seeing big white circles?[/h2]
-
-The normal range for values is between 0 and 1. Anything else is experimental.
-
-The major culprit for the "big white circles" rendering glitch is having a primary, secondary, or tertiary material "W" value that is too large (positive or negative). You can sometimes work around this by adjusting the corresponding "effect" XYZ slider (for 'effect', X=primary, Y=secondary, Z=tertiary), or reducing the RGB color of the problem part (make R+G+B be less). Reducing the RGB may make it dimmer, but some brightness can be restored by using a negative 'A' component for that color.
-
-NOTE: The big white circles may only be visible from certain angles, so use the "move camera" buttons (WASD by default, for QWERTY keyboards) to examine the mech from multiple angles. Try to overshoot the elimination of the white circles by a bit, to help ensure they don't pop up when seen from just the right angle.
-
-[h2]The "Supporter DLC" sliders don't do anything?[/h2]
-
-The effects are only visible if the Supporter Upgrade DLC is purchased and installed. Also, to start with, make sure the colors (XYZ=RGB) are, say, between 0.5 and 1.0 (and you can adjust them from there). And the 'W' value should be set to something other than "none".
-
-[h2]The "effect W" slider doesn't do anything?[/h2]
-
-As far as I can tell, this value has no effect.
-
-[h2]Is there a way to delete liveries?[/h2]
-
-Not in-mod at the moment. But you can go manually delete any of them from AppData/Local/PhantomBrigade/ModSavedData/LiveryGUI/*.yaml.
-
-This should be safe, other than your mech parts will be using the default livery until you specifically reassign liveries to the affected mech parts.
-
-[h2]Something went wrong?[/h2]
-
-There may be additional information in C:\Users\yourUserId\AppData\LocalLow\Brace Yourself Games\Phantom Brigade\Player.log.
-
-In particular, look for \[LiveryGUI\] items.
-
-[h2]Can I still use other mods that add liveries?[/h2]
-
-Yes. You won't be able to overwrite them, but you can copy them and edit the copies.

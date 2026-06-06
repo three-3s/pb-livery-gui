@@ -7,6 +7,10 @@ workshop:
   description: 
   internalData: 
   changes: >
+    'v2.0.0: Added "pilot livery mode" and translations. UI updates, including tooltips.'
+
+
+
     'v1.2.1: Some minor UI cleanup. (Plus patched in click-on-sprites support for PB's `ui.view-enter uitools` dev-tool)'
 
 
@@ -26,7 +30,8 @@ workshop:
   - Utilities
   texPreviewUpload: true
 configEdits: 
-textEdits: 
+textEdits:
+  languages: {}
 assetBundles: 
 libraryDLLs:
   files:
