@@ -30,7 +30,8 @@ workshop:
   - Utilities
   texPreviewUpload: true
 configEdits: 
-textEdits: 
+textEdits:
+  languages: {}
 assetBundles: 
 libraryDLLs:
   files:
