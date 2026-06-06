@@ -2,88 +2,88 @@ edits:
   livery_gui_toggle_header: |-
     Livery GUI
   livery_gui_toggle_text: |-
-    Show/hide advanced livery customization options
+    고급 도색 커스터마이징 옵션 표시/숨기기
   livery_gui_pilot_mode_toggle_header: |-
-    Toggle Pilot Livery-Set Editing Mode
+    조종사 도색 세트 편집 모드 전환
   livery_gui_pilot_mode_toggle_text: |-
-    In this mode, the selected pilot's livery set is edited by assigning liveries to the mech's parts. Mech parts that have no pilot livery are transparent and will show the mech's livery. For example, it is possible to paint a mech gray in mech edit mode, then enable pilot edit mode and assign a red livery to the upper body. Whenever that pilot is piloting that mech, the mech will be gray with a red upper body. Any mech this pilot is assigned to will have a red upper body.
+    이 모드에서는 선택한 조종사의 도색 세트를 메카 부품에 도색을 배정하여 편집합니다. 조종사 도색이 없는 메카 부품은 투명하게 처리되어 메카 자체의 도색이 보입니다. 예를 들어 메카 편집 모드에서 메카를 회색으로 칠한 뒤 조종사 편집 모드에서 상체에 빨간 도색을 배정할 수 있습니다. 그 조종사가 그 메카를 조종하면 메카는 회색에 빨간 상체가 됩니다. 이 조종사가 배정된 어떤 메카든 상체가 빨갛게 표시됩니다.
   livery_gui_pilot_mode_base_toggle_header: |-
-    Show/Hide Mech Livery
+    메카 도색 표시/숨기기
   livery_gui_pilot_mode_base_toggle_text: |-
-    Shows or hides the mech's base livery underneath the pilot's livery. Only the view in this editor is affected. Right click on livery slots to unassign the pilot's livery from that slot. Note: Assigning a livery to a slot with a '+' also affects all parts contained within that slot.
+    조종사 도색 아래의 메카 기본 도색을 표시하거나 숨깁니다. 이 편집기 안의 보기만 영향을 받습니다. 도색 슬롯을 오른쪽 클릭하면 해당 슬롯의 조종사 도색을 해제할 수 있습니다. 참고: “+”가 있는 슬롯에 도색을 배정하면 그 안의 모든 부품에도 영향을 줍니다.
   livery_gui_previous_pilot_header: |-
-    Previous Pilot
+    이전 조종사
   livery_gui_previous_pilot_text: |-
-    Select the previous pilot. This controls which pilot's livery set is being edited in pilot livery-set editing mode. This does not assign the pilot to the mech; assigning a pilot to a mech is done in mission briefing.
+    이전 조종사를 선택합니다. 조종사 도색 세트 편집 모드에서 어떤 조종사의 도색 세트를 편집할지 정합니다. 이 작업은 조종사를 메카에 배정하지 않습니다. 조종사 배정은 임무 브리핑에서 합니다.
   livery_gui_next_pilot_header: |-
-    Next Pilot
+    다음 조종사
   livery_gui_next_pilot_text: |-
-    Select the next pilot. This controls which pilot's livery set is being edited in pilot livery-set editing mode. This does not assign the pilot to the mech; assigning a pilot to a mech is done in mission briefing.
+    다음 조종사를 선택합니다. 조종사 도색 세트 편집 모드에서 어떤 조종사의 도색 세트를 편집할지 정합니다. 이 작업은 조종사를 메카에 배정하지 않습니다. 조종사 배정은 임무 브리핑에서 합니다.
   livery_gui_reset_button_header: |-
-    Revert Changes
+    변경 되돌리기
   livery_gui_reset_button_text: |-
-    Reset this livery to its last saved values.
+    이 도색을 마지막으로 저장한 값으로 되돌립니다.
   livery_gui_save_button_header: |-
-    Save Livery
+    도색 저장
   livery_gui_save_button_text: |-
-    Save this livery, using the given name. The name used must not match any built-in livery, nor any livery provided by a mod. Using a name that does not exist yet will save to a new livery with that name.
+    입력한 이름으로 이 도색을 저장합니다. 이름은 기본 도색이나 모드가 제공하는 도색과 같을 수 없습니다. 아직 없는 이름을 사용하면 그 이름의 새 도색으로 저장됩니다.
   livery_gui_favorite_button_header: |-
-    Toggle as Favorite
+    즐겨찾기 전환
   livery_gui_favorite_button_text: |-
-    Marks this livery as a favorite. Favorites are kept at the front of the list of liveries.
+    이 도색을 즐겨찾기로 표시합니다. 즐겨찾기는 도색 목록 앞쪽에 유지됩니다.
   livery_gui_hints_header: |-
-    Hints
+    힌트
   livery_gui_hints_basic_text: |-
-    Click on sliders or click-and-drag to set.
+    슬라이더를 클릭하거나 클릭 후 끌어서 설정합니다.
     
-    Remember to save.
-    Normal values for sliders are between 0 and 1. Other values might work, but they might cause problems.
+    저장을 잊지 마세요.
+    슬라이더의 일반 값은 0에서 1 사이입니다. 다른 값도 작동할 수 있지만 문제가 생길 수 있습니다.
     
-    You can use keyboard "Move Camera" (Move Up/Down/Left/Right) keys to adjust view.
+    키보드의 “카메라 이동”(상/하/좌/우) 키로 시점을 조정할 수 있습니다.
   livery_gui_hints_precise_left_text: |-
-    For precise adjustments:
-    Right-click-and-hold, and move mouse <--->
-    Change speed: Hold SHIFT, ALT, or CTRL.
+    정밀 조정:
+    오른쪽 클릭을 누른 채 마우스를 좌우로 움직입니다.
+    속도 변경: SHIFT, ALT 또는 CTRL을 누르세요.
   livery_gui_hints_precise_drag_text: |-
-    For precise adjustments:
-    Right-click-and-hold, and move mouse <--->
-    Change speed: Hold SHIFT, ALT, or CTRL.
+    정밀 조정:
+    오른쪽 클릭을 누른 채 마우스를 좌우로 움직입니다.
+    속도 변경: SHIFT, ALT 또는 CTRL을 누르세요.
   livery_gui_pilot_livery_slot_marker_header: |-
-    Pilot livery
+    조종사 도색
   livery_gui_pilot_livery_slot_marker_text: |-
-    The pilot's own livery-set is applied to this slot. This livery will be applied to this slot of any mech that is piloted by this pilot. Note: Any slot marked with a '+' has child slots, which will be affected by the parent slot.
+    조종사 자신의 도색 세트가 이 슬롯에 적용됩니다. 이 조종사가 조종하는 모든 메카의 이 슬롯에 이 도색이 적용됩니다. 참고: “+”가 표시된 슬롯에는 자식 슬롯이 있으며 부모 슬롯의 영향을 받습니다.
   livery_gui_mech_livery_slot_marker_header: |-
-    Mech base livery
+    메카 기본 도색
   livery_gui_mech_livery_slot_marker_text: |-
-    No pilot livery has been assigned to this slot. The mech's own base livery will control this slot. Assigning a livery to this slot will assign the livery to the pilot's livery-set.
+    이 슬롯에는 조종사 도색이 배정되지 않았습니다. 메카 자체의 기본 도색이 이 슬롯을 제어합니다. 이 슬롯에 도색을 배정하면 조종사 도색 세트에 배정됩니다.
   livery_gui_livery_name_input: |-
-    Livery Name
+    도색 이름
   livery_gui_pilot_none: |-
-    [none]
+    [없음]
   livery_gui_supporter_pattern_none: |-
-    none (w=0.0)
+    없음 (w=0.0)
   livery_gui_supporter_pattern_dots: |-
-    dots (w=1.0)
+    점 (w=1.0)
   livery_gui_supporter_pattern_lines: |-
-    lines (w=2.0)
+    선 (w=2.0)
   livery_gui_supporter_pattern_sheen: |-
-    sheen (w=3.0)
+    광택 (w=3.0)
   livery_gui_message_load_failed: |-
-    LiveryGUI: Failed to load {0} liveries. See Player.log for more info. [sp=s_text_24_exclamation]
+    LiveryGUI: 도색 {0}개를 불러오지 못했습니다. 자세한 내용은 Player.log를 확인하세요. [sp=s_text_24_exclamation]
   livery_gui_message_save_blocked_name: |-
-    No. Change the livery Name. LiveryGUI does not own the current Name. [sp=s_icon_l32_cancel]
+    안 됩니다. 도색 이름을 바꾸세요. 현재 이름은 LiveryGUI가 소유하지 않습니다. [sp=s_icon_l32_cancel]
   livery_gui_message_save_failed: |-
-    Failed to save. See Player.log for more info. [sp=s_text_24_exclamation]
+    저장 실패. 자세한 내용은 Player.log를 확인하세요. [sp=s_text_24_exclamation]
   livery_gui_message_livery_name_exists: |-
-    No. A livery with that Name already exists. [sp=s_icon_l32_cancel]
+    안 됩니다. 같은 이름의 도색이 이미 있습니다. [sp=s_icon_l32_cancel]
   livery_gui_message_save_livery_sets_error: |-
-    Error saving livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    도색 세트 저장 오류 (LiveryGUI). [sp=s_icon_l32_cancel]
   livery_gui_message_load_livery_sets_error: |-
-    Error loading livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    도색 세트 불러오기 오류 (LiveryGUI). [sp=s_icon_l32_cancel]
   livery_gui_message_init_livery_sets_error: |-
-    Error initializing livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    도색 세트 초기화 오류 (LiveryGUI). [sp=s_icon_l32_cancel]
   livery_gui_slider_primaryr_label: |-
-    R              Primary Color
+    R              기본 색
   livery_gui_slider_primaryg_label: |-
     G
   livery_gui_slider_primaryb_label: |-
@@ -91,7 +91,7 @@ edits:
   livery_gui_slider_primarya_label: |-
     A
   livery_gui_slider_secondaryr_label: |-
-    R              Secondary Color
+    R              보조 색
   livery_gui_slider_secondaryg_label: |-
     G
   livery_gui_slider_secondaryb_label: |-
@@ -99,7 +99,7 @@ edits:
   livery_gui_slider_secondarya_label: |-
     A
   livery_gui_slider_tertiaryr_label: |-
-    R              Tertiary Color
+    R              제3 색
   livery_gui_slider_tertiaryg_label: |-
     G
   livery_gui_slider_tertiaryb_label: |-
@@ -107,190 +107,190 @@ edits:
   livery_gui_slider_tertiarya_label: |-
     A
   livery_gui_slider_contentx_label: |-
-    R         Supporter DLC Color
+    R         Supporter DLC 색
   livery_gui_slider_contenty_label: |-
     G
   livery_gui_slider_contentz_label: |-
     B
   livery_gui_slider_contentw_label: |-
-    Sup. DLC Pattern
+    Sup. DLC 무늬
   livery_gui_slider_primaryx_label: |-
-    low       Primary Shininess
+    낮음     기본 광택
   livery_gui_slider_primaryy_label: |-
-    mid
+    중간
   livery_gui_slider_primaryz_label: |-
-    high
+    높음
   livery_gui_slider_primaryw_label: |-
-               Metalness
+               금속감
   livery_gui_slider_secondaryx_label: |-
-    low       Secondary Shininess
+    낮음     보조 광택
   livery_gui_slider_secondaryy_label: |-
-    mid
+    중간
   livery_gui_slider_secondaryz_label: |-
-    high
+    높음
   livery_gui_slider_secondaryw_label: |-
-               Metalness
+               금속감
   livery_gui_slider_tertiaryx_label: |-
-    low       Tertiary Shininess
+    낮음     제3 광택
   livery_gui_slider_tertiaryy_label: |-
-    mid
+    중간
   livery_gui_slider_tertiaryz_label: |-
-    high
+    높음
   livery_gui_slider_tertiaryw_label: |-
-               Metalness
+               금속감
   livery_gui_slider_effectx_label: |-
-    Primary            Iridescence
+    기본            무지갯빛
   livery_gui_slider_effecty_label: |-
-    Secondary
+    보조
   livery_gui_slider_effectz_label: |-
-    Tertiary
+    제3
   livery_gui_slider_effectw_label: |-
-    Unused
+    미사용
   livery_gui_slider_primaryr_text: |-
-    Sets the red amount for the primary areas of the livery.
+    도색의 기본 영역에 적용되는 빨간색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_primaryg_text: |-
-    Sets the green amount for the primary areas of the livery.
+    도색의 기본 영역에 적용되는 초록색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_primaryb_text: |-
-    Sets the blue amount for the primary areas of the livery.
+    도색의 기본 영역에 적용되는 파란색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_primarya_text: |-
-    Adjusts how strongly the primary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    기본 색이 적용되는 강도를 조정합니다. 1 근처가 일반적인 모습입니다. 낮거나 음수인 값은 색을 흰색 쪽으로 밝게 만들고, 높은 값은 검은색 쪽으로 어둡게 만듭니다. 1보다 밝은 색과는 특이하게 상호작용합니다.
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    일반적인 투명도라기보다 밝기/대비 조절에 가깝고, 극단적인 값은 특이한 결과를 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_secondaryr_text: |-
-    Sets the red amount for the secondary areas of the livery.
+    도색의 보조 영역에 적용되는 빨간색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_secondaryg_text: |-
-    Sets the green amount for the secondary areas of the livery.
+    도색의 보조 영역에 적용되는 초록색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_secondaryb_text: |-
-    Sets the blue amount for the secondary areas of the livery.
+    도색의 보조 영역에 적용되는 파란색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_secondarya_text: |-
-    Adjusts how strongly the secondary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    보조 색이 적용되는 강도를 조정합니다. 1 근처가 일반적인 모습입니다. 낮거나 음수인 값은 색을 흰색 쪽으로 밝게 만들고, 높은 값은 검은색 쪽으로 어둡게 만듭니다. 1보다 밝은 색과는 특이하게 상호작용합니다.
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    일반적인 투명도라기보다 밝기/대비 조절에 가깝고, 극단적인 값은 특이한 결과를 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_tertiaryr_text: |-
-    Sets the red amount for the tertiary areas of the livery.
+    도색의 제3 영역에 적용되는 빨간색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_tertiaryg_text: |-
-    Sets the green amount for the tertiary areas of the livery.
+    도색의 제3 영역에 적용되는 초록색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_tertiaryb_text: |-
-    Sets the blue amount for the tertiary areas of the livery.
+    도색의 제3 영역에 적용되는 파란색 양을 설정합니다.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    기본, 보조, 제3 영역은 각 메카 부품의 서로 다른 영역입니다. 일반 색상 값은 보통 0에서 1 사이입니다. 1보다 큰 값은 색을 더 밝게 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_tertiarya_text: |-
-    Adjusts how strongly the tertiary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    제3 색이 적용되는 강도를 조정합니다. 1 근처가 일반적인 모습입니다. 낮거나 음수인 값은 색을 흰색 쪽으로 밝게 만들고, 높은 값은 검은색 쪽으로 어둡게 만듭니다. 1보다 밝은 색과는 특이하게 상호작용합니다.
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    일반적인 투명도라기보다 밝기/대비 조절에 가깝고, 극단적인 값은 특이한 결과를 만들 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_contentx_text: |-
-    Sets the red amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Supporter Upgrade DLC 오버레이 무늬의 빨간색 양을 설정합니다. Supporter Upgrade DLC가 설치되어 있고 “없음”이 아닌 무늬가 선택된 경우에만 보입니다(Supporter DLC W 설정).
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    값은 가산 방식이며 밝은 발광이나 블룸을 만들 수 있습니다. 너무 음수인 값은 효과를 비활성화할 수 있습니다. 양수와 음수를 섞으면 (R,G,B)=(+5, -5, -1.8) 같은 특이한 발광이 생길 수 있습니다.
   livery_gui_slider_contenty_text: |-
-    Sets the green amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Supporter Upgrade DLC 오버레이 무늬의 초록색 양을 설정합니다. Supporter Upgrade DLC가 설치되어 있고 “없음”이 아닌 무늬가 선택된 경우에만 보입니다(Supporter DLC W 설정).
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    값은 가산 방식이며 밝은 발광이나 블룸을 만들 수 있습니다. 너무 음수인 값은 효과를 비활성화할 수 있습니다. 양수와 음수를 섞으면 (R,G,B)=(+5, -5, -1.8) 같은 특이한 발광이 생길 수 있습니다.
   livery_gui_slider_contentz_text: |-
-    Sets the blue amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Supporter Upgrade DLC 오버레이 무늬의 파란색 양을 설정합니다. Supporter Upgrade DLC가 설치되어 있고 “없음”이 아닌 무늬가 선택된 경우에만 보입니다(Supporter DLC W 설정).
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    값은 가산 방식이며 밝은 발광이나 블룸을 만들 수 있습니다. 너무 음수인 값은 효과를 비활성화할 수 있습니다. 양수와 음수를 섞으면 (R,G,B)=(+5, -5, -1.8) 같은 특이한 발광이 생길 수 있습니다.
   livery_gui_slider_contentw_text: |-
-    Chooses the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed. The pattern is "additive", so the color must be brighter than black to be visible.
+    Supporter Upgrade DLC 오버레이 무늬를 선택합니다. Supporter Upgrade DLC가 설치된 경우에만 보입니다. 무늬는 “가산” 방식이므로 보이려면 색이 검정보다 밝아야 합니다.
   livery_gui_slider_primaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the primary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    기본 재질의 더 탁한 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 낮은 값은 더 평평하고 도색된 느낌이며, 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_primaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the primary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    기본 재질의 중간 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_primaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the primary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    기본 재질의 가장 밝거나 가장 광택이 나는 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_primaryw_text: |-
-    Controls "metalness" for the primary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    기본 재질의 “금속감”을 조절합니다. 0 근처에서는 페인트나 플라스틱처럼 동작하여 재질의 각도가 외형에 영향을 주지 않습니다. 1 근처에서는 금속처럼 동작하여 재질의 각도가 해당 부분의 외형에 영향을 줍니다. 0에서 1 밖의 값은 실험적입니다. 음수 값은 “빛나는” 것처럼 보이며, 큰 양수 값은 부드러운 광택의 밝기에 영향을 주고 (R,G,B)=(1.2, 0.5, 0.8) 또는 (1.2, 0.4, 1.2) 같은 혼합 RGB 값에서 특이한 색 효과를 낼 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다. 큰 W 값을 사용할 때는 X,Y,Z 광택을 낮추면 문제를 줄이는 데 도움이 됩니다.
   livery_gui_slider_secondaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the secondary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    보조 재질의 더 탁한 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 낮은 값은 더 평평하고 도색된 느낌이며, 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_secondaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the secondary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    보조 재질의 중간 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_secondaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the secondary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    보조 재질의 가장 밝거나 가장 광택이 나는 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_secondaryw_text: |-
-    Controls "metalness" for the secondary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    보조 재질의 “금속감”을 조절합니다. 0 근처에서는 페인트나 플라스틱처럼 동작하여 재질의 각도가 외형에 영향을 주지 않습니다. 1 근처에서는 금속처럼 동작하여 재질의 각도가 해당 부분의 외형에 영향을 줍니다. 0에서 1 밖의 값은 실험적입니다. 음수 값은 “빛나는” 것처럼 보이며, 큰 양수 값은 부드러운 광택의 밝기에 영향을 주고 (R,G,B)=(1.2, 0.5, 0.8) 또는 (1.2, 0.4, 1.2) 같은 혼합 RGB 값에서 특이한 색 효과를 낼 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다. 큰 W 값을 사용할 때는 X,Y,Z 광택을 낮추면 문제를 줄이는 데 도움이 됩니다.
   livery_gui_slider_tertiaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the tertiary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    제3 재질의 더 탁한 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 낮은 값은 더 평평하고 도색된 느낌이며, 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_tertiaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the tertiary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    제3 재질의 중간 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_tertiaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the tertiary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    제3 재질의 가장 밝거나 가장 광택이 나는 영역에서 무광에서 유광으로 변하는 반응을 조절합니다. 높은 값은 더 선명한 반사 하이라이트를 만듭니다. 1에 가까운 값은 거의 거울처럼 보입니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_tertiaryw_text: |-
-    Controls "metalness" for the tertiary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    제3 재질의 “금속감”을 조절합니다. 0 근처에서는 페인트나 플라스틱처럼 동작하여 재질의 각도가 외형에 영향을 주지 않습니다. 1 근처에서는 금속처럼 동작하여 재질의 각도가 해당 부분의 외형에 영향을 줍니다. 0에서 1 밖의 값은 실험적입니다. 음수 값은 “빛나는” 것처럼 보이며, 큰 양수 값은 부드러운 광택의 밝기에 영향을 주고 (R,G,B)=(1.2, 0.5, 0.8) 또는 (1.2, 0.4, 1.2) 같은 혼합 RGB 값에서 특이한 색 효과를 낼 수 있습니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다. 큰 W 값을 사용할 때는 X,Y,Z 광택을 낮추면 문제를 줄이는 데 도움이 됩니다.
   livery_gui_slider_effectx_text: |-
-    Controls "iridescence" for the primary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    기본 도색 영역의 “무지갯빛 효과”를 조절합니다. 양수 값은 더 강한 무지개빛으로, 음수 값은 진주빛에 가까운 모습으로 기울어집니다. 0 근처 값은 거의 또는 전혀 효과가 없습니다. 큰 양수나 음수 값은 “특이한” 모습이 됩니다. “금속감”과 부품의 R,G,B 색이 결과에 영향을 줍니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_effecty_text: |-
-    Controls "iridescence" for the secondary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    보조 도색 영역의 “무지갯빛 효과”를 조절합니다. 양수 값은 더 강한 무지개빛으로, 음수 값은 진주빛에 가까운 모습으로 기울어집니다. 0 근처 값은 거의 또는 전혀 효과가 없습니다. 큰 양수나 음수 값은 “특이한” 모습이 됩니다. “금속감”과 부품의 R,G,B 색이 결과에 영향을 줍니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_effectz_text: |-
-    Controls "iridescence" for the tertiary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    제3 도색 영역의 “무지갯빛 효과”를 조절합니다. 양수 값은 더 강한 무지개빛으로, 음수 값은 진주빛에 가까운 모습으로 기울어집니다. 0 근처 값은 거의 또는 전혀 효과가 없습니다. 큰 양수나 음수 값은 “특이한” 모습이 됩니다. “금속감”과 부품의 R,G,B 색이 결과에 영향을 줍니다.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    특히 광택이 강한 매우 밝은 부품은 심각한 시각적 문제를 일으킬 수 있습니다.
   livery_gui_slider_effectw_text: |-
-    Reserved effect value. It currently does not appear to have a visible effect, but it is saved for completeness and experimentation.
+    예약된 효과 값입니다. 현재는 보이는 효과가 없는 것 같지만 완전성과 실험을 위해 저장됩니다.

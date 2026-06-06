@@ -2,88 +2,88 @@ edits:
   livery_gui_toggle_header: |-
     Livery GUI
   livery_gui_toggle_text: |-
-    Show/hide advanced livery customization options
+    高度な塗装カスタマイズ項目の表示/非表示
   livery_gui_pilot_mode_toggle_header: |-
-    Toggle Pilot Livery-Set Editing Mode
+    パイロット塗装セット編集モード切替
   livery_gui_pilot_mode_toggle_text: |-
-    In this mode, the selected pilot's livery set is edited by assigning liveries to the mech's parts. Mech parts that have no pilot livery are transparent and will show the mech's livery. For example, it is possible to paint a mech gray in mech edit mode, then enable pilot edit mode and assign a red livery to the upper body. Whenever that pilot is piloting that mech, the mech will be gray with a red upper body. Any mech this pilot is assigned to will have a red upper body.
+    このモードでは、選択中のパイロットの塗装セットを、メカの各パーツに塗装を割り当てて編集します。パイロット塗装がないメカパーツは透明扱いになり、メカ本体の塗装が表示されます。たとえば、メカ編集モードでメカを灰色に塗り、パイロット編集モードで上半身に赤い塗装を割り当てることができます。そのパイロットがそのメカに乗ると、メカは灰色で上半身だけ赤くなります。そのパイロットをどのメカに割り当てても、上半身は赤くなります。
   livery_gui_pilot_mode_base_toggle_header: |-
-    Show/Hide Mech Livery
+    メカ塗装の表示/非表示
   livery_gui_pilot_mode_base_toggle_text: |-
-    Shows or hides the mech's base livery underneath the pilot's livery. Only the view in this editor is affected. Right click on livery slots to unassign the pilot's livery from that slot. Note: Assigning a livery to a slot with a '+' also affects all parts contained within that slot.
+    パイロット塗装の下にあるメカ基本塗装を表示または非表示にします。このエディター内の見た目だけに影響します。塗装スロットを右クリックすると、そのスロットのパイロット塗装を解除できます。注意：「+」付きのスロットに塗装を割り当てると、その中に含まれる全パーツにも影響します。
   livery_gui_previous_pilot_header: |-
-    Previous Pilot
+    前のパイロット
   livery_gui_previous_pilot_text: |-
-    Select the previous pilot. This controls which pilot's livery set is being edited in pilot livery-set editing mode. This does not assign the pilot to the mech; assigning a pilot to a mech is done in mission briefing.
+    前のパイロットを選択します。パイロット塗装セット編集モードで、どのパイロットの塗装セットを編集するかを切り替えます。これはパイロットをメカに割り当てる操作ではありません。割り当てはミッションブリーフィングで行います。
   livery_gui_next_pilot_header: |-
-    Next Pilot
+    次のパイロット
   livery_gui_next_pilot_text: |-
-    Select the next pilot. This controls which pilot's livery set is being edited in pilot livery-set editing mode. This does not assign the pilot to the mech; assigning a pilot to a mech is done in mission briefing.
+    次のパイロットを選択します。パイロット塗装セット編集モードで、どのパイロットの塗装セットを編集するかを切り替えます。これはパイロットをメカに割り当てる操作ではありません。割り当てはミッションブリーフィングで行います。
   livery_gui_reset_button_header: |-
-    Revert Changes
+    変更を戻す
   livery_gui_reset_button_text: |-
-    Reset this livery to its last saved values.
+    この塗装を最後に保存した値へ戻します。
   livery_gui_save_button_header: |-
-    Save Livery
+    塗装を保存
   livery_gui_save_button_text: |-
-    Save this livery, using the given name. The name used must not match any built-in livery, nor any livery provided by a mod. Using a name that does not exist yet will save to a new livery with that name.
+    指定した名前でこの塗装を保存します。名前は標準塗装や他のMODが提供する塗装と同じにはできません。まだ存在しない名前を使うと、その名前の新しい塗装として保存されます。
   livery_gui_favorite_button_header: |-
-    Toggle as Favorite
+    お気に入り切替
   livery_gui_favorite_button_text: |-
-    Marks this livery as a favorite. Favorites are kept at the front of the list of liveries.
+    この塗装をお気に入りにします。お気に入りは塗装リストの前方に残ります。
   livery_gui_hints_header: |-
-    Hints
+    ヒント
   livery_gui_hints_basic_text: |-
-    Click on sliders or click-and-drag to set.
+    スライダーをクリックするか、クリックしてドラッグすると設定できます。
     
-    Remember to save.
-    Normal values for sliders are between 0 and 1. Other values might work, but they might cause problems.
+    保存を忘れないでください。
+    通常の値は0から1です。それ以外の値も使える場合がありますが、問題を起こすことがあります。
     
-    You can use keyboard "Move Camera" (Move Up/Down/Left/Right) keys to adjust view.
+    キーボードの「カメラ移動」（上下左右）キーで視点を調整できます。
   livery_gui_hints_precise_left_text: |-
-    For precise adjustments:
-    Right-click-and-hold, and move mouse <--->
-    Change speed: Hold SHIFT, ALT, or CTRL.
+    細かく調整するには：
+    右クリックを押したまま、マウスを左右に動かします。
+    速度変更：SHIFT、ALT、CTRLを押しながら操作します。
   livery_gui_hints_precise_drag_text: |-
-    For precise adjustments:
-    Right-click-and-hold, and move mouse <--->
-    Change speed: Hold SHIFT, ALT, or CTRL.
+    細かく調整するには：
+    右クリックを押したまま、マウスを左右に動かします。
+    速度変更：SHIFT、ALT、CTRLを押しながら操作します。
   livery_gui_pilot_livery_slot_marker_header: |-
-    Pilot livery
+    パイロット塗装
   livery_gui_pilot_livery_slot_marker_text: |-
-    The pilot's own livery-set is applied to this slot. This livery will be applied to this slot of any mech that is piloted by this pilot. Note: Any slot marked with a '+' has child slots, which will be affected by the parent slot.
+    パイロット自身の塗装セットがこのスロットに適用されています。このパイロットが乗るどのメカでも、このスロットにこの塗装が適用されます。注意：「+」付きのスロットには子スロットがあり、親スロットの影響を受けます。
   livery_gui_mech_livery_slot_marker_header: |-
-    Mech base livery
+    メカ基本塗装
   livery_gui_mech_livery_slot_marker_text: |-
-    No pilot livery has been assigned to this slot. The mech's own base livery will control this slot. Assigning a livery to this slot will assign the livery to the pilot's livery-set.
+    このスロットにはパイロット塗装が割り当てられていません。メカ本体の基本塗装がこのスロットを制御します。このスロットに塗装を割り当てると、パイロット塗装セットに追加されます。
   livery_gui_livery_name_input: |-
-    Livery Name
+    塗装名
   livery_gui_pilot_none: |-
-    [none]
+    [なし]
   livery_gui_supporter_pattern_none: |-
-    none (w=0.0)
+    なし (w=0.0)
   livery_gui_supporter_pattern_dots: |-
-    dots (w=1.0)
+    ドット (w=1.0)
   livery_gui_supporter_pattern_lines: |-
-    lines (w=2.0)
+    ライン (w=2.0)
   livery_gui_supporter_pattern_sheen: |-
-    sheen (w=3.0)
+    ツヤ (w=3.0)
   livery_gui_message_load_failed: |-
-    LiveryGUI: Failed to load {0} liveries. See Player.log for more info. [sp=s_text_24_exclamation]
+    LiveryGUI: {0} 個の塗装を読み込めませんでした。詳細は Player.log を確認してください。 [sp=s_text_24_exclamation]
   livery_gui_message_save_blocked_name: |-
-    No. Change the livery Name. LiveryGUI does not own the current Name. [sp=s_icon_l32_cancel]
+    不可。塗装名を変更してください。現在の名前は LiveryGUI のものではありません。 [sp=s_icon_l32_cancel]
   livery_gui_message_save_failed: |-
-    Failed to save. See Player.log for more info. [sp=s_text_24_exclamation]
+    保存に失敗しました。詳細は Player.log を確認してください。 [sp=s_text_24_exclamation]
   livery_gui_message_livery_name_exists: |-
-    No. A livery with that Name already exists. [sp=s_icon_l32_cancel]
+    不可。同じ名前の塗装がすでに存在します。 [sp=s_icon_l32_cancel]
   livery_gui_message_save_livery_sets_error: |-
-    Error saving livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    塗装セットの保存エラー (LiveryGUI)。 [sp=s_icon_l32_cancel]
   livery_gui_message_load_livery_sets_error: |-
-    Error loading livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    塗装セットの読み込みエラー (LiveryGUI)。 [sp=s_icon_l32_cancel]
   livery_gui_message_init_livery_sets_error: |-
-    Error initializing livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    塗装セットの初期化エラー (LiveryGUI)。 [sp=s_icon_l32_cancel]
   livery_gui_slider_primaryr_label: |-
-    R              Primary Color
+    R              メイン色
   livery_gui_slider_primaryg_label: |-
     G
   livery_gui_slider_primaryb_label: |-
@@ -91,7 +91,7 @@ edits:
   livery_gui_slider_primarya_label: |-
     A
   livery_gui_slider_secondaryr_label: |-
-    R              Secondary Color
+    R              サブ色
   livery_gui_slider_secondaryg_label: |-
     G
   livery_gui_slider_secondaryb_label: |-
@@ -99,7 +99,7 @@ edits:
   livery_gui_slider_secondarya_label: |-
     A
   livery_gui_slider_tertiaryr_label: |-
-    R              Tertiary Color
+    R              第3色
   livery_gui_slider_tertiaryg_label: |-
     G
   livery_gui_slider_tertiaryb_label: |-
@@ -107,190 +107,190 @@ edits:
   livery_gui_slider_tertiarya_label: |-
     A
   livery_gui_slider_contentx_label: |-
-    R         Supporter DLC Color
+    R         Supporter DLC色
   livery_gui_slider_contenty_label: |-
     G
   livery_gui_slider_contentz_label: |-
     B
   livery_gui_slider_contentw_label: |-
-    Sup. DLC Pattern
+    Sup. DLC模様
   livery_gui_slider_primaryx_label: |-
-    low       Primary Shininess
+    低       メイン光沢
   livery_gui_slider_primaryy_label: |-
-    mid
+    中
   livery_gui_slider_primaryz_label: |-
-    high
+    高
   livery_gui_slider_primaryw_label: |-
-               Metalness
+               金属感
   livery_gui_slider_secondaryx_label: |-
-    low       Secondary Shininess
+    低       サブ光沢
   livery_gui_slider_secondaryy_label: |-
-    mid
+    中
   livery_gui_slider_secondaryz_label: |-
-    high
+    高
   livery_gui_slider_secondaryw_label: |-
-               Metalness
+               金属感
   livery_gui_slider_tertiaryx_label: |-
-    low       Tertiary Shininess
+    低       第3光沢
   livery_gui_slider_tertiaryy_label: |-
-    mid
+    中
   livery_gui_slider_tertiaryz_label: |-
-    high
+    高
   livery_gui_slider_tertiaryw_label: |-
-               Metalness
+               金属感
   livery_gui_slider_effectx_label: |-
-    Primary            Iridescence
+    メイン            虹色効果
   livery_gui_slider_effecty_label: |-
-    Secondary
+    サブ
   livery_gui_slider_effectz_label: |-
-    Tertiary
+    第3
   livery_gui_slider_effectw_label: |-
-    Unused
+    未使用
   livery_gui_slider_primaryr_text: |-
-    Sets the red amount for the primary areas of the livery.
+    塗装のメイン領域の赤量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_primaryg_text: |-
-    Sets the green amount for the primary areas of the livery.
+    塗装のメイン領域の緑量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_primaryb_text: |-
-    Sets the blue amount for the primary areas of the livery.
+    塗装のメイン領域の青量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_primarya_text: |-
-    Adjusts how strongly the primary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    メイン色のかかり具合を調整します。1前後が通常の見た目です。低い値や負の値は色を白っぽく明るくし、高い値は黒く暗くします。1より明るい色とは独特に反応します。
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    通常の透明度というより、明るさ/コントラスト調整に近い動作です。極端な値は変わった結果を生むことがあります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_secondaryr_text: |-
-    Sets the red amount for the secondary areas of the livery.
+    塗装のサブ領域の赤量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_secondaryg_text: |-
-    Sets the green amount for the secondary areas of the livery.
+    塗装のサブ領域の緑量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_secondaryb_text: |-
-    Sets the blue amount for the secondary areas of the livery.
+    塗装のサブ領域の青量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_secondarya_text: |-
-    Adjusts how strongly the secondary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    サブ色のかかり具合を調整します。1前後が通常の見た目です。低い値や負の値は色を白っぽく明るくし、高い値は黒く暗くします。1より明るい色とは独特に反応します。
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    通常の透明度というより、明るさ/コントラスト調整に近い動作です。極端な値は変わった結果を生むことがあります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_tertiaryr_text: |-
-    Sets the red amount for the tertiary areas of the livery.
+    塗装の第3領域の赤量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_tertiaryg_text: |-
-    Sets the green amount for the tertiary areas of the livery.
+    塗装の第3領域の緑量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_tertiaryb_text: |-
-    Sets the blue amount for the tertiary areas of the livery.
+    塗装の第3領域の青量を設定します。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    メイン、サブ、第3は各メカパーツ上の異なる領域です。通常の色の値は0から1です。1より大きい値は色を明るくできます。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_tertiarya_text: |-
-    Adjusts how strongly the tertiary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    第3色のかかり具合を調整します。1前後が通常の見た目です。低い値や負の値は色を白っぽく明るくし、高い値は黒く暗くします。1より明るい色とは独特に反応します。
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    通常の透明度というより、明るさ/コントラスト調整に近い動作です。極端な値は変わった結果を生むことがあります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_contentx_text: |-
-    Sets the red amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Supporter Upgrade DLC の重ね模様の赤量を設定します。Supporter Upgrade DLC がインストールされていて、「なし」以外の模様が選択されている場合だけ表示されます（Supporter DLC W 設定）。
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    値は加算式で、強い発光やブルームを作れます。負にしすぎると効果が消えることがあります。正の値と負の値を混ぜると、(R,G,B)=(+5, -5, -1.8) のような変わった発光になることがあります。
   livery_gui_slider_contenty_text: |-
-    Sets the green amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Supporter Upgrade DLC の重ね模様の緑量を設定します。Supporter Upgrade DLC がインストールされていて、「なし」以外の模様が選択されている場合だけ表示されます（Supporter DLC W 設定）。
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    値は加算式で、強い発光やブルームを作れます。負にしすぎると効果が消えることがあります。正の値と負の値を混ぜると、(R,G,B)=(+5, -5, -1.8) のような変わった発光になることがあります。
   livery_gui_slider_contentz_text: |-
-    Sets the blue amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Supporter Upgrade DLC の重ね模様の青量を設定します。Supporter Upgrade DLC がインストールされていて、「なし」以外の模様が選択されている場合だけ表示されます（Supporter DLC W 設定）。
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    値は加算式で、強い発光やブルームを作れます。負にしすぎると効果が消えることがあります。正の値と負の値を混ぜると、(R,G,B)=(+5, -5, -1.8) のような変わった発光になることがあります。
   livery_gui_slider_contentw_text: |-
-    Chooses the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed. The pattern is "additive", so the color must be brighter than black to be visible.
+    Supporter Upgrade DLC の重ね模様を選びます。Supporter Upgrade DLC がインストールされている場合だけ表示されます。模様は「加算式」なので、見えるようにするには黒より明るい色が必要です。
   livery_gui_slider_primaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the primary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    メイン素材の、より鈍い部分でのマットから光沢への反応を調整します。低い値は平たく塗装らしく見え、高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_primaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the primary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    メイン素材の中間部分でのマットから光沢への反応を調整します。高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_primaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the primary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    メイン素材の最も明るい、または磨かれた部分でのマットから光沢への反応を調整します。高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_primaryw_text: |-
-    Controls "metalness" for the primary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    メイン素材の「金属感」を調整します。0前後では塗装やプラスチックに近く、素材の角度で見た目が変わりません。1前後では金属に近く、素材の角度でその部分の見た目が変わります。0から1の外の値は実験的です。負の値は「発光」するように見え、大きな正の値は滑らかな光沢の明るさに影響し、(R,G,B)=(1.2, 0.5, 0.8) や (1.2, 0.4, 1.2) のような混合RGB値で特殊な色効果を起こすことがあります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。大きなW値を使う場合は、X,Y,Zの光沢を下げると避けやすくなります。
   livery_gui_slider_secondaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the secondary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    サブ素材の、より鈍い部分でのマットから光沢への反応を調整します。低い値は平たく塗装らしく見え、高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_secondaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the secondary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    サブ素材の中間部分でのマットから光沢への反応を調整します。高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_secondaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the secondary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    サブ素材の最も明るい、または磨かれた部分でのマットから光沢への反応を調整します。高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_secondaryw_text: |-
-    Controls "metalness" for the secondary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    サブ素材の「金属感」を調整します。0前後では塗装やプラスチックに近く、素材の角度で見た目が変わりません。1前後では金属に近く、素材の角度でその部分の見た目が変わります。0から1の外の値は実験的です。負の値は「発光」するように見え、大きな正の値は滑らかな光沢の明るさに影響し、(R,G,B)=(1.2, 0.5, 0.8) や (1.2, 0.4, 1.2) のような混合RGB値で特殊な色効果を起こすことがあります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。大きなW値を使う場合は、X,Y,Zの光沢を下げると避けやすくなります。
   livery_gui_slider_tertiaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the tertiary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    第3素材の、より鈍い部分でのマットから光沢への反応を調整します。低い値は平たく塗装らしく見え、高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_tertiaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the tertiary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    第3素材の中間部分でのマットから光沢への反応を調整します。高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_tertiaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the tertiary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    第3素材の最も明るい、または磨かれた部分でのマットから光沢への反応を調整します。高い値は反射ハイライトを鋭くします。1に近い値はほぼ鏡面のようになります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_tertiaryw_text: |-
-    Controls "metalness" for the tertiary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    第3素材の「金属感」を調整します。0前後では塗装やプラスチックに近く、素材の角度で見た目が変わりません。1前後では金属に近く、素材の角度でその部分の見た目が変わります。0から1の外の値は実験的です。負の値は「発光」するように見え、大きな正の値は滑らかな光沢の明るさに影響し、(R,G,B)=(1.2, 0.5, 0.8) や (1.2, 0.4, 1.2) のような混合RGB値で特殊な色効果を起こすことがあります。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。大きなW値を使う場合は、X,Y,Zの光沢を下げると避けやすくなります。
   livery_gui_slider_effectx_text: |-
-    Controls "iridescence" for the primary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    メイン塗装領域の「虹色効果」を調整します。正の値は虹のような効果を強め、負の値はパール調に近づきます。0付近ではほとんど、またはまったく効果がありません。正負どちらでも大きな値は「変わった」見た目になります。「金属感」とパーツのR,G,B色が見え方に影響します。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_effecty_text: |-
-    Controls "iridescence" for the secondary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    サブ塗装領域の「虹色効果」を調整します。正の値は虹のような効果を強め、負の値はパール調に近づきます。0付近ではほとんど、またはまったく効果がありません。正負どちらでも大きな値は「変わった」見た目になります。「金属感」とパーツのR,G,B色が見え方に影響します。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_effectz_text: |-
-    Controls "iridescence" for the tertiary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    第3塗装領域の「虹色効果」を調整します。正の値は虹のような効果を強め、負の値はパール調に近づきます。0付近ではほとんど、またはまったく効果がありません。正負どちらでも大きな値は「変わった」見た目になります。「金属感」とパーツのR,G,B色が見え方に影響します。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    特に光沢が強い極端に明るいパーツは、大きな表示不具合を起こすことがあります。
   livery_gui_slider_effectw_text: |-
-    Reserved effect value. It currently does not appear to have a visible effect, but it is saved for completeness and experimentation.
+    予約済みの効果値です。現在は目に見える効果がないようですが、完全性と実験用に保存されます。

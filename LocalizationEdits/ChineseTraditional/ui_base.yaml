@@ -2,88 +2,88 @@ edits:
   livery_gui_toggle_header: |-
     Livery GUI
   livery_gui_toggle_text: |-
-    Show/hide advanced livery customization options
+    顯示/隱藏進階塗裝自訂选项
   livery_gui_pilot_mode_toggle_header: |-
-    Toggle Pilot Livery-Set Editing Mode
+    切換駕駛員塗裝集編輯模式
   livery_gui_pilot_mode_toggle_text: |-
-    In this mode, the selected pilot's livery set is edited by assigning liveries to the mech's parts. Mech parts that have no pilot livery are transparent and will show the mech's livery. For example, it is possible to paint a mech gray in mech edit mode, then enable pilot edit mode and assign a red livery to the upper body. Whenever that pilot is piloting that mech, the mech will be gray with a red upper body. Any mech this pilot is assigned to will have a red upper body.
+    在此模式中，你通过给機甲部件分配塗裝来編輯所选駕駛員的塗裝集。没有駕駛員塗裝的機甲部件会保持透明，顯示機甲自身的塗裝。例如，可以在機甲編輯模式中把機甲涂成灰色，然后启用駕駛員編輯模式并给上半身分配紅色塗裝。只要该駕駛員驾驶这台機甲，機甲就会顯示为灰色并带有紅色上半身。该駕駛員分配到任何機甲时，都会让其上半身变为紅色。
   livery_gui_pilot_mode_base_toggle_header: |-
-    Show/Hide Mech Livery
+    顯示/隱藏機甲塗裝
   livery_gui_pilot_mode_base_toggle_text: |-
-    Shows or hides the mech's base livery underneath the pilot's livery. Only the view in this editor is affected. Right click on livery slots to unassign the pilot's livery from that slot. Note: Assigning a livery to a slot with a '+' also affects all parts contained within that slot.
+    顯示或隱藏駕駛員塗裝下方的機甲基礎塗裝。只影響此編輯器中的顯示。右键點擊塗裝槽可取消该槽的駕駛員塗裝。注意：给带有“+”的槽分配塗裝也会影響该槽包含的所有部件。
   livery_gui_previous_pilot_header: |-
-    Previous Pilot
+    上一名駕駛員
   livery_gui_previous_pilot_text: |-
-    Select the previous pilot. This controls which pilot's livery set is being edited in pilot livery-set editing mode. This does not assign the pilot to the mech; assigning a pilot to a mech is done in mission briefing.
+    選擇上一名駕駛員。这会控制駕駛員塗裝集編輯模式中正在編輯哪名駕駛員的塗裝集。此操作不会把駕駛員分配给機甲；駕駛員分配需要在任務簡報中完成。
   livery_gui_next_pilot_header: |-
-    Next Pilot
+    下一名駕駛員
   livery_gui_next_pilot_text: |-
-    Select the next pilot. This controls which pilot's livery set is being edited in pilot livery-set editing mode. This does not assign the pilot to the mech; assigning a pilot to a mech is done in mission briefing.
+    選擇下一名駕駛員。这会控制駕駛員塗裝集編輯模式中正在編輯哪名駕駛員的塗裝集。此操作不会把駕駛員分配给機甲；駕駛員分配需要在任務簡報中完成。
   livery_gui_reset_button_header: |-
-    Revert Changes
+    還原變更
   livery_gui_reset_button_text: |-
-    Reset this livery to its last saved values.
+    将此塗裝重置为上次儲存的數值。
   livery_gui_save_button_header: |-
-    Save Livery
+    儲存塗裝
   livery_gui_save_button_text: |-
-    Save this livery, using the given name. The name used must not match any built-in livery, nor any livery provided by a mod. Using a name that does not exist yet will save to a new livery with that name.
+    使用指定名稱儲存此塗裝。名稱不能与內建塗裝或其他模組提供的塗裝相同。使用尚不存在的名稱会以该名稱儲存为新的塗裝。
   livery_gui_favorite_button_header: |-
-    Toggle as Favorite
+    切換收藏
   livery_gui_favorite_button_text: |-
-    Marks this livery as a favorite. Favorites are kept at the front of the list of liveries.
+    将此塗裝標記为收藏。收藏会保留在塗裝清單前方。
   livery_gui_hints_header: |-
-    Hints
+    提示
   livery_gui_hints_basic_text: |-
-    Click on sliders or click-and-drag to set.
+    點擊滑桿或點擊并拖曳来設定。
     
-    Remember to save.
-    Normal values for sliders are between 0 and 1. Other values might work, but they might cause problems.
+    记得儲存。
+    滑桿的正常值通常在0到1之間。其他值可能有效，但也可能導致问题。
     
-    You can use keyboard "Move Camera" (Move Up/Down/Left/Right) keys to adjust view.
+    可使用鍵盤“移動相機”（上/下/左/右移动）按鍵来調整视角。
   livery_gui_hints_precise_left_text: |-
-    For precise adjustments:
-    Right-click-and-hold, and move mouse <--->
-    Change speed: Hold SHIFT, ALT, or CTRL.
+    精細調整：
+    按住右键并左右移动鼠标。
+    變更速度：按住 SHIFT、ALT 或 CTRL。
   livery_gui_hints_precise_drag_text: |-
-    For precise adjustments:
-    Right-click-and-hold, and move mouse <--->
-    Change speed: Hold SHIFT, ALT, or CTRL.
+    精細調整：
+    按住右键并左右移动鼠标。
+    變更速度：按住 SHIFT、ALT 或 CTRL。
   livery_gui_pilot_livery_slot_marker_header: |-
-    Pilot livery
+    駕駛員塗裝
   livery_gui_pilot_livery_slot_marker_text: |-
-    The pilot's own livery-set is applied to this slot. This livery will be applied to this slot of any mech that is piloted by this pilot. Note: Any slot marked with a '+' has child slots, which will be affected by the parent slot.
+    駕駛員自己的塗裝集会套用到此槽。该駕駛員驾驶任何機甲时，此塗裝都会套用到對應槽。注意：带有“+”的槽有子槽，会受父槽影響。
   livery_gui_mech_livery_slot_marker_header: |-
-    Mech base livery
+    機甲基礎塗裝
   livery_gui_mech_livery_slot_marker_text: |-
-    No pilot livery has been assigned to this slot. The mech's own base livery will control this slot. Assigning a livery to this slot will assign the livery to the pilot's livery-set.
+    此槽没有分配駕駛員塗裝。機甲自身的基礎塗裝将控制此槽。给此槽分配塗裝会把该塗裝分配到駕駛員塗裝集。
   livery_gui_livery_name_input: |-
-    Livery Name
+    塗裝名稱
   livery_gui_pilot_none: |-
-    [none]
+    [無]
   livery_gui_supporter_pattern_none: |-
-    none (w=0.0)
+    無 (w=0.0)
   livery_gui_supporter_pattern_dots: |-
-    dots (w=1.0)
+    點 (w=1.0)
   livery_gui_supporter_pattern_lines: |-
-    lines (w=2.0)
+    線 (w=2.0)
   livery_gui_supporter_pattern_sheen: |-
-    sheen (w=3.0)
+    光澤 (w=3.0)
   livery_gui_message_load_failed: |-
-    LiveryGUI: Failed to load {0} liveries. See Player.log for more info. [sp=s_text_24_exclamation]
+    LiveryGUI：無法載入 {0} 个塗裝。更多資訊请查看 Player.log。 [sp=s_text_24_exclamation]
   livery_gui_message_save_blocked_name: |-
-    No. Change the livery Name. LiveryGUI does not own the current Name. [sp=s_icon_l32_cancel]
+    不行。请變更塗裝名稱。LiveryGUI 不擁有目前名稱。 [sp=s_icon_l32_cancel]
   livery_gui_message_save_failed: |-
-    Failed to save. See Player.log for more info. [sp=s_text_24_exclamation]
+    儲存失败。更多資訊请查看 Player.log。 [sp=s_text_24_exclamation]
   livery_gui_message_livery_name_exists: |-
-    No. A livery with that Name already exists. [sp=s_icon_l32_cancel]
+    不行。已有同名塗裝。 [sp=s_icon_l32_cancel]
   livery_gui_message_save_livery_sets_error: |-
-    Error saving livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    儲存塗裝集时發生錯誤 (LiveryGUI)。 [sp=s_icon_l32_cancel]
   livery_gui_message_load_livery_sets_error: |-
-    Error loading livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    載入塗裝集时發生錯誤 (LiveryGUI)。 [sp=s_icon_l32_cancel]
   livery_gui_message_init_livery_sets_error: |-
-    Error initializing livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    初始化塗裝集时發生錯誤 (LiveryGUI)。 [sp=s_icon_l32_cancel]
   livery_gui_slider_primaryr_label: |-
-    R              Primary Color
+    R              主色
   livery_gui_slider_primaryg_label: |-
     G
   livery_gui_slider_primaryb_label: |-
@@ -91,7 +91,7 @@ edits:
   livery_gui_slider_primarya_label: |-
     A
   livery_gui_slider_secondaryr_label: |-
-    R              Secondary Color
+    R              副色
   livery_gui_slider_secondaryg_label: |-
     G
   livery_gui_slider_secondaryb_label: |-
@@ -99,7 +99,7 @@ edits:
   livery_gui_slider_secondarya_label: |-
     A
   livery_gui_slider_tertiaryr_label: |-
-    R              Tertiary Color
+    R              第三色
   livery_gui_slider_tertiaryg_label: |-
     G
   livery_gui_slider_tertiaryb_label: |-
@@ -107,190 +107,190 @@ edits:
   livery_gui_slider_tertiarya_label: |-
     A
   livery_gui_slider_contentx_label: |-
-    R         Supporter DLC Color
+    R         支持者DLC顏色
   livery_gui_slider_contenty_label: |-
     G
   livery_gui_slider_contentz_label: |-
     B
   livery_gui_slider_contentw_label: |-
-    Sup. DLC Pattern
+    支持者DLC圖案
   livery_gui_slider_primaryx_label: |-
-    low       Primary Shininess
+    低       主色光澤
   livery_gui_slider_primaryy_label: |-
-    mid
+    中
   livery_gui_slider_primaryz_label: |-
-    high
+    高
   livery_gui_slider_primaryw_label: |-
-               Metalness
+               金屬感
   livery_gui_slider_secondaryx_label: |-
-    low       Secondary Shininess
+    低       副色光澤
   livery_gui_slider_secondaryy_label: |-
-    mid
+    中
   livery_gui_slider_secondaryz_label: |-
-    high
+    高
   livery_gui_slider_secondaryw_label: |-
-               Metalness
+               金屬感
   livery_gui_slider_tertiaryx_label: |-
-    low       Tertiary Shininess
+    低       第三色光澤
   livery_gui_slider_tertiaryy_label: |-
-    mid
+    中
   livery_gui_slider_tertiaryz_label: |-
-    high
+    高
   livery_gui_slider_tertiaryw_label: |-
-               Metalness
+               金屬感
   livery_gui_slider_effectx_label: |-
-    Primary            Iridescence
+    主色            虹色效果
   livery_gui_slider_effecty_label: |-
-    Secondary
+    副色
   livery_gui_slider_effectz_label: |-
-    Tertiary
+    第三色
   livery_gui_slider_effectw_label: |-
-    Unused
+    未使用
   livery_gui_slider_primaryr_text: |-
-    Sets the red amount for the primary areas of the livery.
+    設定塗裝主色區域的紅色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_primaryg_text: |-
-    Sets the green amount for the primary areas of the livery.
+    設定塗裝主色區域的綠色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_primaryb_text: |-
-    Sets the blue amount for the primary areas of the livery.
+    設定塗裝主色區域的藍色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_primarya_text: |-
-    Adjusts how strongly the primary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    調整主色套用的強度。约为1时是正常外观。較低或负數值通常会让顏色变亮或偏向白色；較高數值会让顏色变暗趋向黑色，并且会与大于1的亮色產生特殊互动。
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    它更像亮度/对比度控制，而不是一般透明度；极端值可能產生異常结果。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_secondaryr_text: |-
-    Sets the red amount for the secondary areas of the livery.
+    設定塗裝副色區域的紅色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_secondaryg_text: |-
-    Sets the green amount for the secondary areas of the livery.
+    設定塗裝副色區域的綠色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_secondaryb_text: |-
-    Sets the blue amount for the secondary areas of the livery.
+    設定塗裝副色區域的藍色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_secondarya_text: |-
-    Adjusts how strongly the secondary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    調整副色套用的強度。约为1时是正常外观。較低或负數值通常会让顏色变亮或偏向白色；較高數值会让顏色变暗趋向黑色，并且会与大于1的亮色產生特殊互动。
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    它更像亮度/对比度控制，而不是一般透明度；极端值可能產生異常结果。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_tertiaryr_text: |-
-    Sets the red amount for the tertiary areas of the livery.
+    設定塗裝第三色區域的紅色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_tertiaryg_text: |-
-    Sets the green amount for the tertiary areas of the livery.
+    設定塗裝第三色區域的綠色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_tertiaryb_text: |-
-    Sets the blue amount for the tertiary areas of the livery.
+    設定塗裝第三色區域的藍色量。
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    主色、副色和第三色是每个機甲部件上的不同區域。一般顏色值通常为0到1。大于1的值可以让顏色更亮。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_tertiarya_text: |-
-    Adjusts how strongly the tertiary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    調整第三色套用的強度。约为1时是正常外观。較低或负數值通常会让顏色变亮或偏向白色；較高數值会让顏色变暗趋向黑色，并且会与大于1的亮色產生特殊互动。
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    它更像亮度/对比度控制，而不是一般透明度；极端值可能產生異常结果。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_contentx_text: |-
-    Sets the red amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    設定 Supporter Upgrade DLC 疊加圖案的紅色量。只有安裝了 Supporter Upgrade DLC 且選擇了“無”以外的圖案（Supporter DLC W 設定）时才可見。
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    这些值是加性的，可以產生明亮輝光或泛光。过于负的值可能停用效果。混合正值和负值可能產生異常輝光，例如 (R,G,B)=(+5, -5, -1.8)
   livery_gui_slider_contenty_text: |-
-    Sets the green amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    設定 Supporter Upgrade DLC 疊加圖案的綠色量。只有安裝了 Supporter Upgrade DLC 且選擇了“無”以外的圖案（Supporter DLC W 設定）时才可見。
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    这些值是加性的，可以產生明亮輝光或泛光。过于负的值可能停用效果。混合正值和负值可能產生異常輝光，例如 (R,G,B)=(+5, -5, -1.8)
   livery_gui_slider_contentz_text: |-
-    Sets the blue amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    設定 Supporter Upgrade DLC 疊加圖案的藍色量。只有安裝了 Supporter Upgrade DLC 且選擇了“無”以外的圖案（Supporter DLC W 設定）时才可見。
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    这些值是加性的，可以產生明亮輝光或泛光。过于负的值可能停用效果。混合正值和负值可能產生異常輝光，例如 (R,G,B)=(+5, -5, -1.8)
   livery_gui_slider_contentw_text: |-
-    Chooses the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed. The pattern is "additive", so the color must be brighter than black to be visible.
+    選擇 Supporter Upgrade DLC 疊加圖案。只有安裝了 Supporter Upgrade DLC 时才可見。该圖案是“加性”的，因此顏色必须比黑色更亮才可見。
   livery_gui_slider_primaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the primary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制主色材質较暗區域从霧面到高光的反应。較低值看起来更平、更像涂漆；較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_primaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the primary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制主色材質中间區域（既不是“最暗”也不是“最光滑”的區域）从霧面到高光的反应。較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_primaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the primary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制主色材質最亮或最拋光區域从霧面到高光的反应。較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_primaryw_text: |-
-    Controls "metalness" for the primary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    控制主色材質的“金屬感”。约为0时更像涂漆或塑膠：材質角度不会影響外观。约为1时更像金属：材質角度会影響该區域的外观。0到1之外的值属于實驗性质。负值似乎会“發光”，较大的正值会影響平滑高光的亮度，并可能造成特殊顏色效果，尤其在混合 RGB 值如 (R,G,B)=(1.2, 0.5, 0.8) 或 (1.2, 0.4, 1.2) 时。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。使用较大的 W 值时，请降低 X,Y,Z 光澤度以帮助避免问题。
   livery_gui_slider_secondaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the secondary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制副色材質较暗區域从霧面到高光的反应。較低值看起来更平、更像涂漆；較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_secondaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the secondary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制副色材質中间區域（既不是“最暗”也不是“最光滑”的區域）从霧面到高光的反应。較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_secondaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the secondary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制副色材質最亮或最拋光區域从霧面到高光的反应。較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_secondaryw_text: |-
-    Controls "metalness" for the secondary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    控制副色材質的“金屬感”。约为0时更像涂漆或塑膠：材質角度不会影響外观。约为1时更像金属：材質角度会影響该區域的外观。0到1之外的值属于實驗性质。负值似乎会“發光”，较大的正值会影響平滑高光的亮度，并可能造成特殊顏色效果，尤其在混合 RGB 值如 (R,G,B)=(1.2, 0.5, 0.8) 或 (1.2, 0.4, 1.2) 时。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。使用较大的 W 值时，请降低 X,Y,Z 光澤度以帮助避免问题。
   livery_gui_slider_tertiaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the tertiary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制第三色材質较暗區域从霧面到高光的反应。較低值看起来更平、更像涂漆；較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_tertiaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the tertiary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制第三色材質中间區域（既不是“最暗”也不是“最光滑”的區域）从霧面到高光的反应。較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_tertiaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the tertiary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    控制第三色材質最亮或最拋光區域从霧面到高光的反应。較高值会產生更锐利的反光高光。接近1的值几乎像鏡面。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_tertiaryw_text: |-
-    Controls "metalness" for the tertiary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    控制第三色材質的“金屬感”。约为0时更像涂漆或塑膠：材質角度不会影響外观。约为1时更像金属：材質角度会影響该區域的外观。0到1之外的值属于實驗性质。负值似乎会“發光”，较大的正值会影響平滑高光的亮度，并可能造成特殊顏色效果，尤其在混合 RGB 值如 (R,G,B)=(1.2, 0.5, 0.8) 或 (1.2, 0.4, 1.2) 时。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。使用较大的 W 值时，请降低 X,Y,Z 光澤度以帮助避免问题。
   livery_gui_slider_effectx_text: |-
-    Controls "iridescence" for the primary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    控制主色涂漆區域的“虹色效果”。正值通常会增强彩虹般的虹彩。负值通常更接近珠光效果。接近0时几乎没有效果。较大的正值或负值都会显得“異常”。“金屬感”和部件的 R,G,B 顏色会影響其外观。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_effecty_text: |-
-    Controls "iridescence" for the secondary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    控制副色涂漆區域的“虹色效果”。正值通常会增强彩虹般的虹彩。负值通常更接近珠光效果。接近0时几乎没有效果。较大的正值或负值都会显得“異常”。“金屬感”和部件的 R,G,B 顏色会影響其外观。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_effectz_text: |-
-    Controls "iridescence" for the tertiary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    控制第三色涂漆區域的“虹色效果”。正值通常会增强彩虹般的虹彩。负值通常更接近珠光效果。接近0时几乎没有效果。较大的正值或负值都会显得“異常”。“金屬感”和部件的 R,G,B 顏色会影響其外观。
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    过亮的部件，尤其在高光澤时，可能造成嚴重視覺錯誤。
   livery_gui_slider_effectw_text: |-
-    Reserved effect value. It currently does not appear to have a visible effect, but it is saved for completeness and experimentation.
+    保留的效果值。目前似乎没有可見效果，但仍会儲存以便完整性和實驗。

@@ -2,295 +2,295 @@ edits:
   livery_gui_toggle_header: |-
     Livery GUI
   livery_gui_toggle_text: |-
-    Show/hide advanced livery customization options
+    Afficher ou masquer les options avancees de personnalisation des peintures
   livery_gui_pilot_mode_toggle_header: |-
-    Toggle Pilot Livery-Set Editing Mode
+    Basculer en edition des peintures de pilote
   livery_gui_pilot_mode_toggle_text: |-
-    In this mode, the selected pilot's livery set is edited by assigning liveries to the mech's parts. Mech parts that have no pilot livery are transparent and will show the mech's livery. For example, it is possible to paint a mech gray in mech edit mode, then enable pilot edit mode and assign a red livery to the upper body. Whenever that pilot is piloting that mech, the mech will be gray with a red upper body. Any mech this pilot is assigned to will have a red upper body.
+    Dans ce mode, vous modifiez le jeu de peintures du pilote selectionne en assignant des peintures aux pieces du mech. Les pieces sans peinture de pilote sont transparentes et affichent la peinture du mech. Par exemple, vous pouvez peindre un mech en gris en mode mech, puis activer le mode pilote et assigner une peinture rouge au haut du corps. Quand ce pilote controle ce mech, le mech sera gris avec un haut du corps rouge. Tout mech assigne a ce pilote aura un haut du corps rouge.
   livery_gui_pilot_mode_base_toggle_header: |-
-    Show/Hide Mech Livery
+    Afficher ou masquer la peinture du mech
   livery_gui_pilot_mode_base_toggle_text: |-
-    Shows or hides the mech's base livery underneath the pilot's livery. Only the view in this editor is affected. Right click on livery slots to unassign the pilot's livery from that slot. Note: Assigning a livery to a slot with a '+' also affects all parts contained within that slot.
+    Affiche ou masque la peinture de base du mech sous la peinture du pilote. Seul affichage dans cet editeur est affecte. Faites un clic droit sur les emplacements de peinture pour retirer la peinture du pilote de cet emplacement. Remarque : assigner une peinture a un emplacement avec un + affecte aussi toutes les pieces contenues dans cet emplacement.
   livery_gui_previous_pilot_header: |-
-    Previous Pilot
+    Pilote precedent
   livery_gui_previous_pilot_text: |-
-    Select the previous pilot. This controls which pilot's livery set is being edited in pilot livery-set editing mode. This does not assign the pilot to the mech; assigning a pilot to a mech is done in mission briefing.
+    Selectionne le pilote precedent. Cela determine quel jeu de peintures de pilote est modifie en mode edition des peintures de pilote. Cela assigne pas le pilote au mech ; assignation se fait dans le briefing de mission.
   livery_gui_next_pilot_header: |-
-    Next Pilot
+    Pilote suivant
   livery_gui_next_pilot_text: |-
-    Select the next pilot. This controls which pilot's livery set is being edited in pilot livery-set editing mode. This does not assign the pilot to the mech; assigning a pilot to a mech is done in mission briefing.
+    Selectionne le pilote suivant. Cela determine quel jeu de peintures de pilote est modifie en mode edition des peintures de pilote. Cela assigne pas le pilote au mech ; assignation se fait dans le briefing de mission.
   livery_gui_reset_button_header: |-
-    Revert Changes
+    Annuler les changements
   livery_gui_reset_button_text: |-
-    Reset this livery to its last saved values.
+    Reinitialise cette peinture a ses dernieres valeurs enregistrees.
   livery_gui_save_button_header: |-
-    Save Livery
+    Enregistrer la peinture
   livery_gui_save_button_text: |-
-    Save this livery, using the given name. The name used must not match any built-in livery, nor any livery provided by a mod. Using a name that does not exist yet will save to a new livery with that name.
+    Enregistre cette peinture avec le nom indique. Le nom ne doit correspondre a aucune peinture integree ni fournie par un mod. Utiliser un nom inedit creera une nouvelle peinture avec ce nom.
   livery_gui_favorite_button_header: |-
-    Toggle as Favorite
+    Ajouter ou retirer des favoris
   livery_gui_favorite_button_text: |-
-    Marks this livery as a favorite. Favorites are kept at the front of the list of liveries.
+    Marque cette peinture comme favorite. Les favorites restent au debut de la liste des peintures.
   livery_gui_hints_header: |-
-    Hints
+    Astuces
   livery_gui_hints_basic_text: |-
-    Click on sliders or click-and-drag to set.
+    Cliquez sur les curseurs ou cliquez-glissez pour regler.
     
-    Remember to save.
-    Normal values for sliders are between 0 and 1. Other values might work, but they might cause problems.
+    Pensez a enregistrer.
+    Les valeurs normales des curseurs sont entre 0 et 1. D autres valeurs peuvent fonctionner, mais elles peuvent provoquer des problemes.
     
-    You can use keyboard "Move Camera" (Move Up/Down/Left/Right) keys to adjust view.
+    Vous pouvez utiliser les touches clavier Deplacer la camera (haut/bas/gauche/droite) pour ajuster la vue.
   livery_gui_hints_precise_left_text: |-
-    For precise adjustments:
-    Right-click-and-hold, and move mouse <--->
-    Change speed: Hold SHIFT, ALT, or CTRL.
+    Pour des reglages precis :
+    maintenez le clic droit et deplacez la souris gauche-droite.
+    Changer la vitesse : maintenez SHIFT, ALT ou CTRL.
   livery_gui_hints_precise_drag_text: |-
-    For precise adjustments:
-    Right-click-and-hold, and move mouse <--->
-    Change speed: Hold SHIFT, ALT, or CTRL.
+    Pour des reglages precis :
+    maintenez le clic droit et deplacez la souris gauche-droite.
+    Changer la vitesse : maintenez SHIFT, ALT ou CTRL.
   livery_gui_pilot_livery_slot_marker_header: |-
-    Pilot livery
+    Peinture de pilote
   livery_gui_pilot_livery_slot_marker_text: |-
-    The pilot's own livery-set is applied to this slot. This livery will be applied to this slot of any mech that is piloted by this pilot. Note: Any slot marked with a '+' has child slots, which will be affected by the parent slot.
+    Le jeu de peintures propre au pilote est applique a cet emplacement. Cette peinture sera appliquee a cet emplacement sur tout mech pilote par ce pilote. Remarque : tout emplacement marque avec + possede des sous-emplacements qui seront affectes par emplacement parent.
   livery_gui_mech_livery_slot_marker_header: |-
-    Mech base livery
+    Peinture de base du mech
   livery_gui_mech_livery_slot_marker_text: |-
-    No pilot livery has been assigned to this slot. The mech's own base livery will control this slot. Assigning a livery to this slot will assign the livery to the pilot's livery-set.
+    Aucune peinture de pilote a ete assignee a cet emplacement. La peinture de base du mech controle cet emplacement. Assigner une peinture ici ajoutera cette peinture au jeu de peintures du pilote.
   livery_gui_livery_name_input: |-
-    Livery Name
+    Nom de la peinture
   livery_gui_pilot_none: |-
-    [none]
+    [aucun]
   livery_gui_supporter_pattern_none: |-
-    none (w=0.0)
+    aucun (w=0.0)
   livery_gui_supporter_pattern_dots: |-
-    dots (w=1.0)
+    points (w=1.0)
   livery_gui_supporter_pattern_lines: |-
-    lines (w=2.0)
+    lignes (w=2.0)
   livery_gui_supporter_pattern_sheen: |-
-    sheen (w=3.0)
+    reflet (w=3.0)
   livery_gui_message_load_failed: |-
-    LiveryGUI: Failed to load {0} liveries. See Player.log for more info. [sp=s_text_24_exclamation]
+    LiveryGUI : echec du chargement de {0} peintures. Consultez Player.log pour plus informations. [sp=s_text_24_exclamation]
   livery_gui_message_save_blocked_name: |-
-    No. Change the livery Name. LiveryGUI does not own the current Name. [sp=s_icon_l32_cancel]
+    Non. Changez le nom de la peinture. LiveryGUI ne possede pas le nom actuel. [sp=s_icon_l32_cancel]
   livery_gui_message_save_failed: |-
-    Failed to save. See Player.log for more info. [sp=s_text_24_exclamation]
+    Echec de enregistrement. Consultez Player.log pour plus informations. [sp=s_text_24_exclamation]
   livery_gui_message_livery_name_exists: |-
-    No. A livery with that Name already exists. [sp=s_icon_l32_cancel]
+    Non. Une peinture portant ce nom existe deja. [sp=s_icon_l32_cancel]
   livery_gui_message_save_livery_sets_error: |-
-    Error saving livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    Erreur pendant enregistrement des jeux de peintures (LiveryGUI). [sp=s_icon_l32_cancel]
   livery_gui_message_load_livery_sets_error: |-
-    Error loading livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    Erreur pendant chargement des jeux de peintures (LiveryGUI). [sp=s_icon_l32_cancel]
   livery_gui_message_init_livery_sets_error: |-
-    Error initializing livery-sets (LiveryGUI). [sp=s_icon_l32_cancel]
+    Erreur pendant initialisation des jeux de peintures (LiveryGUI). [sp=s_icon_l32_cancel]
   livery_gui_slider_primaryr_label: |-
-    R              Primary Color
+    R              Couleur principale
   livery_gui_slider_primaryg_label: |-
-    G
+    V
   livery_gui_slider_primaryb_label: |-
     B
   livery_gui_slider_primarya_label: |-
     A
   livery_gui_slider_secondaryr_label: |-
-    R              Secondary Color
+    R              Couleur secondaire
   livery_gui_slider_secondaryg_label: |-
-    G
+    V
   livery_gui_slider_secondaryb_label: |-
     B
   livery_gui_slider_secondarya_label: |-
     A
   livery_gui_slider_tertiaryr_label: |-
-    R              Tertiary Color
+    R              Troisieme couleur
   livery_gui_slider_tertiaryg_label: |-
-    G
+    V
   livery_gui_slider_tertiaryb_label: |-
     B
   livery_gui_slider_tertiarya_label: |-
     A
   livery_gui_slider_contentx_label: |-
-    R         Supporter DLC Color
+    R         Couleur DLC Supporter
   livery_gui_slider_contenty_label: |-
-    G
+    V
   livery_gui_slider_contentz_label: |-
     B
   livery_gui_slider_contentw_label: |-
-    Sup. DLC Pattern
+    Motif DLC Supporter
   livery_gui_slider_primaryx_label: |-
-    low       Primary Shininess
+    bas       Brillance principale
   livery_gui_slider_primaryy_label: |-
-    mid
+    milieu
   livery_gui_slider_primaryz_label: |-
-    high
+    haut
   livery_gui_slider_primaryw_label: |-
-               Metalness
+               Aspect metallique
   livery_gui_slider_secondaryx_label: |-
-    low       Secondary Shininess
+    bas       Brillance secondaire
   livery_gui_slider_secondaryy_label: |-
-    mid
+    milieu
   livery_gui_slider_secondaryz_label: |-
-    high
+    haut
   livery_gui_slider_secondaryw_label: |-
-               Metalness
+               Aspect metallique
   livery_gui_slider_tertiaryx_label: |-
-    low       Tertiary Shininess
+    bas       Brillance troisieme
   livery_gui_slider_tertiaryy_label: |-
-    mid
+    milieu
   livery_gui_slider_tertiaryz_label: |-
-    high
+    haut
   livery_gui_slider_tertiaryw_label: |-
-               Metalness
+               Aspect metallique
   livery_gui_slider_effectx_label: |-
-    Primary            Iridescence
+    Principale            Iridescence
   livery_gui_slider_effecty_label: |-
-    Secondary
+    Secondaire
   livery_gui_slider_effectz_label: |-
-    Tertiary
+    Troisieme
   livery_gui_slider_effectw_label: |-
-    Unused
+    Inutilise
   livery_gui_slider_primaryr_text: |-
-    Sets the red amount for the primary areas of the livery.
+    Regle la quantite de rouge pour les zones principale de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_primaryg_text: |-
-    Sets the green amount for the primary areas of the livery.
+    Regle la quantite de vert pour les zones principale de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_primaryb_text: |-
-    Sets the blue amount for the primary areas of the livery.
+    Regle la quantite de bleu pour les zones principale de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_primarya_text: |-
-    Adjusts how strongly the primary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    Ajuste la force application de la couleur principale. Autour de 1, apparence est normale. Les valeurs plus basses ou negatives ont tendance a eclaircir ou delaver la couleur vers le blanc ; les valeurs plus elevees assombrissent vers le noir, avec une interaction particuliere avec les couleurs plus lumineuses que 1.
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    Ce reglage ressemble davantage a un controle de luminosite/contraste que a une transparence ordinaire, et les valeurs extremes peuvent produire des resultats inhabituels.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_secondaryr_text: |-
-    Sets the red amount for the secondary areas of the livery.
+    Regle la quantite de rouge pour les zones secondaire de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_secondaryg_text: |-
-    Sets the green amount for the secondary areas of the livery.
+    Regle la quantite de vert pour les zones secondaire de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_secondaryb_text: |-
-    Sets the blue amount for the secondary areas of the livery.
+    Regle la quantite de bleu pour les zones secondaire de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_secondarya_text: |-
-    Adjusts how strongly the secondary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    Ajuste la force application de la couleur secondaire. Autour de 1, apparence est normale. Les valeurs plus basses ou negatives ont tendance a eclaircir ou delaver la couleur vers le blanc ; les valeurs plus elevees assombrissent vers le noir, avec une interaction particuliere avec les couleurs plus lumineuses que 1.
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    Ce reglage ressemble davantage a un controle de luminosite/contraste que a une transparence ordinaire, et les valeurs extremes peuvent produire des resultats inhabituels.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_tertiaryr_text: |-
-    Sets the red amount for the tertiary areas of the livery.
+    Regle la quantite de rouge pour les zones troisieme de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_tertiaryg_text: |-
-    Sets the green amount for the tertiary areas of the livery.
+    Regle la quantite de vert pour les zones troisieme de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_tertiaryb_text: |-
-    Sets the blue amount for the tertiary areas of the livery.
+    Regle la quantite de bleu pour les zones troisieme de la peinture.
     
-    Primary, secondary, and tertiary are different areas on each mech part. Normal color values are usually 0 to 1. Values above 1 can make colors brighter.
+    les zones principales, secondaires et troisiemes sont des zones differentes sur chaque piece du mech. Les valeurs de couleur normales sont generalement de 0 a 1. Les valeurs superieures a 1 peuvent rendre les couleurs plus lumineuses.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_tertiarya_text: |-
-    Adjusts how strongly the tertiary color is applied. Around 1 is the normal look. Lower or negative values tend to brighten or wash the color toward white; higher values darken it toward black, with a unique interaction with colors brighter than 1.
+    Ajuste la force application de la couleur troisieme. Autour de 1, apparence est normale. Les valeurs plus basses ou negatives ont tendance a eclaircir ou delaver la couleur vers le blanc ; les valeurs plus elevees assombrissent vers le noir, avec une interaction particuliere avec les couleurs plus lumineuses que 1.
     
-    This behaves more like a brightness/contrast control than ordinary transparency, and extreme values can produce unusual results.
+    Ce reglage ressemble davantage a un controle de luminosite/contraste que a une transparence ordinaire, et les valeurs extremes peuvent produire des resultats inhabituels.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_contentx_text: |-
-    Sets the red amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Regle la quantite de rouge pour le motif superpose du Supporter Upgrade DLC. Cela a un effet visible seulement si le Supporter Upgrade DLC est installe et si un motif autre que aucun est selectionne (reglage Supporter DLC W).
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    Les valeurs sont additives et peuvent creer une lueur vive ou du bloom. Des valeurs trop negatives peuvent desactiver effet. Melanger des valeurs positives et negatives peut produire une lueur inhabituelle, comme (R,G,B)=(+5, -5, -1.8)
   livery_gui_slider_contenty_text: |-
-    Sets the green amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Regle la quantite de vert pour le motif superpose du Supporter Upgrade DLC. Cela a un effet visible seulement si le Supporter Upgrade DLC est installe et si un motif autre que aucun est selectionne (reglage Supporter DLC W).
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    Les valeurs sont additives et peuvent creer une lueur vive ou du bloom. Des valeurs trop negatives peuvent desactiver effet. Melanger des valeurs positives et negatives peut produire une lueur inhabituelle, comme (R,G,B)=(+5, -5, -1.8)
   livery_gui_slider_contentz_text: |-
-    Sets the blue amount for the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed and a pattern other than "none" is selected (the Supporter DLC W setting).
+    Regle la quantite de bleu pour le motif superpose du Supporter Upgrade DLC. Cela a un effet visible seulement si le Supporter Upgrade DLC est installe et si un motif autre que aucun est selectionne (reglage Supporter DLC W).
     
-    Values are additive and can create bright glow or bloom. Values that are too negative can disable the effect. Mixing positive and negative values can produce unusual glow, such as (R,G,B)=(+5, -5, -1.8)
+    Les valeurs sont additives et peuvent creer une lueur vive ou du bloom. Des valeurs trop negatives peuvent desactiver effet. Melanger des valeurs positives et negatives peut produire une lueur inhabituelle, comme (R,G,B)=(+5, -5, -1.8)
   livery_gui_slider_contentw_text: |-
-    Chooses the Supporter Upgrade DLC overlay pattern. This only has a visible effect if the Supporter Upgrade DLC is installed. The pattern is "additive", so the color must be brighter than black to be visible.
+    Choisit le motif superpose du Supporter Upgrade DLC. Cela a un effet visible seulement si le Supporter Upgrade DLC est installe. Le motif est additif, donc la couleur doit etre plus lumineuse que le noir pour etre visible.
   livery_gui_slider_primaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the primary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions les plus ternes du materiau principale. Les valeurs basses semblent plus plates et peintes ; les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_primaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the primary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions moyennes du materiau principale. Les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_primaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the primary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions les plus lumineuses ou polies du materiau principale. Les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_primaryw_text: |-
-    Controls "metalness" for the primary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    Controle aspect metallique du materiau principale. Autour de 0, il se comporte plutot comme de la peinture ou du plastique : angle du materiau affecte pas son apparence. Autour de 1, il se comporte davantage comme du metal : angle du materiau affecte apparence de cette partie. Les valeurs hors 0 a 1 sont experimentales. Les valeurs negatives semblent briller, et les grandes valeurs positives affectent la luminosite des reflets lisses et peuvent provoquer des effets de couleur exotiques, surtout avec des valeurs RGB melangees comme (R,G,B)=(1.2, 0.5, 0.8) ou (1.2, 0.4, 1.2).
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels. Avec de grandes valeurs W, baissez la brillance X,Y,Z pour aider a eviter cela.
   livery_gui_slider_secondaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the secondary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions les plus ternes du materiau secondaire. Les valeurs basses semblent plus plates et peintes ; les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_secondaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the secondary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions moyennes du materiau secondaire. Les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_secondaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the secondary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions les plus lumineuses ou polies du materiau secondaire. Les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_secondaryw_text: |-
-    Controls "metalness" for the secondary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    Controle aspect metallique du materiau secondaire. Autour de 0, il se comporte plutot comme de la peinture ou du plastique : angle du materiau affecte pas son apparence. Autour de 1, il se comporte davantage comme du metal : angle du materiau affecte apparence de cette partie. Les valeurs hors 0 a 1 sont experimentales. Les valeurs negatives semblent briller, et les grandes valeurs positives affectent la luminosite des reflets lisses et peuvent provoquer des effets de couleur exotiques, surtout avec des valeurs RGB melangees comme (R,G,B)=(1.2, 0.5, 0.8) ou (1.2, 0.4, 1.2).
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels. Avec de grandes valeurs W, baissez la brillance X,Y,Z pour aider a eviter cela.
   livery_gui_slider_tertiaryx_text: |-
-    Controls the matte-to-shiny response for the duller regions of the tertiary material. Lower values look flatter and more painted; higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions les plus ternes du materiau troisieme. Les valeurs basses semblent plus plates et peintes ; les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_tertiaryy_text: |-
-    Controls the matte-to-shiny response for the middle regions of the tertiary material (the areas that are not marked as "dullest" nor "smoothest"). Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions moyennes du materiau troisieme. Les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_tertiaryz_text: |-
-    Controls the matte-to-shiny response for the brightest or most polished regions of the tertiary material. Higher values produce sharper reflected-light highlights. Values near 1 are almost mirror-like.
+    Controle la reaction mat-vers-brillant des regions les plus lumineuses ou polies du materiau troisieme. Les valeurs elevees produisent des reflets plus nets. Les valeurs proches de 1 sont presque comme un miroir.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_tertiaryw_text: |-
-    Controls "metalness" for the tertiary material. Around 0 behaves more like paint or plastic: the angle of the material doesn't affect how it looks. Around 1 behaves more like metal: the angle of the material does affect how that part of the material looks. Values outside 0 to 1 are experimental. Negative values seem to "glow", and larger positive values affect brightness of smooth-shininess and can cause exotic color effects, especially with mixed RGB values like (R,G,B)=(1.2, 0.5, 0.8) or (1.2, 0.4, 1.2), with a mix of above-1 and below-1 values.
+    Controle aspect metallique du materiau troisieme. Autour de 0, il se comporte plutot comme de la peinture ou du plastique : angle du materiau affecte pas son apparence. Autour de 1, il se comporte davantage comme du metal : angle du materiau affecte apparence de cette partie. Les valeurs hors 0 a 1 sont experimentales. Les valeurs negatives semblent briller, et les grandes valeurs positives affectent la luminosite des reflets lisses et peuvent provoquer des effets de couleur exotiques, surtout avec des valeurs RGB melangees comme (R,G,B)=(1.2, 0.5, 0.8) ou (1.2, 0.4, 1.2).
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs. When using large 'W' values, turn down X,Y,Z shininess to help avoid this.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels. Avec de grandes valeurs W, baissez la brillance X,Y,Z pour aider a eviter cela.
   livery_gui_slider_effectx_text: |-
-    Controls "iridescence" for the primary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    Controle iridescence des zones de peinture principale. Les valeurs positives tendent vers une iridescence arc-en-ciel plus forte. Les valeurs negatives tendent vers un aspect nacre. Les valeurs proches de 0 ont peu ou pas effet. Les grandes valeurs, positives ou negatives, auront un rendu inhabituel. Aspect metallique et la couleur R,G,B de la piece influencent le resultat.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_effecty_text: |-
-    Controls "iridescence" for the secondary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    Controle iridescence des zones de peinture secondaire. Les valeurs positives tendent vers une iridescence arc-en-ciel plus forte. Les valeurs negatives tendent vers un aspect nacre. Les valeurs proches de 0 ont peu ou pas effet. Les grandes valeurs, positives ou negatives, auront un rendu inhabituel. Aspect metallique et la couleur R,G,B de la piece influencent le resultat.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_effectz_text: |-
-    Controls "iridescence" for the tertiary paint areas. Positive values tend toward stronger rainbow iridescence. Negative values tend toward a pearlescent look. Values near 0 have little or no effect. Large values (positive or negative) will look "unusual". "Metalness" and the part's R,G,B color affect how this looks.
+    Controle iridescence des zones de peinture troisieme. Les valeurs positives tendent vers une iridescence arc-en-ciel plus forte. Les valeurs negatives tendent vers un aspect nacre. Les valeurs proches de 0 ont peu ou pas effet. Les grandes valeurs, positives ou negatives, auront un rendu inhabituel. Aspect metallique et la couleur R,G,B de la piece influencent le resultat.
     
-    Extremely bright parts, especially when shiny, can cause major visual bugs.
+    Les pieces tres lumineuses, surtout lorsque elles sont brillantes, peuvent provoquer de gros bugs visuels.
   livery_gui_slider_effectw_text: |-
-    Reserved effect value. It currently does not appear to have a visible effect, but it is saved for completeness and experimentation.
+    Valeur effet reservee. Elle ne semble actuellement pas avoir effet visible, mais elle est enregistree pour completude et experimentation.
