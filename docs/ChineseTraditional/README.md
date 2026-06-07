@@ -93,6 +93,7 @@
 遊戲也允許你使用「移動攝影機」按鍵來改變攝影機角度。
 
 （[Steam 工作坊頁面在這裡](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996)）
+（[Nexus Mods 頁面在這裡](https://www.nexusmods.com/phantombrigade/mods/93)）
 
 如需查看問題與疑難排解，請參閱 [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseTraditional/FAQ.md)。
 

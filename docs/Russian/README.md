@@ -92,6 +92,7 @@
 Игра также позволяет использовать клавиши движения камеры, чтобы менять угол обзора.
 
 ([Страница Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+([Страница Nexus Mods](https://www.nexusmods.com/phantombrigade/mods/93))
 
 Ответы на вопросы и помощь с неполадками см. в [часто задаваемых вопросах](https://github.com/three-3s/pb-livery-gui/blob/main/docs/Russian/FAQ.md).
 

@@ -93,6 +93,7 @@ Additional controls:
 The game also lets you use the "move camera" keys to change the camera angle.
 
 ([Steam Workshop page here](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+([Nexus Mods page here](https://www.nexusmods.com/phantombrigade/mods/93))
 
 For questions and troubleshooting, consider looking at the [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/FAQ.md).
 

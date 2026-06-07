@@ -93,6 +93,7 @@
 游戏也允许你使用“移动摄像机”按键来改变摄像机角度。
 
 （[Steam 创意工坊页面在这里](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996)）
+（[Nexus Mods 页面在这里](https://www.nexusmods.com/phantombrigade/mods/93)）
 
 如需查看问题和故障排查，请参阅 [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/docs/ChineseSimplified/FAQ.md)。
 

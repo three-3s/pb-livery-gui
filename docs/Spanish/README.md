@@ -92,6 +92,7 @@ Controles adicionales:
 El juego también permite usar las teclas de mover cámara para cambiar el ángulo de la cámara.
 
 ([Página de Steam Workshop aquí](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+([Página de Nexus Mods aquí](https://www.nexusmods.com/phantombrigade/mods/93))
 
 Para preguntas y solución de problemas, consulta las [Preguntas frecuentes](https://github.com/three-3s/pb-livery-gui/blob/main/docs/Spanish/FAQ.md).
 

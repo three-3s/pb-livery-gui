@@ -92,6 +92,7 @@
 ゲーム内の「カメラ移動」キーを使ってカメラ角度を変えることもできます。
 
 （[Steam Workshopページはこちら](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996)）
+（[Nexus Modsページはこちら](https://www.nexusmods.com/phantombrigade/mods/93)）
 
 質問やトラブルシューティングについては、[FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/docs/Japanese/FAQ.md)をご覧ください。
 

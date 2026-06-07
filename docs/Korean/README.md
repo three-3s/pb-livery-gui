@@ -92,6 +92,7 @@
 게임의 카메라 이동 키를 사용해 카메라 각도를 바꿀 수도 있습니다.
 
 ([Steam Workshop 페이지](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+([Nexus Mods 페이지](https://www.nexusmods.com/phantombrigade/mods/93))
 
 질문과 문제 해결은 [FAQ](https://github.com/three-3s/pb-livery-gui/blob/main/docs/Korean/FAQ.md)를 참고하세요.
 

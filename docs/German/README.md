@@ -92,6 +92,7 @@ Zusätzliche Steuerung:
 Das Spiel erlaubt dir außerdem, mit den Tasten für Kamera bewegen den Kamerawinkel zu ändern.
 
 ([Steam-Workshop-Seite hier](https://steamcommunity.com/sharedfiles/filedetails/?id=3649585996))
+([Nexus-Mods-Seite hier](https://www.nexusmods.com/phantombrigade/mods/93))
 
 Für Fragen und Fehlerbehebung siehe die [Häufigen Fragen](https://github.com/three-3s/pb-livery-gui/blob/main/docs/German/FAQ.md).
 
